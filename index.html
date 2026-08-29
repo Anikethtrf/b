@@ -7685,6 +7685,20 @@ html[data-theme="lavender"] .auth-status.error{
   cursor:wait!important;
 }
 
+
+/* Auth CDN / Brave compatibility */
+.auth-connection-note{
+  margin-top:7px!important;
+  padding:0 2px!important;
+  color:#68737e!important;
+  font-size:7px!important;
+  line-height:1.45!important;
+}
+.auth-status.error{
+  white-space:normal!important;
+  line-height:1.45!important;
+}
+
 </style>
 </head>
 <body>
@@ -7711,6 +7725,10 @@ html[data-theme="lavender"] .auth-status.error{
       <button class="auth-primary" id="registerSubmit" type="submit">CREATE ACCOUNT</button>
     </form>
     <div class="auth-status" id="authStatus">CONNECTING TO BOOM CHAT...</div>
+    <div class="auth-connection-note">
+      If login stays on “Connecting”, Brave Shields may be blocking the login library.
+    </div>
+
     <small class="auth-note">Accounts and social data are stored in Supabase. Passwords are handled by Supabase Auth.</small>
   </div>
 </section>
@@ -8337,11 +8355,8 @@ html[data-theme="lavender"] .auth-status.error{
 </div>
 
 <div class="toast" id="toast"></div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-(()=>{
+async function BOOM_APP_BOOT(){
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const ls={
   get(k,d){try{const x=JSON.parse(localStorage.getItem(k));return x??d}catch{return d}},
@@ -9724,7 +9739,7 @@ save();renderFeed();renderTrending();renderChat();renderCommunity();renderExplor
 if(!window.supabase){
   const s=document.getElementById("authStatus");
   if(s){
-    s.textContent="SUPABASE LIBRARY DID NOT LOAD. CHECK INTERNET / ADBLOCK AND REFRESH.";
+    s.textContent="SUPABASE LOGIN LIBRARY IS NOT AVAILABLE.";
     s.className="auth-status error";
   }
 }
@@ -10768,7 +10783,77 @@ $("#clearSaved").onclick=async()=>{if(!state.saved.length)return toast("NOTHING 
 boomDB.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){appRoot.classList.add("auth-hidden");authScreen.style.display="grid"}else if(event==="SIGNED_IN"&&session)setTimeout(()=>enterBoom(session),0)});
 boomDB.auth.getSession().then(({data,error})=>{if(error)setAuthStatus(error.message,"error");else if(data.session)enterBoom(data.session);else{appRoot.classList.add("auth-hidden");authScreen.style.display="grid";setAuthTab("login")}});
 
+}
+
+/* =========================================================
+   SUPABASE SDK LOADER
+   Prevents Brave/ad-block/CDN failures from freezing the UI.
+   ========================================================= */
+(async function BOOM_LOAD_AND_START(){
+  const status=document.getElementById("authStatus");
+
+  function show(text,type=""){
+    if(!status)return;
+    status.textContent=text;
+    status.className="auth-status"+(type?" "+type:"");
+  }
+
+  function loadScript(url,timeoutMs=5000){
+    return new Promise(resolve=>{
+      const script=document.createElement("script");
+      let done=false;
+
+      const finish=ok=>{
+        if(done)return;
+        done=true;
+        clearTimeout(timer);
+        if(!ok)script.remove();
+        resolve(ok);
+      };
+
+      script.src=url;
+      script.async=true;
+      script.crossOrigin="anonymous";
+      script.onload=()=>finish(!!window.supabase?.createClient);
+      script.onerror=()=>finish(false);
+
+      const timer=setTimeout(()=>finish(false),timeoutMs);
+      document.head.appendChild(script);
+    });
+  }
+
+  if(!window.supabase?.createClient){
+    show("LOADING SECURE LOGIN...");
+
+    let ok=await loadScript(
+      "https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"
+    );
+
+    if(!ok){
+      show("PRIMARY LOGIN SERVER BLOCKED — TRYING BACKUP...");
+      ok=await loadScript(
+        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"
+      );
+    }
+
+    if(!ok){
+      show(
+        "LOGIN LIBRARY BLOCKED. IN BRAVE: TAP THE LION/SHIELDS ICON → SHIELDS DOWN FOR THIS SITE → REFRESH.",
+        "error"
+      );
+      return;
+    }
+  }
+
+  try{
+    show("CONNECTING TO BOOM CHAT...");
+    await BOOM_APP_BOOT();
+  }catch(err){
+    console.error("Boom Chat startup error:",err);
+    show("STARTUP ERROR: "+(err?.message||"UNKNOWN ERROR"),"error");
+  }
 })();
+
 
 </script>
 </body>
