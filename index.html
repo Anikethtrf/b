@@ -7666,6 +7666,25 @@ html[data-theme="lavender"] #page-chat .bubble *{
   }
 }
 
+
+/* Auth reliability / readable errors */
+.auth-status.error{
+  color:#b00020!important;
+  font-weight:800!important;
+}
+html[data-theme="dark"] .auth-status.error,
+html[data-theme="midnight"] .auth-status.error,
+html[data-theme="forest"] .auth-status.error,
+html[data-theme="rose"] .auth-status.error,
+html[data-theme="ocean"] .auth-status.error,
+html[data-theme="lavender"] .auth-status.error{
+  color:#ff9ca8!important;
+}
+.auth-primary:disabled{
+  opacity:.6!important;
+  cursor:wait!important;
+}
+
 </style>
 </head>
 <body>
@@ -9700,6 +9719,16 @@ $("#settingsBtn").onclick=()=>{
 
 save();renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();updateDeskStats();syncFeedModeUI();syncProfileUI();updateNoticeBadge();
 
+
+/* BOOM AUTH DIAGNOSTIC */
+if(!window.supabase){
+  const s=document.getElementById("authStatus");
+  if(s){
+    s.textContent="SUPABASE LIBRARY DID NOT LOAD. CHECK INTERNET / ADBLOCK AND REFRESH.";
+    s.className="auth-status error";
+  }
+}
+
 /* =========================================================
    BOOM CHAT — SUPABASE CLOUD BRIDGE
    ========================================================= */
@@ -9794,8 +9823,29 @@ async function loadBoomCloud(){
     boomDB.from("notes").select("*").eq("user_id",boomUser.id).maybeSingle(),
     boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false})
   ]);
-  const bad=results.find(r=>r.error);if(bad)throw bad.error;
+  /* Messaging V2 is optional during rollout: missing new chat tables
+     must never prevent a valid account from logging in. */
+  const optionalIndexes=new Set([9,12,13]); // room_members + message reaction tables
+  let messagingUpgradeMissing=false;
+
+  results.forEach((result,index)=>{
+    if(!result?.error)return;
+    const code=String(result.error.code||"");
+    const text=String(result.error.message||"").toLowerCase();
+    const missingRelation=code==="42P01"||text.includes("does not exist")||text.includes("could not find the table");
+    if(optionalIndexes.has(index)&&missingRelation){
+      console.warn("Optional Boom Chat messaging table missing:",result.error.message);
+      results[index]={data:[],error:null};
+      messagingUpgradeMissing=true;
+    }
+  });
+
+  const bad=results.find(r=>r?.error);
+  if(bad)throw bad.error;
+
   const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR]=results;
+
+  window.__boomMessagingUpgradeMissing=messagingUpgradeMissing;
   boomProfiles=profilesR.data||[];
   boomProfileById=Object.fromEntries(boomProfiles.map(x=>[x.id,x]));
   boomFriendships=friendsR.data||[];
@@ -9889,27 +9939,101 @@ function startBoomRealtime(){
 }
 
 async function enterBoom(session){
-  boomUser=session?.user||null;window.__boomAuthUserId=boomUser?.id||null;
-  if(!boomUser){appRoot.classList.add("auth-hidden");authScreen.style.display="grid";return}
+  boomUser=session?.user||null;
+  window.__boomAuthUserId=boomUser?.id||null;
+
+  if(!boomUser){
+    appRoot.classList.add("auth-hidden");
+    authScreen.style.display="grid";
+    return;
+  }
+
   try{
-    await ensureBoomProfile();await loadBoomCloud();startBoomRealtime();
-    authScreen.style.display="none";appRoot.classList.remove("auth-hidden");
-    toast("CLOUD CONNECTED");
-  }catch(e){console.error(e);setAuthStatus("DATABASE ERROR: "+e.message,"error")}
+    /* Auth + profile are the only requirements for entering the app. */
+    await ensureBoomProfile();
+
+    authScreen.style.display="none";
+    appRoot.classList.remove("auth-hidden");
+
+    try{
+      await loadBoomCloud();
+      startBoomRealtime();
+
+      if(window.__boomMessagingUpgradeMissing){
+        toast("LOGGED IN — RUN MESSAGING V2 SQL FOR ALL CHAT FEATURES");
+      }else{
+        toast("CLOUD CONNECTED");
+      }
+    }catch(cloudErr){
+      console.error("Boom cloud load error:",cloudErr);
+      toast("LOGGED IN — SOME CLOUD DATA COULD NOT LOAD");
+    }
+  }catch(profileErr){
+    console.error("Boom profile error:",profileErr);
+    setAuthStatus("ACCOUNT ERROR: "+(profileErr?.message||"Could not load profile"),"error");
+  }
 }
 
 $("#loginForm").onsubmit=async e=>{
-  e.preventDefault();const btn=$("#loginSubmit");btn.disabled=true;setAuthStatus("SIGNING IN...");
-  const {data,error}=await boomDB.auth.signInWithPassword({email:$("#loginEmail").value.trim(),password:$("#loginPassword").value});
-  btn.disabled=false;if(error)return setAuthStatus(error.message,"error");setAuthStatus("LOGIN SUCCESSFUL.","ok");await enterBoom(data.session);
+  e.preventDefault();
+  const btn=$("#loginSubmit");
+  btn.disabled=true;
+  setAuthStatus("SIGNING IN...");
+  try{
+    const email=$("#loginEmail").value.trim().toLowerCase();
+    const password=$("#loginPassword").value;
+    const {data,error}=await boomDB.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    if(!data?.session)throw new Error("Login session was not created.");
+    setAuthStatus("LOGIN SUCCESSFUL.","ok");
+    await enterBoom(data.session);
+  }catch(err){
+    console.error("Boom login error:",err);
+    setAuthStatus(err?.message||"LOGIN FAILED. TRY AGAIN.","error");
+  }finally{
+    btn.disabled=false;
+  }
 };
 $("#registerForm").onsubmit=async e=>{
-  e.preventDefault();const btn=$("#registerSubmit"),username=$("#registerUsername").value.trim();btn.disabled=true;setAuthStatus("CREATING ACCOUNT...");
-  localStorage.setItem("boom_pending_username",username);
-  const {data,error}=await boomDB.auth.signUp({email:$("#registerEmail").value.trim(),password:$("#registerPassword").value,options:{data:{display_name:username},emailRedirectTo:location.href.split("#")[0]}});
-  btn.disabled=false;if(error){localStorage.removeItem("boom_pending_username");return setAuthStatus(error.message,"error")}
-  if(data.session){setAuthStatus("ACCOUNT CREATED.","ok");await enterBoom(data.session)}
-  else setAuthStatus("ACCOUNT CREATED. CHECK YOUR EMAIL, THEN LOGIN.","ok");
+  e.preventDefault();
+  const btn=$("#registerSubmit");
+  const username=$("#registerUsername").value.trim();
+  const email=$("#registerEmail").value.trim().toLowerCase();
+  const password=$("#registerPassword").value;
+
+  btn.disabled=true;
+  setAuthStatus("CREATING ACCOUNT...");
+
+  try{
+    if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username)){
+      throw new Error("USERNAME MUST BE 3–24 CHARACTERS: LETTERS, NUMBERS, _ . -");
+    }
+
+    localStorage.setItem("boom_pending_username",username);
+
+    const {data,error}=await boomDB.auth.signUp({
+      email,
+      password,
+      options:{data:{username,display_name:username}}
+    });
+
+    if(error)throw error;
+
+    if(data?.session){
+      setAuthStatus("ACCOUNT CREATED. ENTERING BOOM CHAT...","ok");
+      await enterBoom(data.session);
+    }else{
+      localStorage.removeItem("boom_pending_username");
+      setAuthStatus("ACCOUNT CREATED. CHECK YOUR EMAIL IF CONFIRMATION IS ENABLED, THEN LOGIN.","ok");
+      setTimeout(()=>setAuthTab("login"),1800);
+    }
+  }catch(err){
+    console.error("Boom register error:",err);
+    localStorage.removeItem("boom_pending_username");
+    setAuthStatus(err?.message||"REGISTER FAILED. TRY AGAIN.","error");
+  }finally{
+    btn.disabled=false;
+  }
 };
 $("#logoutBtn").onclick=async()=>{await boomDB.auth.signOut();location.reload()};
 
@@ -10268,6 +10392,7 @@ $$("[data-chat-emoji]").forEach(b=>b.onclick=()=>{
 
 async function reactToMessage(messageId,kind){
   const current=findCurrentMessage(messageId);if(!current)return;
+  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL TO ENABLE MESSAGE REACTIONS");
   const table=kind==="dm"?"direct_message_reactions":"room_message_reactions";
   const mine=(current.reactions||[]).find(r=>r.user_id===boomUser.id);
   if(mine){
@@ -10353,12 +10478,22 @@ $("#sendChat").onclick=async()=>{
     r=await boomDB.from("room_messages").insert({
       room_id,user_id:boomUser.id,body:text,image_url:image||null,reply_to
     });
+    if(r.error && String(r.error.message||"").toLowerCase().includes("reply_to")){
+      r=await boomDB.from("room_messages").insert({
+        room_id,user_id:boomUser.id,body:text,image_url:image||null
+      });
+    }
   }else{
     const other=await findProfileByUsername(state.activeDM);
     if(!other)return toast("SELECT A CHAT FIRST");
     r=await boomDB.from("direct_messages").insert({
       sender_id:boomUser.id,receiver_id:other.id,body:text,image_url:image||null,reply_to
     });
+    if(r.error && String(r.error.message||"").toLowerCase().includes("reply_to")){
+      r=await boomDB.from("direct_messages").insert({
+        sender_id:boomUser.id,receiver_id:other.id,body:text,image_url:image||null
+      });
+    }
   }
 
   if(r.error)return toast(r.error.message);
@@ -10537,6 +10672,7 @@ $("#roomMemberSearch").oninput=()=>{
 
 $("#roomManagerSave").onclick=async()=>{
   if(!boomUser)return toast("LOGIN REQUIRED");
+  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL BEFORE CREATING PRIVATE GROUPS");
   const selected=[...new Set(roomManagerSelectedIds())];
 
   if(roomManagerMode==="create"){
