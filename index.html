@@ -7699,6 +7699,23 @@ html[data-theme="lavender"] .auth-status.error{
   line-height:1.45!important;
 }
 
+
+.auth-reset-cache{
+  width:100%!important;
+  min-height:30px!important;
+  margin-top:6px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#536270!important;
+  font:700 7px Verdana,Arial,sans-serif!important;
+  letter-spacing:.08em!important;
+  text-decoration:underline!important;
+  cursor:pointer!important;
+}
+.auth-reset-cache:hover{
+  color:var(--m-accent)!important;
+}
+
 </style>
 </head>
 <body>
@@ -7725,6 +7742,7 @@ html[data-theme="lavender"] .auth-status.error{
       <button class="auth-primary" id="registerSubmit" type="submit">CREATE ACCOUNT</button>
     </form>
     <div class="auth-status" id="authStatus">CONNECTING TO BOOM CHAT...</div>
+    <button class="auth-reset-cache" id="authResetCache" type="button">RESET LOGIN CACHE</button>
     <div class="auth-connection-note">
       If login stays on “Connecting”, Brave Shields may be blocking the login library.
     </div>
@@ -8355,6 +8373,64 @@ html[data-theme="lavender"] .auth-status.error{
 </div>
 
 <div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   BOOM CHAT — EARLY AUTH UI
+   Register/Login tabs must work before Supabase/app startup.
+   ========================================================= */
+(function(){
+  const byId=id=>document.getElementById(id);
+  const loginTab=byId("loginTab");
+  const registerTab=byId("registerTab");
+  const loginForm=byId("loginForm");
+  const registerForm=byId("registerForm");
+  const status=byId("authStatus");
+
+  window.BOOM_SET_AUTH_TAB=function(mode){
+    const login=mode==="login";
+    loginTab?.classList.toggle("active",login);
+    registerTab?.classList.toggle("active",!login);
+    loginForm?.classList.toggle("hidden",!login);
+    registerForm?.classList.toggle("hidden",login);
+
+    if(status && !status.classList.contains("error")){
+      status.textContent=login
+        ? "SIGN IN TO CONTINUE."
+        : "CREATE A BOOM CHAT ACCOUNT.";
+    }
+  };
+
+
+  const reset=byId("authResetCache");
+  if(reset)reset.onclick=()=>{
+    try{
+      const remove=[];
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(k && (k.startsWith("sb-") || k.startsWith("boom-chat-auth")))remove.push(k);
+      }
+      remove.forEach(k=>localStorage.removeItem(k));
+      if(status){
+        status.textContent="LOGIN CACHE CLEARED. RELOADING...";
+        status.className="auth-status";
+      }
+      setTimeout(()=>location.reload(),250);
+    }catch(e){
+      if(status){
+        status.textContent="COULD NOT CLEAR LOGIN CACHE.";
+        status.className="auth-status error";
+      }
+    }
+  };
+
+  if(loginTab) loginTab.onclick=()=>window.BOOM_SET_AUTH_TAB("login");
+  if(registerTab) registerTab.onclick=()=>window.BOOM_SET_AUTH_TAB("register");
+
+  window.BOOM_SET_AUTH_TAB("login");
+})();
+</script>
+
 <script>
 async function BOOM_APP_BOOT(){
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -9732,7 +9808,7 @@ $("#settingsBtn").onclick=()=>{
   toast("SETTINGS OPEN");
 };
 
-save();renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();updateDeskStats();syncFeedModeUI();syncProfileUI();updateNoticeBadge();
+/* Initial UI render intentionally deferred until authentication succeeds. */
 
 
 /* BOOM AUTH DIAGNOSTIC */
@@ -9750,7 +9826,12 @@ if(!window.supabase){
 const SUPABASE_URL="https://yruebqnaavkgnjyvnrec.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_tRTQ8cfzjUjpIs4c_k6xnQ_9cC-WE4C";
 const boomDB=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
-  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+  auth:{
+    persistSession:true,
+    autoRefreshToken:true,
+    detectSessionInUrl:true,
+    storageKey:"boom-chat-auth-v3"
+  }
 });
 let boomUser=null;
 let boomProfiles=[];
@@ -9768,17 +9849,29 @@ let boomReloadTimer=null;
 window.__boomAuthUserId=null;
 
 const authScreen=$("#authScreen"), appRoot=$("#appRoot"), authStatus=$("#authStatus");
+
+function withTimeout(promise,ms,label="REQUEST"){
+  let timer;
+  const timeout=new Promise((_,reject)=>{
+    timer=setTimeout(()=>reject(new Error(label+" TIMED OUT. CHECK INTERNET / BRAVE SHIELDS AND TRY AGAIN.")),ms);
+  });
+  return Promise.race([promise,timeout]).finally(()=>clearTimeout(timer));
+}
+
 function setAuthStatus(text,type=""){
   authStatus.textContent=text;
   authStatus.className="auth-status"+(type?" "+type:"");
 }
 function setAuthTab(mode){
-  const login=mode==="login";
-  $("#loginTab").classList.toggle("active",login);
-  $("#registerTab").classList.toggle("active",!login);
-  $("#loginForm").classList.toggle("hidden",!login);
-  $("#registerForm").classList.toggle("hidden",login);
-  setAuthStatus(login?"SIGN IN TO CONTINUE.":"CREATE A BOOM CHAT ACCOUNT.");
+  if(window.BOOM_SET_AUTH_TAB)window.BOOM_SET_AUTH_TAB(mode);
+  else{
+    const login=mode==="login";
+    $("#loginTab").classList.toggle("active",login);
+    $("#registerTab").classList.toggle("active",!login);
+    $("#loginForm").classList.toggle("hidden",!login);
+    $("#registerForm").classList.toggle("hidden",login);
+  }
+  setAuthStatus(mode==="login"?"SIGN IN TO CONTINUE.":"CREATE A BOOM CHAT ACCOUNT.");
 }
 $("#loginTab").onclick=()=>setAuthTab("login");
 $("#registerTab").onclick=()=>setAuthTab("register");
@@ -9997,7 +10090,11 @@ $("#loginForm").onsubmit=async e=>{
   try{
     const email=$("#loginEmail").value.trim().toLowerCase();
     const password=$("#loginPassword").value;
-    const {data,error}=await boomDB.auth.signInWithPassword({email,password});
+    const {data,error}=await withTimeout(
+      boomDB.auth.signInWithPassword({email,password}),
+      12000,
+      "LOGIN"
+    );
     if(error)throw error;
     if(!data?.session)throw new Error("Login session was not created.");
     setAuthStatus("LOGIN SUCCESSFUL.","ok");
@@ -10026,11 +10123,15 @@ $("#registerForm").onsubmit=async e=>{
 
     localStorage.setItem("boom_pending_username",username);
 
-    const {data,error}=await boomDB.auth.signUp({
-      email,
-      password,
-      options:{data:{username,display_name:username}}
-    });
+    const {data,error}=await withTimeout(
+      boomDB.auth.signUp({
+        email,
+        password,
+        options:{data:{username,display_name:username}}
+      }),
+      12000,
+      "REGISTER"
+    );
 
     if(error)throw error;
 
@@ -10781,7 +10882,23 @@ $("#clearSaved").onclick=async()=>{if(!state.saved.length)return toast("NOTHING 
 
 /* Auth boot */
 boomDB.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){appRoot.classList.add("auth-hidden");authScreen.style.display="grid"}else if(event==="SIGNED_IN"&&session)setTimeout(()=>enterBoom(session),0)});
-boomDB.auth.getSession().then(({data,error})=>{if(error)setAuthStatus(error.message,"error");else if(data.session)enterBoom(data.session);else{appRoot.classList.add("auth-hidden");authScreen.style.display="grid";setAuthTab("login")}});
+withTimeout(boomDB.auth.getSession(),8000,"SESSION CHECK")
+  .then(({data,error})=>{
+    if(error)setAuthStatus(error.message,"error");
+    else if(data?.session)enterBoom(data.session);
+    else{
+      appRoot.classList.add("auth-hidden");
+      authScreen.style.display="grid";
+      setAuthTab("login");
+    }
+  })
+  .catch(err=>{
+    console.warn("Session check failed:",err);
+    appRoot.classList.add("auth-hidden");
+    authScreen.style.display="grid";
+    setAuthTab("login");
+    setAuthStatus("READY — PLEASE LOGIN.","");
+  });
 
 }
 
@@ -10826,13 +10943,13 @@ boomDB.auth.getSession().then(({data,error})=>{if(error)setAuthStatus(error.mess
     show("LOADING SECURE LOGIN...");
 
     let ok=await loadScript(
-      "https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"
+      "https://unpkg.com/@supabase/supabase-js@2.112.4/dist/umd/supabase.js"
     );
 
     if(!ok){
       show("PRIMARY LOGIN SERVER BLOCKED — TRYING BACKUP...");
       ok=await loadScript(
-        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"
+        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.js"
       );
     }
 
