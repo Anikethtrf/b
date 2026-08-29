@@ -6168,6 +6168,543 @@ button:disabled{
 .cloud-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid var(--m-line);font-size:8px;font-weight:700;background:var(--m-soft)}
 @media(max-width:520px){.boom-auth{padding:10px}.auth-window{box-shadow:3px 3px 0 rgba(0,0,0,.18)}.auth-brand-row{padding:16px 14px}.auth-form{padding:14px}.auth-status{margin-left:14px;margin-right:14px}}
 
+
+/* =========================================================
+   BOOM CHAT — REAL CHAT UI UPGRADE
+   ========================================================= */
+
+/* Main chat now reads as a messaging app, not a post composer */
+#page-chat .chat-layout{
+  grid-template-columns:250px minmax(0,1fr) 220px!important;
+  gap:10px!important;
+  align-items:stretch!important;
+}
+
+#page-chat .chat-layout > .panel{
+  min-width:0!important;
+}
+
+#page-chat .chat-box{
+  height:clamp(570px,72vh,780px)!important;
+  min-height:570px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-radius:3px!important;
+}
+
+.chat-main-head{
+  min-height:58px!important;
+  padding:8px 11px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  flex:0 0 auto!important;
+}
+
+.chat-head-copy{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+}
+
+.chat-head-copy > span{
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-weight:800!important;
+  letter-spacing:.03em!important;
+}
+
+.chat-head-copy small{
+  font-size:8px!important;
+  letter-spacing:.12em!important;
+  color:var(--m-muted)!important;
+}
+
+.chat-head-actions{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+
+#roomStatus{
+  font-size:8px!important;
+  white-space:nowrap!important;
+  color:var(--m-muted)!important;
+}
+
+.room-manage-btn{
+  min-height:30px!important;
+  height:30px!important;
+  padding:0 8px!important;
+  font-size:8px!important;
+}
+
+#page-chat .messages{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  background:
+    linear-gradient(rgba(255,255,255,.78),rgba(255,255,255,.78)),
+    radial-gradient(circle,#bec7d0 1px,transparent 1.2px)!important;
+  background-size:auto,20px 20px!important;
+}
+
+#page-chat .msg{
+  width:100%!important;
+  margin:0!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+}
+
+#page-chat .msg.me{
+  justify-content:flex-end!important;
+}
+
+#page-chat .bubble{
+  width:auto!important;
+  max-width:min(76%,560px)!important;
+  padding:9px 11px 8px!important;
+  border-radius:4px 14px 14px 14px!important;
+  border:1px solid var(--m-line)!important;
+  background:#ffffff!important;
+  color:#18202a!important;
+  box-shadow:none!important;
+}
+
+#page-chat .msg.me .bubble{
+  border-radius:14px 4px 14px 14px!important;
+  background:#dbeafe!important;
+  border-color:#8db2dc!important;
+  color:#10243d!important;
+}
+
+.msg-topline{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  margin-bottom:5px!important;
+}
+
+.msg-topline b{
+  color:inherit!important;
+  font-size:9px!important;
+  letter-spacing:.02em!important;
+}
+
+.msg-delete{
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:inherit!important;
+  opacity:.58!important;
+  font:700 7px Verdana,Arial,sans-serif!important;
+  letter-spacing:.07em!important;
+  cursor:pointer!important;
+}
+
+.msg-delete:hover{
+  opacity:1!important;
+  text-decoration:underline!important;
+}
+
+.msg-text{
+  color:inherit!important;
+  font-size:12px!important;
+  line-height:1.48!important;
+}
+
+#page-chat .bubble .meta{
+  margin-top:6px!important;
+  color:inherit!important;
+  opacity:.58!important;
+  font-size:8px!important;
+}
+
+#page-chat .bubble img{
+  width:auto!important;
+  max-width:min(100%,380px)!important;
+  max-height:360px!important;
+  object-fit:contain!important;
+  border-radius:5px!important;
+}
+
+#page-chat .chat-compose{
+  flex:0 0 auto!important;
+  min-height:58px!important;
+  padding:8px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto auto!important;
+  align-items:center!important;
+  gap:6px!important;
+  border-top:1px solid var(--m-line)!important;
+  background:var(--m-surface)!important;
+}
+
+#page-chat .chat-compose input{
+  height:40px!important;
+  border-radius:3px!important;
+}
+
+#page-chat .chat-compose .btn{
+  height:40px!important;
+  min-height:40px!important;
+  padding:0 10px!important;
+}
+
+/* Room/DM sidebar */
+#page-chat .chat-switch{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+}
+
+#page-chat .room-list{
+  max-height:470px!important;
+  overflow-y:auto!important;
+}
+
+#page-chat .room-list button{
+  min-height:46px!important;
+  display:block!important;
+}
+
+#page-chat .room-list button .meta{
+  margin-top:4px!important;
+}
+
+/* Online / members panel */
+#page-chat .online-list{
+  max-height:610px!important;
+  overflow-y:auto!important;
+}
+
+/* DARK THEME: message text must always remain readable */
+html[data-theme="dark"] #page-chat .messages,
+html[data-theme="midnight"] #page-chat .messages,
+html[data-theme="forest"] #page-chat .messages,
+html[data-theme="rose"] #page-chat .messages,
+html[data-theme="ocean"] #page-chat .messages,
+html[data-theme="lavender"] #page-chat .messages{
+  background:color-mix(in srgb,var(--m-chat) 92%,#000 8%)!important;
+}
+
+html[data-theme="dark"] #page-chat .bubble,
+html[data-theme="midnight"] #page-chat .bubble,
+html[data-theme="forest"] #page-chat .bubble,
+html[data-theme="rose"] #page-chat .bubble,
+html[data-theme="ocean"] #page-chat .bubble,
+html[data-theme="lavender"] #page-chat .bubble{
+  background:color-mix(in srgb,var(--m-surface) 86%,#fff 14%)!important;
+  color:#f6f8fb!important;
+  border-color:var(--m-line-strong)!important;
+}
+
+html[data-theme="dark"] #page-chat .msg.me .bubble,
+html[data-theme="midnight"] #page-chat .msg.me .bubble,
+html[data-theme="forest"] #page-chat .msg.me .bubble,
+html[data-theme="rose"] #page-chat .msg.me .bubble,
+html[data-theme="ocean"] #page-chat .msg.me .bubble,
+html[data-theme="lavender"] #page-chat .msg.me .bubble{
+  background:color-mix(in srgb,var(--m-accent) 58%,#111 42%)!important;
+  color:#ffffff!important;
+  border-color:color-mix(in srgb,var(--m-accent) 76%,#fff 24%)!important;
+}
+
+html[data-theme="dark"] #page-chat .bubble *,
+html[data-theme="midnight"] #page-chat .bubble *,
+html[data-theme="forest"] #page-chat .bubble *,
+html[data-theme="rose"] #page-chat .bubble *,
+html[data-theme="ocean"] #page-chat .bubble *,
+html[data-theme="lavender"] #page-chat .bubble *{
+  color:inherit!important;
+}
+
+/* ROOM MANAGER */
+.room-manager-overlay{
+  position:fixed!important;
+  inset:0!important;
+  z-index:5000!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:18px!important;
+  background:rgba(0,0,0,.56)!important;
+}
+
+.room-manager-overlay.hidden{
+  display:none!important;
+}
+
+.room-manager-window{
+  width:min(560px,100%)!important;
+  max-height:min(760px,88vh)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:3px!important;
+  background:var(--m-surface)!important;
+  color:var(--m-text)!important;
+  box-shadow:0 18px 60px rgba(0,0,0,.28)!important;
+  overflow:hidden!important;
+}
+
+.room-manager-titlebar{
+  padding:10px 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  background:linear-gradient(color-mix(in srgb,var(--m-accent) 92%,#fff 8%),color-mix(in srgb,var(--m-accent) 72%,#000 28%))!important;
+  color:#fff!important;
+}
+
+.room-manager-titlebar > div{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+}
+
+.room-manager-titlebar b,
+.room-manager-titlebar small{
+  color:#fff!important;
+}
+
+.room-manager-titlebar small{
+  opacity:.8!important;
+  font-size:8px!important;
+}
+
+#roomManagerClose{
+  width:32px!important;
+  height:32px!important;
+  border:1px solid rgba(255,255,255,.48)!important;
+  background:rgba(0,0,0,.14)!important;
+  color:#fff!important;
+  font-size:20px!important;
+  cursor:pointer!important;
+}
+
+.room-manager-body{
+  min-height:0!important;
+  padding:14px!important;
+  overflow-y:auto!important;
+}
+
+.room-field{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+}
+
+.room-field > span,
+.room-member-head > span{
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.09em!important;
+}
+
+.room-field input,
+.room-member-search input{
+  width:100%!important;
+  height:40px!important;
+  padding:0 10px!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--m-chat)!important;
+  color:var(--m-text)!important;
+}
+
+.room-member-head{
+  margin-top:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+}
+
+.room-member-head small{
+  color:var(--m-muted)!important;
+}
+
+.room-member-search{
+  margin:8px 0!important;
+}
+
+.room-member-picker{
+  max-height:360px!important;
+  overflow-y:auto!important;
+  border:1px solid var(--m-line)!important;
+}
+
+.room-member-row{
+  min-height:48px!important;
+  padding:7px 9px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:9px!important;
+  border-bottom:1px solid var(--m-line)!important;
+  cursor:pointer!important;
+}
+
+.room-member-row:last-child{
+  border-bottom:0!important;
+}
+
+.room-member-row:hover{
+  background:color-mix(in srgb,var(--m-accent) 8%,var(--m-surface) 92%)!important;
+}
+
+.room-member-row input{
+  width:16px!important;
+  height:16px!important;
+}
+
+.room-member-avatar{
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--m-line-strong)!important;
+  background:var(--m-soft)!important;
+  font-weight:800!important;
+}
+
+.room-member-copy{
+  min-width:0!important;
+}
+
+.room-member-copy b{
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:var(--m-text)!important;
+  font-size:10px!important;
+}
+
+.room-member-copy small{
+  color:var(--m-muted)!important;
+  font-size:8px!important;
+}
+
+.room-manager-actions{
+  padding:9px!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  border-top:1px solid var(--m-line)!important;
+}
+
+/* Tablet */
+@media(max-width:1020px) and (min-width:701px){
+  #page-chat .chat-layout{
+    grid-template-columns:220px minmax(0,1fr)!important;
+  }
+  #page-chat .chat-layout > .panel:last-child{
+    display:none!important;
+  }
+}
+
+/* Mobile: room selector on top, real full chat underneath */
+@media(max-width:700px){
+  #page-chat .chat-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:8px!important;
+  }
+
+  #page-chat .chat-layout > .panel:first-child{
+    order:1!important;
+  }
+
+  #page-chat .chat-box{
+    order:2!important;
+    height:calc(100dvh - 255px)!important;
+    min-height:480px!important;
+    max-height:none!important;
+  }
+
+  #page-chat .chat-layout > .panel:last-child{
+    display:none!important;
+  }
+
+  #page-chat .room-list{
+    display:flex!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:none!important;
+  }
+
+  #page-chat .room-list::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  #page-chat .room-list button{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:118px!important;
+    min-height:40px!important;
+    padding:7px 10px!important;
+    border-right:1px solid var(--m-line)!important;
+    border-bottom:0!important;
+  }
+
+  #page-chat .dm-tools{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px!important;
+    padding:7px!important;
+  }
+
+  #page-chat .dm-tools #startDm{
+    width:auto!important;
+  }
+
+  #page-chat .messages{
+    padding:12px 9px!important;
+  }
+
+  #page-chat .bubble{
+    max-width:86%!important;
+  }
+
+  #page-chat .chat-compose{
+    grid-template-columns:minmax(0,1fr) 38px 38px 54px!important;
+    padding:6px!important;
+    gap:4px!important;
+  }
+
+  #page-chat .chat-compose .btn{
+    min-width:0!important;
+    width:100%!important;
+    padding:0 4px!important;
+    font-size:8px!important;
+  }
+
+  .chat-main-head{
+    min-height:54px!important;
+  }
+
+  .room-manager-overlay{
+    padding:8px!important;
+  }
+
+  .room-manager-window{
+    max-height:84dvh!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -6443,7 +6980,16 @@ button:disabled{
       </div>
 
       <div class="panel chat-box">
-        <div class="panel-head"><span id="chatTitle"># CHILL ZONE</span><span id="roomStatus">24 ONLINE</span></div>
+        <div class="panel-head chat-main-head">
+          <div class="chat-head-copy">
+            <span id="chatTitle"># CHILL ZONE</span>
+            <small id="chatSubline">ROOM CHAT</small>
+          </div>
+          <div class="chat-head-actions">
+            <span id="roomStatus">ONLINE</span>
+            <button class="btn room-manage-btn hidden" id="manageRoomBtn" type="button">MEMBERS</button>
+          </div>
+        </div>
         <div class="messages" id="messages"></div>
         <div class="chat-compose">
           <input id="chatInput" placeholder="TYPE MESSAGE..." autocomplete="off">
@@ -6459,6 +7005,41 @@ button:disabled{
       </div>
     </div>
   </section>
+
+
+  <!-- ROOM MANAGER -->
+  <div class="room-manager-overlay hidden" id="roomManagerModal" role="dialog" aria-modal="true" aria-labelledby="roomManagerTitle">
+    <div class="room-manager-window">
+      <div class="room-manager-titlebar">
+        <div>
+          <b id="roomManagerTitle">CREATE ROOM</b>
+          <small id="roomManagerHint">Choose a name and add people.</small>
+        </div>
+        <button type="button" id="roomManagerClose" aria-label="Close">×</button>
+      </div>
+
+      <div class="room-manager-body">
+        <label class="room-field">
+          <span>ROOM NAME</span>
+          <input id="roomManagerName" maxlength="30" placeholder="e.g. school-gang">
+        </label>
+
+        <div class="room-member-head">
+          <span>ADD PEOPLE</span>
+          <small id="roomMemberCount">0 selected</small>
+        </div>
+        <div class="room-member-search">
+          <input id="roomMemberSearch" placeholder="SEARCH USERS..." autocomplete="off">
+        </div>
+        <div class="room-member-picker" id="roomMemberPicker"></div>
+      </div>
+
+      <div class="room-manager-actions">
+        <button class="btn" type="button" id="roomManagerCancel">CANCEL</button>
+        <button class="btn dark" type="button" id="roomManagerSave">CREATE ROOM</button>
+      </div>
+    </div>
+  </div>
 
   <!-- DRAW -->
   <section class="page" id="page-draw">
@@ -8033,6 +8614,7 @@ document.addEventListener("keydown",e=>{
   if(e.key!=="Escape")return;
   $("#menu")?.classList.add("hidden");
   $("#drawModal")?.classList.remove("open");
+  $("#roomManagerModal")?.classList.add("hidden");
   if($("#composerShell")?.classList.contains("open"))setComposer(false);
 });
 
@@ -8074,6 +8656,8 @@ let boomUser=null;
 let boomProfiles=[];
 let boomProfileById={};
 let boomRoomByName={};
+let boomRooms=[];
+let boomRoomMembers=[];
 let boomFriendships=[];
 let boomRealtime=null;
 let boomReloadTimer=null;
@@ -8140,6 +8724,7 @@ async function loadBoomCloud(){
     boomDB.from("poll_options").select("*").order("created_at",{ascending:true}),
     boomDB.from("poll_votes").select("*"),
     boomDB.from("chat_rooms").select("*").order("created_at",{ascending:true}),
+    boomDB.from("room_members").select("*").order("joined_at",{ascending:true}),
     boomDB.from("room_messages").select("*").order("created_at",{ascending:true}),
     boomDB.from("direct_messages").select("*").or(`sender_id.eq.${boomUser.id},receiver_id.eq.${boomUser.id}`).order("created_at",{ascending:true}),
     boomDB.from("friendships").select("*").or(`user_id.eq.${boomUser.id},friend_id.eq.${boomUser.id}`),
@@ -8148,11 +8733,13 @@ async function loadBoomCloud(){
     boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false})
   ]);
   const bad=results.find(r=>r.error);if(bad)throw bad.error;
-  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMsgsR,dmsR,friendsR,guestR,notesR,draftsR]=results;
+  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,friendsR,guestR,notesR,draftsR]=results;
   boomProfiles=profilesR.data||[];
   boomProfileById=Object.fromEntries(boomProfiles.map(x=>[x.id,x]));
   boomFriendships=friendsR.data||[];
-  boomRoomByName=Object.fromEntries((roomsR.data||[]).map(x=>[x.name,x.id]));
+  boomRooms=roomsR.data||[];
+  boomRoomMembers=roomMembersR.data||[];
+  boomRoomByName=Object.fromEntries(boomRooms.map(x=>[x.name,x.id]));
 
   const commentsByPost={};
   for(const c of commentsR.data||[]){
@@ -8181,7 +8768,7 @@ async function loadBoomCloud(){
     return {id:p.id,user_id:p.user_id,user:u.username,avatar:(u.avatar_url&&u.avatar_url.length<=4)?u.avatar_url:(u.username?.[0]||"B").toUpperCase(),text:p.body||"",image:p.image_url||p.drawing_url||null,likes:likeCounts[p.id]||0,comments:commentsByPost[p.id]||[],reactions:reactionCounts[p.id]||{},poll:p.post_type==="poll"?{question:p.body||"POLL",options:opts}:null,time:fmtTime(p.created_at),created_at:p.created_at};
   });
 
-  state.rooms=(roomsR.data||[]).map(x=>x.name);
+  state.rooms=boomRooms.map(x=>x.name);
   if(!state.room||!boomRoomByName[state.room])state.room=state.rooms[0]||"general";
   state.chats={};
   for(const m of roomMsgsR.data||[]){
@@ -8214,6 +8801,8 @@ function startBoomRealtime(){
     .on("postgres_changes",{event:"*",schema:"public",table:"likes"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"poll_votes"},boomReloadSoon)
+    .on("postgres_changes",{event:"*",schema:"public",table:"chat_rooms"},boomReloadSoon)
+    .on("postgres_changes",{event:"*",schema:"public",table:"room_members"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"room_messages"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"direct_messages"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"friendships"},boomReloadSoon)
@@ -8291,19 +8880,340 @@ $("#publishPost").onclick=async()=>{
 };
 
 /* cloud chat */
-async function findProfileByUsername(name){return boomProfiles.find(p=>p.username.toLowerCase()===String(name).toLowerCase())||null}
+async function findProfileByUsername(name){
+  return boomProfiles.find(p=>p.username.toLowerCase()===String(name).toLowerCase())||null
+}
+
+const dmNamesLocal=dmNames;
+dmNames=function(){
+  if(!boomUser)return dmNamesLocal();
+  return [...new Set([
+    ...Object.keys(state.dms),
+    ...boomProfiles.filter(p=>p.id!==boomUser.id).map(p=>p.username)
+  ])].sort((a,b)=>a.localeCompare(b));
+};
+
+function activeRoomRecord(){
+  return boomRooms.find(r=>r.name===state.room)||null;
+}
+
+function activeRoomMemberIds(){
+  const room=activeRoomRecord();
+  if(!room)return [];
+  if(room.name==="general")return boomProfiles.map(p=>p.id);
+  const ids=boomRoomMembers.filter(m=>m.room_id===room.id).map(m=>m.user_id);
+  if(room.created_by&&!ids.includes(room.created_by))ids.unshift(room.created_by);
+  return [...new Set(ids)];
+}
+
+function canManageActiveRoom(){
+  const room=activeRoomRecord();
+  return !!(room&&room.name!=="general"&&room.created_by===boomUser?.id);
+}
+
+/* Real people/member list on the right */
+renderOnline=function(){
+  const wrap=$("#onlineList");if(!wrap)return;
+  let people=[];
+  if(state.chatMode==="room"){
+    const ids=activeRoomMemberIds();
+    people=ids.map(id=>personFor(id)).filter(p=>p&&p.username!=="unknown");
+  }else{
+    people=boomProfiles.filter(p=>p.id!==boomUser?.id);
+  }
+
+  wrap.innerHTML=people.length?people.map(p=>`
+    <div class="person">
+      <span class="dot"></span>
+      <span>${esc(p.username)}</span>
+      ${p.id!==boomUser?.id?`<button class="btn" data-person-dm="${esc(p.username)}">DM</button>`:`<span class="meta">YOU</span>`}
+    </div>`).join(""):'<div class="meta" style="padding:10px">NO MEMBERS YET.</div>';
+
+  $$("[data-person-dm]").forEach(b=>b.onclick=()=>openDM(b.dataset.personDm));
+};
+
+/* Dedicated cloud chat renderer with delete controls + readable bubbles */
+const renderChatLocalUI=renderChat;
+renderChat=function(){
+  if(!boomUser)return renderChatLocalUI();
+
+  $("#roomModeBtn").classList.toggle("active",state.chatMode==="room");
+  $("#dmModeBtn").classList.toggle("active",state.chatMode==="dm");
+  $("#roomsPane").classList.toggle("hidden",state.chatMode!=="room");
+  $("#dmsPane").classList.toggle("hidden",state.chatMode!=="dm");
+
+  renderRooms();
+  renderDMs();
+
+  const manage=$("#manageRoomBtn");
+  const subline=$("#chatSubline");
+
+  if(state.chatMode==="dm"){
+    $("#chatTitle").textContent="@ "+String(state.activeDM||"SELECT USER").toUpperCase();
+    $("#roomStatus").textContent="PRIVATE";
+    if(subline)subline.textContent="DIRECT MESSAGE";
+    if(manage)manage.classList.add("hidden");
+  }else{
+    const room=activeRoomRecord();
+    const members=activeRoomMemberIds();
+    $("#chatTitle").textContent="# "+String(state.room||"general").toUpperCase();
+    $("#roomStatus").textContent=room?.name==="general"?"PUBLIC ROOM":members.length+" MEMBER"+(members.length===1?"":"S");
+    if(subline)subline.textContent=room?.name==="general"?"EVERY REGISTERED USER CAN CHAT HERE":"ROOM CHAT";
+    if(manage)manage.classList.toggle("hidden",!canManageActiveRoom());
+  }
+
+  const arr=currentMessages();
+  $("#messages").innerHTML=arr.length?arr.map(m=>{
+    const mine=!!(m.user_id&&m.user_id===boomUser.id);
+    return `
+      <div class="msg ${mine?"me":""}">
+        <div class="bubble">
+          <div class="msg-topline">
+            <b>${mine?"YOU":esc(m.user||"user")}</b>
+            ${mine&&m.id?`<button class="msg-delete" data-delete-message="${m.id}" data-message-kind="${state.chatMode==="dm"?"dm":"room"}" type="button">DELETE</button>`:""}
+          </div>
+          ${m.text?`<div class="msg-text">${esc(m.text)}</div>`:""}
+          ${m.image?`<img src="${m.image}" alt="shared media">`:""}
+          <div class="meta">${esc(m.time||"now")}</div>
+        </div>
+      </div>`;
+  }).join(""):'<div class="meta" style="margin:auto;text-align:center">NO MESSAGES YET.<br>START THE CONVERSATION.</div>';
+
+  $$("[data-delete-message]").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Delete this message?"))return;
+    const table=b.dataset.messageKind==="dm"?"direct_messages":"room_messages";
+    const r=await boomDB.from(table).delete().eq("id",b.dataset.deleteMessage);
+    if(r.error)return toast(r.error.message);
+    await loadBoomCloud();
+    toast("MESSAGE DELETED");
+  });
+
+  $("#messages").scrollTop=$("#messages").scrollHeight;
+  renderOnline();
+};
+
 $("#sendChat").onclick=async()=>{
-  const text=$("#chatInput").value.trim(),image=state.chatImage;if(!text&&!image)return;
+  const text=$("#chatInput").value.trim(),image=state.chatImage;
+  if(!text&&!image)return;
+  if(!boomUser)return toast("LOGIN REQUIRED");
+
   let r;
   if(state.chatMode==="room"){
-    const room_id=boomRoomByName[state.room];if(!room_id)return toast("ROOM NOT FOUND");r=await boomDB.from("room_messages").insert({room_id,user_id:boomUser.id,body:text,image_url:image||null});
+    const room_id=boomRoomByName[state.room];
+    if(!room_id)return toast("ROOM NOT FOUND");
+    r=await boomDB.from("room_messages").insert({
+      room_id,
+      user_id:boomUser.id,
+      body:text,
+      image_url:image||null
+    });
   }else{
-    const other=await findProfileByUsername(state.activeDM);if(!other)return toast("USER NOT FOUND");r=await boomDB.from("direct_messages").insert({sender_id:boomUser.id,receiver_id:other.id,body:text,image_url:image||null});
+    const other=await findProfileByUsername(state.activeDM);
+    if(!other)return toast("USER NOT FOUND");
+    r=await boomDB.from("direct_messages").insert({
+      sender_id:boomUser.id,
+      receiver_id:other.id,
+      body:text,
+      image_url:image||null
+    });
   }
-  if(r.error)return toast(r.error.message);$("#chatInput").value="";$("#chatImage").value="";state.chatImage=null;await loadBoomCloud();
+
+  if(r.error)return toast(r.error.message);
+  $("#chatInput").value="";
+  $("#chatImage").value="";
+  state.chatImage=null;
+  await loadBoomCloud();
 };
-$("#chatInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();$("#sendChat").click()}};
-$("#newRoom").onclick=async()=>{const raw=prompt("ROOM NAME?");if(!raw)return;const name=raw.trim().replace(/^#/,"").slice(0,30);if(!name)return;if(boomRoomByName[name]){state.room=name;state.chatMode="room";renderChat();return}const r=await boomDB.from("chat_rooms").insert({name,created_by:boomUser.id});if(r.error)return toast(r.error.message);await loadBoomCloud();state.room=name;state.chatMode="room";renderChat();toast("ROOM CREATED")};
+
+$("#chatInput").onkeydown=e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    $("#sendChat").click();
+  }
+};
+
+/* ---------- ROOM CREATOR / MEMBER MANAGER ---------- */
+let roomManagerMode="create";
+let roomManagerRoomId=null;
+
+function roomManagerSelectedIds(){
+  return $$("[data-room-member-check]:checked").map(x=>x.value);
+}
+
+function updateRoomSelectedCount(){
+  const n=roomManagerSelectedIds().length;
+  $("#roomMemberCount").textContent=n+" selected";
+}
+
+function renderRoomMemberPicker(){
+  const q=($("#roomMemberSearch")?.value||"").trim().toLowerCase();
+  const selected=new Set(roomManagerSelectedIds());
+  const oldChecks=$$("[data-room-member-check]");
+  oldChecks.forEach(c=>{if(c.checked)selected.add(c.value)});
+
+  const users=boomProfiles
+    .filter(p=>p.id!==boomUser.id)
+    .filter(p=>!q||p.username.toLowerCase().includes(q)||(p.display_name||"").toLowerCase().includes(q));
+
+  $("#roomMemberPicker").innerHTML=users.length?users.map(p=>{
+    const checked=selected.has(p.id);
+    const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+    return `<label class="room-member-row">
+      <input type="checkbox" data-room-member-check value="${p.id}" ${checked?"checked":""}>
+      <span class="room-member-avatar">${esc(avatar)}</span>
+      <span class="room-member-copy">
+        <b>@${esc(p.username)}</b>
+        <small>${esc(p.bio||p.mood||"Boom Chat user")}</small>
+      </span>
+    </label>`;
+  }).join(""):'<div class="meta" style="padding:14px">NO USERS FOUND.</div>';
+
+  $$("[data-room-member-check]").forEach(c=>c.onchange=updateRoomSelectedCount);
+  updateRoomSelectedCount();
+}
+
+function openRoomManager(mode="create"){
+  roomManagerMode=mode;
+  const modal=$("#roomManagerModal");
+  const name=$("#roomManagerName");
+  const save=$("#roomManagerSave");
+  const title=$("#roomManagerTitle");
+  const hint=$("#roomManagerHint");
+  $("#roomMemberSearch").value="";
+
+  if(mode==="manage"){
+    const room=activeRoomRecord();
+    if(!room||room.created_by!==boomUser.id)return toast("ONLY THE ROOM CREATOR CAN MANAGE MEMBERS");
+    roomManagerRoomId=room.id;
+    title.textContent="MANAGE ROOM";
+    hint.textContent="Add or remove people from #"+room.name+".";
+    name.value=room.name;
+    name.disabled=true;
+    save.textContent="SAVE MEMBERS";
+
+    const members=new Set(
+      boomRoomMembers.filter(m=>m.room_id===room.id).map(m=>m.user_id)
+    );
+    $("#roomMemberPicker").innerHTML=boomProfiles.filter(p=>p.id!==boomUser.id).map(p=>{
+      const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+      return `<label class="room-member-row">
+        <input type="checkbox" data-room-member-check value="${p.id}" ${members.has(p.id)?"checked":""}>
+        <span class="room-member-avatar">${esc(avatar)}</span>
+        <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
+      </label>`;
+    }).join("");
+    $$("[data-room-member-check]").forEach(c=>c.onchange=updateRoomSelectedCount);
+    updateRoomSelectedCount();
+  }else{
+    roomManagerRoomId=null;
+    title.textContent="CREATE ROOM";
+    hint.textContent="Choose a room name and the people who can enter.";
+    name.value="";
+    name.disabled=false;
+    save.textContent="CREATE ROOM";
+    $("#roomMemberPicker").innerHTML=boomProfiles.filter(p=>p.id!==boomUser.id).map(p=>{
+      const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+      return `<label class="room-member-row">
+        <input type="checkbox" data-room-member-check value="${p.id}">
+        <span class="room-member-avatar">${esc(avatar)}</span>
+        <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
+      </label>`;
+    }).join("");
+    $$("[data-room-member-check]").forEach(c=>c.onchange=updateRoomSelectedCount);
+    updateRoomSelectedCount();
+  }
+
+  modal.classList.remove("hidden");
+  setTimeout(()=>name.focus(),0);
+}
+
+function closeRoomManager(){
+  $("#roomManagerModal").classList.add("hidden");
+}
+
+$("#newRoom").onclick=()=>openRoomManager("create");
+$("#manageRoomBtn").onclick=()=>openRoomManager("manage");
+$("#roomManagerClose").onclick=closeRoomManager;
+$("#roomManagerCancel").onclick=closeRoomManager;
+$("#roomManagerModal").onclick=e=>{if(e.target===$("#roomManagerModal"))closeRoomManager()};
+$("#roomMemberSearch").oninput=()=>{
+  const already=new Set(roomManagerSelectedIds());
+  const q=$("#roomMemberSearch").value.trim().toLowerCase();
+  const users=boomProfiles.filter(p=>p.id!==boomUser.id).filter(p=>!q||p.username.toLowerCase().includes(q)||(p.display_name||"").toLowerCase().includes(q));
+  $("#roomMemberPicker").innerHTML=users.length?users.map(p=>{
+    const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+    return `<label class="room-member-row">
+      <input type="checkbox" data-room-member-check value="${p.id}" ${already.has(p.id)?"checked":""}>
+      <span class="room-member-avatar">${esc(avatar)}</span>
+      <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
+    </label>`;
+  }).join(""):'<div class="meta" style="padding:14px">NO USERS FOUND.</div>';
+  $$("[data-room-member-check]").forEach(c=>c.onchange=updateRoomSelectedCount);
+  updateRoomSelectedCount();
+};
+
+$("#roomManagerSave").onclick=async()=>{
+  if(!boomUser)return toast("LOGIN REQUIRED");
+  const selected=[...new Set(roomManagerSelectedIds())];
+
+  if(roomManagerMode==="create"){
+    const name=$("#roomManagerName").value.trim().replace(/^#/,"").replace(/\s+/g,"-").slice(0,30);
+    if(!name)return toast("ROOM NAME REQUIRED");
+    if(name.toLowerCase()==="general")return toast("GENERAL ROOM ALREADY EXISTS");
+
+    const exists=boomRooms.find(r=>r.name.toLowerCase()===name.toLowerCase());
+    if(exists)return toast("ROOM NAME ALREADY EXISTS");
+
+    const created=await boomDB.from("chat_rooms")
+      .insert({name,created_by:boomUser.id})
+      .select()
+      .single();
+
+    if(created.error)return toast(created.error.message);
+
+    const memberIds=[...new Set([boomUser.id,...selected])];
+    const members=await boomDB.from("room_members").insert(
+      memberIds.map(user_id=>({room_id:created.data.id,user_id,added_by:boomUser.id}))
+    );
+
+    if(members.error){
+      await boomDB.from("chat_rooms").delete().eq("id",created.data.id);
+      return toast(members.error.message);
+    }
+
+    closeRoomManager();
+    state.room=name;
+    state.chatMode="room";
+    await loadBoomCloud();
+    toast("ROOM CREATED");
+  }else{
+    const room=boomRooms.find(r=>r.id===roomManagerRoomId);
+    if(!room||room.created_by!==boomUser.id)return toast("ROOM ACCESS CHANGED");
+
+    const wanted=new Set([boomUser.id,...selected]);
+    const current=boomRoomMembers.filter(m=>m.room_id===room.id);
+    const currentIds=new Set(current.map(m=>m.user_id));
+
+    const add=[...wanted].filter(id=>!currentIds.has(id));
+    const remove=current.filter(m=>m.user_id!==boomUser.id&&!wanted.has(m.user_id));
+
+    if(add.length){
+      const r=await boomDB.from("room_members").insert(
+        add.map(user_id=>({room_id:room.id,user_id,added_by:boomUser.id}))
+      );
+      if(r.error)return toast(r.error.message);
+    }
+
+    for(const row of remove){
+      const r=await boomDB.from("room_members").delete().eq("room_id",room.id).eq("user_id",row.user_id);
+      if(r.error)return toast(r.error.message);
+    }
+
+    closeRoomManager();
+    await loadBoomCloud();
+    toast("ROOM MEMBERS UPDATED");
+  }
+};
 
 /* community now uses real accounts */
 const renderCommunityLocal=renderCommunity;
