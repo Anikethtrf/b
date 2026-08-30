@@ -10797,9 +10797,28 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   pointer-events:auto;
 }
 
+
+/* =========================================================
+   V21 CHAT IDENTITY RECOVERY
+   ========================================================= */
+#page-chat .igdm-conversation-list button{
+  cursor:pointer!important;
+  pointer-events:auto!important;
+}
+
+#page-chat .igdm-conversation-list button:active{
+  transform:none!important;
+  filter:brightness(.96)!important;
+}
+
+#page-chat .igdm-conversation-list button.active{
+  outline:1px solid color-mix(in srgb,var(--m-accent) 55%,transparent)!important;
+  outline-offset:-1px!important;
+}
+
 </style>
 </head>
-<body data-boom-build="V20-STABLE">
+<body data-boom-build="V21-CHAT-ID">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -10835,7 +10854,7 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V20</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V21</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -11670,7 +11689,8 @@ const state={
   dms:ls.get("edgers_dms",{}),
   room:ls.get("edgers_room","Chill Zone"),
   chatMode:ls.get("edgers_chat_mode","room"),
-  activeDM:ls.get("edgers_active_dm","pixelkid"),
+  activeDM:ls.get("edgers_active_dm",""),
+  activeDMId:ls.get("boom_active_dm_id",""),
   postImage:null,
   postImages:[],
   chatImage:null,
@@ -11720,6 +11740,7 @@ function save(){
   ls.set("edgers_room",state.room);
   ls.set("edgers_chat_mode",state.chatMode);
   ls.set("edgers_active_dm",state.activeDM);
+  ls.set("boom_active_dm_id",state.activeDMId||"");
   ls.set("edgers_saved",state.saved);
   ls.set("edgers_feed_sort",state.feedSort);
   ls.set("edgers_drafts",state.drafts);
@@ -11838,6 +11859,7 @@ function go(page){
   if(page==="draw")setTimeout(()=>mainCtl.resize(),30);
   if(page==="explore"){renderExplore();renderCommunity();renderGuestbook();}
   if(page==="community"){renderExplore();renderCommunity();renderGuestbook(); page="explore";}
+  if(page==="chat"){try{renderChat()}catch(err){console.error("Chat render recovery:",err)}}
   if(page==="profile")renderProfilePage();
   if(page==="saved")renderSaved();
   if(page==="tools")renderTools();
@@ -13631,14 +13653,40 @@ async function loadBoomCloud(){
     }
   });
 
-  const bad=results.find(r=>r?.error);
-  if(bad)throw bad.error;
+  /* Profiles are the only critical dataset for account/chat identity.
+     A failure in feed/polls/alerts/etc must not leave the whole app using
+     stale local chat usernames. */
+  if(results[0]?.error)throw results[0].error;
+
+  results.forEach((result,index)=>{
+    if(index===0||!result?.error)return;
+    console.warn(`Boom optional dataset ${index} unavailable:`,result.error.message);
+
+    // notes expects an object/null; all other datasets expect arrays
+    results[index]=index===16
+      ? {data:null,error:null}
+      : {data:[],error:null};
+  });
 
   const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR]=results;
 
   window.__boomMessagingUpgradeMissing=messagingUpgradeMissing;
   boomProfiles=profilesR.data||[];
   boomProfileById=Object.fromEntries(boomProfiles.map(x=>[x.id,x]));
+
+  // Repair old username-only chat selection after profile renames.
+  if(state.activeDMId && boomProfileById[state.activeDMId]){
+    state.activeDM=boomProfileById[state.activeDMId].username;
+  }else if(state.activeDM){
+    const activeByName=boomProfiles.find(p=>p.username?.toLowerCase()===String(state.activeDM).toLowerCase());
+    if(activeByName){
+      state.activeDMId=activeByName.id;
+      state.activeDM=activeByName.username;
+    }else{
+      state.activeDM="";
+      state.activeDMId="";
+    }
+  }
   boomFriendships=friendsR.data||[];
   boomRooms=roomsR.data||[];
   boomRoomMembers=roomMembersR.data||[];
@@ -13733,7 +13781,24 @@ async function loadBoomCloud(){
   }
 
   save();
-  renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();renderDrafts();renderNotifications();renderMissionAlerts();updateDeskStats();syncProfileUI();renderProfilePage();
+  [
+    ["feed",renderFeed],
+    ["trending",renderTrending],
+    ["chat",renderChat],
+    ["community",renderCommunity],
+    ["explore",renderExplore],
+    ["saved",renderSaved],
+    ["guestbook",renderGuestbook],
+    ["hashtags",renderHashtags],
+    ["drafts",renderDrafts],
+    ["notifications",renderNotifications],
+    ["mission-alerts",renderMissionAlerts],
+    ["desk-stats",updateDeskStats],
+    ["profile-ui",syncProfileUI],
+    ["profile-page",renderProfilePage]
+  ].forEach(([label,fn])=>{
+    try{fn?.()}catch(err){console.error(`Render ${label} failed; continuing:`,err)}
+  });
   if($("#personalNotes"))$("#personalNotes").value=state.notes;
   if($("#onlineCount"))$("#onlineCount").textContent=String(boomProfiles.length);
 }
@@ -13906,7 +13971,7 @@ dmNames=function(){
 renderOnline=function(){
   const people=boomProfiles.filter(p=>p.id!==boomUser?.id);
   $("#onlineList").innerHTML=people.length?people.map(p=>`<div class="person"><span class="dot"></span><span>${esc(p.username)}</span><button class="btn" data-real-dm="${p.id}">DM</button><button class="btn" data-real-poke="${p.id}">POKE</button></div>`).join(""):'<div class="meta">NO OTHER USERS ONLINE YET.</div>';
-  $$('[data-real-dm]').forEach(b=>b.onclick=()=>{openDM(personFor(b.dataset.realDm).username);renderChat()});
+  $$('[data-real-dm]').forEach(b=>b.onclick=()=>openDMById(b.dataset.realDm));
   $$('[data-real-poke]').forEach(b=>b.onclick=async()=>{const r=await boomDB.from('pokes').insert({sender_id:boomUser.id,receiver_id:b.dataset.realPoke});if(r.error)return toast(r.error.message);toast('POKE SENT')});
 };
 
@@ -14143,7 +14208,33 @@ $("#publishPost").onclick=async()=>{
 
 /* cloud chat */
 async function findProfileByUsername(name){
-  return boomProfiles.find(p=>p.username.toLowerCase()===String(name).toLowerCase())||null
+  const clean=String(name||"").trim().replace(/^@/,"");
+  if(!clean)return null;
+
+  let p=boomProfiles.find(x=>String(x.username||"").toLowerCase()===clean.toLowerCase())||null;
+  if(p)return p;
+
+  // Fallback for renamed profiles / stale browser cache.
+  try{
+    const r=await boomDB.from("profiles")
+      .select("*")
+      .ilike("username",clean)
+      .limit(1)
+      .maybeSingle();
+
+    if(!r.error&&r.data){
+      p=r.data;
+      boomProfileById[p.id]=p;
+      const i=boomProfiles.findIndex(x=>x.id===p.id);
+      if(i>=0)boomProfiles[i]=p;
+      else boomProfiles.push(p);
+      return p;
+    }
+  }catch(err){
+    console.warn("Profile fallback lookup failed:",err);
+  }
+
+  return null;
 }
 
 const dmNamesLocal=dmNames;
@@ -14212,7 +14303,12 @@ $("#chatInfoBtn")?.addEventListener("click",toggleChatDetails);
 $("#chatDetailsClose")?.addEventListener("click",closeChatDetails);
 
 function activeDmProfile(){
-  return boomProfiles.find(p=>p.username===state.activeDM)||null;
+  if(state.activeDMId&&boomProfileById[state.activeDMId]){
+    return boomProfileById[state.activeDMId];
+  }
+  const p=boomProfiles.find(x=>String(x.username||"").toLowerCase()===String(state.activeDM||"").toLowerCase())||null;
+  if(p)state.activeDMId=p.id;
+  return p;
 }
 
 function setChatHeader(){
@@ -14264,29 +14360,47 @@ function roomLastRaw(roomName){
 
 function renderDMs(){
   const q=($("#chatSearch")?.value||"").trim().toLowerCase();
-  let names=[...new Set([
-    ...Object.keys(state.dms),
-    ...boomRawDirectMessages.map(m=>personFor(m.sender_id===boomUser.id?m.receiver_id:m.sender_id).username)
-  ])].filter(Boolean);
 
-  names=names.filter(n=>n!=="unknown");
-  if(q)names=names.filter(n=>{
-    const p=boomProfiles.find(x=>x.username===n);
-    return n.toLowerCase().includes(q)||(p?.display_name||"").toLowerCase().includes(q);
+  /* Build the inbox from real Supabase profiles, not localStorage DM keys.
+     User ID is permanent even when username / DP changes. */
+  let people=boomProfiles.filter(p=>p.id!==boomUser?.id);
+
+  if(q){
+    people=people.filter(p=>
+      String(p.username||"").toLowerCase().includes(q) ||
+      String(p.display_name||"").toLowerCase().includes(q)
+    );
+  }
+
+  people.sort((a,b)=>{
+    const A=dmLastRaw(a.username),B=dmLastRaw(b.username);
+    const ta=new Date(A?.created_at||0).getTime();
+    const tb=new Date(B?.created_at||0).getTime();
+    if(tb!==ta)return tb-ta;
+    return String(a.username||"").localeCompare(String(b.username||""));
   });
 
-  names.sort((a,b)=>{
-    const A=dmLastRaw(a),B=dmLastRaw(b);
-    return new Date(B?.created_at||0)-new Date(A?.created_at||0);
-  });
+  $("#dmList").innerHTML=people.length?people.map(p=>{
+    const name=p.username||p.display_name||"user";
+    const last=boomRawDirectMessages
+      .filter(m=>(m.sender_id===p.id&&m.receiver_id===boomUser.id)||(m.sender_id===boomUser.id&&m.receiver_id===p.id))
+      .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]||null;
 
-  $("#dmList").innerHTML=names.length?names.map(name=>{
-    const p=boomProfiles.find(x=>x.username===name);
-    const last=dmLastRaw(name);
-    const unread=dmUnreadCount(name);
-    const preview=last?(last.body||((last.image_url||last.drawing_url)?"Photo":"Message")):"Start a conversation";
-    return `<button class="${state.chatMode==="dm"&&name===state.activeDM?"active":""}" data-dm="${esc(name)}" type="button">
-      <span class="igdm-conversation-avatar">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
+    const unread=boomRawDirectMessages.filter(
+      m=>m.sender_id===p.id&&m.receiver_id===boomUser.id&&!m.read_at
+    ).length;
+
+    const preview=last
+      ?(last.body||((last.image_url||last.drawing_url)?"Photo":"Message"))
+      :"Open direct link";
+
+    const active=state.chatMode==="dm" && (
+      state.activeDMId===p.id ||
+      String(state.activeDM||"").toLowerCase()===String(name).toLowerCase()
+    );
+
+    return `<button class="${active?"active":""}" data-dm-id="${esc(p.id)}" type="button">
+      <span class="igdm-conversation-avatar">${avatarVisual(avatarForProfile(p),name?.[0]||"B")}</span>
       <span class="igdm-conversation-copy">
         <b>${esc(name)}</b>
         <span>${last?.sender_id===boomUser.id?"You: ":""}${esc(truncateChatText(preview))}</span>
@@ -14296,9 +14410,9 @@ function renderDMs(){
         ${unread?`<span class="igdm-unread">${unread>99?"99+":unread}</span>`:""}
       </span>
     </button>`;
-  }).join(""):`<div class="meta" style="padding:18px;text-align:center">NO CHATS YET.<br>PRESS ✎ TO START ONE.</div>`;
+  }).join(""):`<div class="meta" style="padding:18px;text-align:center">NO OTHER USERS YET.</div>`;
 
-  $$("[data-dm]").forEach(b=>b.onclick=()=>openDM(b.dataset.dm));
+  $$("[data-dm-id]").forEach(b=>b.onclick=()=>openDMById(b.dataset.dmId));
 }
 
 function renderRooms(){
@@ -14353,20 +14467,54 @@ async function markActiveDmSeen(){
   }
 }
 
-openDM=async function(name){
-  name=(name||"").trim().replace(/^@/,"").slice(0,30);
-  if(!name)return;
-  if(name===me.name)return toast("YOU CAN'T DM YOURSELF");
-  const p=await findProfileByUsername(name);
+async function openDMProfile(p){
   if(!p)return toast("USER NOT FOUND");
+  if(p.id===boomUser?.id)return toast("YOU CAN'T DM YOURSELF");
+
   state.chatMode="dm";
-  state.activeDM=p.username;
-  state.dms[p.username]=state.dms[p.username]||[];
+  state.activeDMId=p.id;
+  state.activeDM=p.username||p.display_name||"user";
+  state.dms[state.activeDM]=state.dms[state.activeDM]||[];
   boomReplyTarget=null;
+
   save();
   renderChat();
   showMobileConversation();
-  markActiveDmSeen();
+
+  try{await markActiveDmSeen()}catch(err){
+    console.warn("Seen update failed; chat remains open:",err);
+  }
+}
+
+async function openDMById(id){
+  const clean=String(id||"").trim();
+  if(!clean)return;
+
+  let p=boomProfileById[clean]||boomProfiles.find(x=>x.id===clean)||null;
+
+  if(!p){
+    try{
+      const r=await boomDB.from("profiles").select("*").eq("id",clean).maybeSingle();
+      if(!r.error&&r.data){
+        p=r.data;
+        boomProfileById[p.id]=p;
+        if(!boomProfiles.some(x=>x.id===p.id))boomProfiles.push(p);
+      }
+    }catch(err){
+      console.warn("DM profile ID lookup failed:",err);
+    }
+  }
+
+  if(!p)return toast("ACCOUNT NO LONGER AVAILABLE");
+  return openDMProfile(p);
+}
+
+openDM=async function(name){
+  const clean=String(name||"").trim().replace(/^@/,"").slice(0,30);
+  if(!clean)return;
+  const p=await findProfileByUsername(clean);
+  if(!p)return toast("ACCOUNT NO LONGER AVAILABLE");
+  return openDMProfile(p);
 };
 
 function currentMessages(){
@@ -14678,7 +14826,7 @@ function renderNewDmUsers(){
   const q=($("#newDmSearch").value||"").trim().toLowerCase();
   const users=boomProfiles.filter(p=>p.id!==boomUser.id).filter(p=>!q||p.username.toLowerCase().includes(q)||(p.display_name||"").toLowerCase().includes(q));
   $("#newDmUserList").innerHTML=users.length?users.map(p=>`
-    <button class="new-dm-user" type="button" data-new-dm="${esc(p.username)}">
+    <button class="new-dm-user" type="button" data-new-dm-id="${esc(p.id)}">
       <span class="igdm-conversation-avatar">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
       <span class="igdm-conversation-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
       <span>CHAT</span>
