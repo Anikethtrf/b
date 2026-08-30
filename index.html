@@ -10440,214 +10440,11 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
 
 /* =========================================================
-   V19 — MISSION ALERTS + MULTI PHOTO + LATEST FEED
+   MULTI PHOTO + LATEST FEED
    ========================================================= */
 
 /* Newest is the only feed ordering mode */
 #sortTop{display:none!important}
-
-/* Alert nav badge */
-.mission-alert-nav{
-  position:relative!important;
-}
-.mission-alert-badge{
-  position:absolute!important;
-  right:6px!important;
-  top:5px!important;
-  min-width:19px!important;
-  height:19px!important;
-  padding:0 5px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  border:2px solid var(--m-surface)!important;
-  border-radius:10px!important;
-  background:#bd2834!important;
-  color:#fff!important;
-  font:800 9px Arial,sans-serif!important;
-}
-.mission-alert-badge.hidden{display:none!important}
-
-/* NASA Mission Alerts drawer */
-.mission-alert-drawer{
-  position:fixed!important;
-  z-index:8200!important;
-  top:88px!important;
-  right:10px!important;
-  width:min(430px,calc(100vw - 20px))!important;
-  max-height:calc(100dvh - 100px)!important;
-  display:flex!important;
-  flex-direction:column!important;
-  overflow:hidden!important;
-
-  border:1px solid var(--m-line-strong)!important;
-  border-radius:2px!important;
-  background:var(--m-surface)!important;
-  box-shadow:0 18px 50px rgba(0,0,0,.26)!important;
-
-  opacity:0!important;
-  visibility:hidden!important;
-  transform:translateX(24px)!important;
-  pointer-events:none!important;
-  transition:opacity .17s ease,transform .17s ease,visibility .17s!important;
-}
-.mission-alert-drawer.open{
-  opacity:1!important;
-  visibility:visible!important;
-  transform:none!important;
-  pointer-events:auto!important;
-}
-
-.mission-alert-titlebar{
-  min-height:68px!important;
-  padding:10px 12px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  border-bottom:1px solid color-mix(in srgb,var(--m-accent) 50%,#000 50%)!important;
-  background:linear-gradient(
-    color-mix(in srgb,var(--m-accent) 72%,#16202a 28%),
-    color-mix(in srgb,var(--m-accent) 48%,#071019 52%)
-  )!important;
-  color:#fff!important;
-}
-.mission-alert-titlebar small{
-  display:block!important;
-  margin-bottom:3px!important;
-  color:rgba(255,255,255,.7)!important;
-  font:700 9px "Courier New",monospace!important;
-}
-.mission-alert-titlebar b{
-  color:#fff!important;
-  font:800 18px Arial,sans-serif!important;
-  letter-spacing:.06em!important;
-}
-.mission-alert-titlebar button{
-  width:34px!important;height:34px!important;
-  border:1px solid rgba(255,255,255,.55)!important;
-  border-radius:2px!important;
-  background:rgba(0,0,0,.12)!important;
-  color:#fff!important;
-  font-size:20px!important;
-}
-
-.mission-alert-statusbar{
-  min-height:32px!important;
-  padding:0 10px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:8px!important;
-  border-bottom:1px solid var(--m-line)!important;
-  background:var(--m-soft)!important;
-  color:var(--m-muted)!important;
-  font:700 9px "Courier New",monospace!important;
-}
-.mission-alert-statusbar i{
-  display:inline-block!important;
-  width:7px!important;height:7px!important;
-  margin-right:5px!important;
-  border-radius:50%!important;
-  background:#30a65a!important;
-  box-shadow:0 0 0 2px color-mix(in srgb,#30a65a 20%,transparent)!important;
-}
-
-.mission-alert-controls{
-  padding:8px!important;
-  display:grid!important;
-  grid-template-columns:1fr 1fr!important;
-  gap:6px!important;
-  border-bottom:1px solid var(--m-line)!important;
-}
-
-.mission-alert-list{
-  flex:1!important;
-  min-height:180px!important;
-  overflow:auto!important;
-  background:var(--m-chat)!important;
-}
-.mission-alert-row{
-  min-height:76px!important;
-  padding:10px!important;
-  display:grid!important;
-  grid-template-columns:34px minmax(0,1fr) auto!important;
-  gap:9px!important;
-  align-items:start!important;
-  border-bottom:1px solid var(--m-line)!important;
-  background:var(--m-surface)!important;
-}
-.mission-alert-row.unread{
-  border-left:4px solid var(--m-accent)!important;
-  background:color-mix(in srgb,var(--m-accent) 8%,var(--m-surface) 92%)!important;
-}
-.mission-alert-type{
-  width:32px!important;height:32px!important;
-  display:grid!important;place-items:center!important;
-  border:1px solid var(--m-line-strong)!important;
-  border-radius:2px!important;
-  background:var(--m-soft)!important;
-  color:var(--m-accent)!important;
-  font-size:15px!important;
-}
-.mission-alert-copy{
-  min-width:0!important;
-}
-.mission-alert-copy b{
-  display:block!important;
-  margin-bottom:3px!important;
-  color:var(--m-text)!important;
-  font-size:12px!important;
-}
-.mission-alert-copy span{
-  display:block!important;
-  color:var(--m-text)!important;
-  font-size:12px!important;
-  line-height:1.45!important;
-}
-.mission-alert-copy small{
-  display:block!important;
-  margin-top:5px!important;
-  color:var(--m-muted)!important;
-  font:10px "Courier New",monospace!important;
-}
-.mission-alert-state{
-  padding:2px 4px!important;
-  border:1px solid var(--m-line)!important;
-  color:var(--m-muted)!important;
-  font:700 8px "Courier New",monospace!important;
-  font-style:normal!important;
-}
-.mission-alert-row.unread .mission-alert-state{
-  border-color:#b72c38!important;
-  background:#b72c38!important;
-  color:#fff!important;
-}
-.mission-alert-empty{
-  padding:32px 14px!important;
-  color:var(--m-muted)!important;
-  text-align:center!important;
-  font:700 11px "Courier New",monospace!important;
-}
-.mission-alert-footer{
-  min-height:28px!important;
-  padding:0 9px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:8px!important;
-  border-top:1px solid var(--m-line)!important;
-  background:var(--m-soft)!important;
-  color:var(--m-muted)!important;
-  font:700 8px "Courier New",monospace!important;
-}
-.mission-alert-backdrop{
-  position:fixed!important;
-  inset:0!important;
-  z-index:8100!important;
-  background:rgba(0,0,0,.18)!important;
-}
-.mission-alert-backdrop.hidden{display:none!important}
 
 /* Multiple photo selection preview */
 .legacy-post-preview{display:none!important}
@@ -10743,24 +10540,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 /* mobile nav now has 6 cells */
 @media(max-width:700px){
   .top-nav{
-    grid-template-columns:repeat(6,1fr)!important;
-  }
-  .mission-alert-drawer{
-    top:8px!important;
-    right:8px!important;
-    left:8px!important;
-    width:auto!important;
-    max-height:calc(100dvh - 16px)!important;
-  }
-  .mission-alert-titlebar b{font-size:16px!important}
-  .mission-alert-statusbar{
-    align-items:flex-start!important;
-    flex-direction:column!important;
-    justify-content:center!important;
-    padding:6px 10px!important;
-  }
-  .mission-alert-controls{
-    grid-template-columns:1fr!important;
+    grid-template-columns:repeat(5,1fr)!important;
   }
   .post-preview-grid{
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -10777,20 +10557,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
 
 
 /* =========================================================
-   V20 STABILITY HOTFIX
+   CORE POINTER STABILITY
    ========================================================= */
-.mission-alert-drawer:not(.open){
-  pointer-events:none!important;
-  visibility:hidden!important;
-}
-.mission-alert-backdrop.hidden{
-  display:none!important;
-  pointer-events:none!important;
-}
-body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
-  pointer-events:auto!important;
-}
-
 /* Core app always receives pointer input unless an actual alert drawer is open. */
 #appRoot,
 .main-shell,
@@ -11717,7 +11485,7 @@ html[data-theme="lavender"] #page-chat{
 
 </style>
 </head>
-<body data-boom-build="V23-FRESH-CHAT">
+<body data-boom-build="V24-NO-NOTIFICATIONS">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -11753,19 +11521,13 @@ html[data-theme="lavender"] #page-chat{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V23</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V24</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
     <button class="nav-btn" data-page="draw" data-tip="DRAW"><span class="nav-ico">✎</span><span class="nav-copy"><b>SKETCH</b><small>draw + doodle</small></span></button>
     <button class="nav-btn" data-page="explore" data-tip="DISCOVER"><span class="nav-ico">⌕</span><span class="nav-copy"><b>DISCOVER+</b><small>search + people</small></span></button>
-    <button class="nav-btn mission-alert-nav" id="missionAlertsBtn" type="button" data-tip="MISSION ALERTS">
-      <span class="nav-ico mission-alert-icon">⚠</span>
-      <span class="nav-copy"><b>ALERTS</b><small>mission signals</small></span>
-      <span class="mission-alert-badge hidden" id="noticeBadge">0</span>
-    </button>
-
-    <div class="menu-wrap">
+<div class="menu-wrap">
       <button class="menu-btn" id="menuBtn" data-tip="SETTINGS"><span class="nav-ico">⋯</span><span class="nav-copy"><b>SETTINGS</b><small>saved + desk + themes</small></span></button>
       <div class="menu hidden settings-menu" id="menu">
         <div class="menu-section-label">Quick Access</div>
@@ -11790,39 +11552,7 @@ html[data-theme="lavender"] #page-chat{
       </div>
     </div>
   </div>
-
-
-  <aside class="mission-alert-drawer" id="missionAlertDrawer" aria-hidden="true">
-    <div class="mission-alert-titlebar">
-      <div>
-        <small>BOOM CHAT // NETWORK OPERATIONS</small>
-        <b>MISSION ALERTS</b>
-      </div>
-      <button type="button" id="missionAlertClose" aria-label="Close alerts">×</button>
-    </div>
-
-    <div class="mission-alert-statusbar">
-      <span><i></i> ALERT CHANNEL ONLINE</span>
-      <span id="pushStatusText">PUSH: NOT ENABLED</span>
-    </div>
-
-    <div class="mission-alert-controls">
-      <button class="btn dark" id="enablePushBtn" type="button">ENABLE PUSH</button>
-      <button class="btn" id="missionMarkRead" type="button">MARK ALL READ</button>
-    </div>
-
-    <div class="mission-alert-list" id="missionAlertList">
-      <div class="mission-alert-empty">NO ACTIVE SIGNALS.</div>
-    </div>
-
-    <div class="mission-alert-footer">
-      <span>SYS/ALERT-NET</span>
-      <span>LIKES · COMMENTS · DIRECT MESSAGES</span>
-    </div>
-  </aside>
-  <div class="mission-alert-backdrop hidden" id="missionAlertBackdrop"></div>
-
-  <div class="main-shell">
+<div class="main-shell">
 
 <div class="ancient-notice">
   <span>BOOM CHAT NETWORK</span>
@@ -12014,7 +11744,7 @@ html[data-theme="lavender"] #page-chat{
       <small>BOOM CHAT secure direct links + mission channels</small>
     </div>
     <div class="v23-title-tools">
-      <span class="v23-build-chip">V23 · FRESH CORE</span>
+      <span class="v23-build-chip">V24 · FRESH CORE</span>
       <button class="btn" data-go="feed">← FEED</button>
     </div>
   </div>
@@ -12078,7 +11808,7 @@ html[data-theme="lavender"] #page-chat{
         </div>
 
         <div class="v23-console-status">
-          <span class="v23-build-mini">V23</span>
+          <span class="v23-build-mini">V24</span>
           <span id="roomStatus">STANDBY</span>
           <button class="v23-square-btn" id="chatInfoBtn" type="button" title="Link information">ⓘ</button>
           <button class="v23-manage hidden" id="manageRoomBtn" type="button">CREW</button>
@@ -12384,28 +12114,18 @@ html[data-theme="lavender"] #page-chat{
     </div>
 
     <div class="tools-grid">
-
-      <!-- 1 Notifications -->
+<!-- 1 Drafts -->
       <section class="old-tool-window">
         <div class="old-window-title">
-          <span>1. MISSION ALERTS ARCHIVE</span>
-          <button id="markReadBtn" type="button">MARK ALL READ</button>
-        </div>
-        <div id="noticeList" class="old-window-body"></div>
-      </section>
-
-      <!-- 2 Drafts -->
-      <section class="old-tool-window">
-        <div class="old-window-title">
-          <span>2. POST DRAFTS</span>
+          <span>1. POST DRAFTS</span>
           <button id="newDraftPost" type="button">NEW POST</button>
         </div>
         <div id="draftList" class="old-window-body"></div>
       </section>
 
-      <!-- 3 Profile editor -->
+      <!-- 2 Profile editor -->
       <section class="old-tool-window">
-        <div class="old-window-title"><span>3. PROFILE EDITOR</span><span>USER.INI</span></div>
+        <div class="old-window-title"><span>2. PROFILE EDITOR</span><span>USER.INI</span></div>
         <form id="profileForm" class="old-window-body old-form">
           <label>DISPLAY NAME<input id="profileName" maxlength="24" required></label>
           <label>AVATAR SYMBOL<input id="profileAvatar" maxlength="2" required></label>
@@ -12414,15 +12134,15 @@ html[data-theme="lavender"] #page-chat{
         </form>
       </section>
 
-      <!-- 4 Hashtag browser -->
+      <!-- 3 Hashtag browser -->
       <section class="old-tool-window">
-        <div class="old-window-title"><span>4. HASHTAG BROWSER</span><span>INDEX.DAT</span></div>
+        <div class="old-window-title"><span>3. HASHTAG BROWSER</span><span>INDEX.DAT</span></div>
         <div id="hashtagBrowser" class="old-window-body"></div>
       </section>
 
-      <!-- 5 Backup restore -->
+      <!-- 4 Backup restore -->
       <section class="old-tool-window">
-        <div class="old-window-title"><span>5. BACKUP / RESTORE</span><span>LOCAL DATA</span></div>
+        <div class="old-window-title"><span>4. BACKUP / RESTORE</span><span>LOCAL DATA</span></div>
         <div class="old-window-body">
           <p class="old-help">Export all Edgers local data to one JSON file, or restore it later.</p>
           <div class="row">
@@ -12433,15 +12153,15 @@ html[data-theme="lavender"] #page-chat{
         </div>
       </section>
 
-      <!-- 6 Search history -->
+      <!-- 5 Search history -->
       <section class="old-tool-window">
-        <div class="old-window-title"><span>6. SEARCH HISTORY</span><button id="clearSearchHistory" type="button">CLEAR</button></div>
+        <div class="old-window-title"><span>5. SEARCH HISTORY</span><button id="clearSearchHistory" type="button">CLEAR</button></div>
         <div id="searchHistoryList" class="old-window-body"></div>
       </section>
 
-      <!-- 7 Personal notepad -->
+      <!-- 6 Personal notepad -->
       <section class="old-tool-window">
-        <div class="old-window-title"><span>7. PERSONAL NOTEPAD</span><span>NOTES.TXT</span></div>
+        <div class="old-window-title"><span>6. PERSONAL NOTEPAD</span><span>NOTES.TXT</span></div>
         <div class="old-window-body">
           <textarea id="personalNotes" class="old-notepad" maxlength="2000" placeholder="TYPE PRIVATE NOTES HERE..."></textarea>
           <div class="row">
@@ -12582,6 +12302,7 @@ const ls={
   get(k,d){try{const x=JSON.parse(localStorage.getItem(k));return x??d}catch{return d}},
   set(k,v){localStorage.setItem(k,JSON.stringify(v))}
 };
+try{localStorage.removeItem("edgers_notifications")}catch{}
 const me=ls.get("edgers_profile",{
   name:"guest_01",
   avatar:"G",
@@ -12606,9 +12327,6 @@ const state={
   saved:ls.get("edgers_saved",[]),
   feedSort:"latest",
   drafts:ls.get("edgers_drafts",[]),
-  notifications:ls.get("edgers_notifications",[
-    {id:Date.now()-9000,text:"WELCOME TO BOOM CHAT. Your account is ready.",time:"SYSTEM",read:false}
-  ]),
   pokes:ls.get("edgers_pokes",{}),
   myReactions:ls.get("edgers_my_reactions",{}),
   pollVotes:ls.get("edgers_poll_votes",{}),
@@ -12651,7 +12369,6 @@ function save(){
   ls.set("edgers_saved",state.saved);
   ls.set("edgers_feed_sort",state.feedSort);
   ls.set("edgers_drafts",state.drafts);
-  ls.set("edgers_notifications",state.notifications);
   ls.set("edgers_pokes",state.pokes);
   ls.set("edgers_my_reactions",state.myReactions);
   ls.set("edgers_poll_votes",state.pollVotes);
@@ -12702,23 +12419,6 @@ function fileToData(file){
   });
 }
 
-function addNotification(text){
-  state.notifications.unshift({
-    id:Date.now()+Math.random(),
-    text,
-    time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
-    read:false
-  });
-  state.notifications=state.notifications.slice(0,60);
-  save();
-  updateNoticeBadge();
-}
-function updateNoticeBadge(){
-  const badge=$("#noticeBadge");if(!badge)return;
-  const n=state.notifications.filter(x=>!x.read).length;
-  badge.textContent=n>99?"99+":String(n);
-  badge.classList.toggle("hidden",n===0);
-}
 function extractTags(){
   const count={};
   state.posts.forEach(p=>{
@@ -12786,7 +12486,7 @@ $$("[data-menu]").forEach(b=>b.onclick=()=>{
   const action=b.dataset.menu;
   if(action==="clear"){
     if(confirm("Reset all locally saved Edgers data?")){
-      ["edgers_posts","edgers_rooms","edgers_chats","edgers_dms","edgers_room","edgers_chat_mode","edgers_active_dm","edgers_saved","edgers_feed_sort","edgers_drafts","edgers_notifications","edgers_pokes","edgers_my_reactions","edgers_poll_votes","edgers_liked_posts","edgers_friends","edgers_guestbook","edgers_search_history","edgers_notes","edgers_profile","edgers_theme"].forEach(k=>localStorage.removeItem(k));
+      ["edgers_posts","edgers_rooms","edgers_chats","edgers_dms","edgers_room","edgers_chat_mode","edgers_active_dm","edgers_saved","edgers_feed_sort","edgers_drafts","edgers_pokes","edgers_my_reactions","edgers_poll_votes","edgers_liked_posts","edgers_friends","edgers_guestbook","edgers_search_history","edgers_notes","edgers_profile","edgers_theme"].forEach(k=>localStorage.removeItem(k));
       location.reload();
     }
   }else if(action==="about"){
@@ -13068,7 +12768,6 @@ $("#publishPost").onclick=()=>{
   clearPollBuilder();
 
   save();renderFeed();renderTrending();renderHashtags();updateDeskStats();
-  addNotification("Your new post was published to FEED.");
   toast("POST PUBLISHED");
   setComposer(false);
 };
@@ -13105,7 +12804,6 @@ $("#saveDraftBtn")?.addEventListener("click",()=>{
   });
   state.drafts=state.drafts.slice(0,20);
   save();
-  addNotification("Draft saved to Desk.");
   toast("DRAFT SAVED");
 });
 
@@ -13274,7 +12972,6 @@ $("#newRoom").onclick=()=>{
   }else{
     state.rooms.push(name);
     state.room=name;
-    addNotification(`#${name} room created.`);
     toast("GROUP CREATED");
   }
   state.chatMode="room";
@@ -13674,7 +13371,6 @@ function renderCommunity(){
     const isFriend=state.friends.includes(name);
     state.friends=isFriend?state.friends.filter(x=>x!==name):[...state.friends,name];
     save();renderCommunity();
-    addNotification(isFriend?`Removed @${name} from friends.`:`@${name} added to friends.`);
     toast(isFriend?"FRIEND REMOVED":"FRIEND ADDED");
   });
   $$("[data-message]").forEach(b=>b.onclick=()=>{openDM(b.dataset.message);go("chat")});
@@ -13724,11 +13420,9 @@ function pokeUser(name){
   if(!name)return;
   state.pokes[name]=(state.pokes[name]||0)+1;
   save();
-  addNotification(`You poked @${name}.`);
   toast(`POKED @${name.toUpperCase()}`);
   setTimeout(()=>{
     if(Math.random()>.35){
-      addNotification(`@${name} poked you back!`);
       toast(`${name.toUpperCase()} POKED BACK`);
     }
   },700);
@@ -13758,7 +13452,6 @@ $("#signGuestbook")?.addEventListener("click",()=>{
   inp.value="";
   state.guestbook=state.guestbook.slice(-50);
   save();renderGuestbook();
-  addNotification("You signed the Boom Chat guestbook.");
   toast("GUESTBOOK SIGNED");
 });
 $("#guestbookInput")?.addEventListener("keydown",e=>{
@@ -13783,227 +13476,6 @@ function renderHashtags(){
     setTimeout(renderExplore,0);
   });
 }
-
-/* 1. NOTIFICATIONS */
-function missionAlertIcon(type){
-  return ({
-    like:"♥",
-    comment:"▤",
-    dm:"✉",
-    friend:"◎",
-    system:"⚠"
-  })[type]||"⚠";
-}
-
-function missionAlertMarkup(n){
-  return `
-    <article class="mission-alert-row ${n.read?"read":"unread"}">
-      <span class="mission-alert-type">${missionAlertIcon(n.type)}</span>
-      <div class="mission-alert-copy">
-        <b>${esc(n.title||"MISSION ALERT")}</b>
-        <span>${esc(n.text||"New signal received.")}</span>
-        <small>${esc(n.time||"")}</small>
-      </div>
-      <i class="mission-alert-state">${n.read?"LOGGED":"NEW"}</i>
-    </article>`;
-}
-
-function renderMissionAlerts(){
-  const wrap=$("#missionAlertList");
-  if(!wrap)return;
-  wrap.innerHTML=state.notifications.length
-    ?state.notifications.map(missionAlertMarkup).join("")
-    :'<div class="mission-alert-empty">NO ACTIVE SIGNALS.</div>';
-  updateNoticeBadge();
-}
-
-function renderNotifications(){
-  const wrap=$("#noticeList");
-  if(wrap){
-    wrap.innerHTML=state.notifications.length
-      ?state.notifications.map(n=>`
-        <div class="notice-row ${n.read?"read":"unread"}">
-          <span>${missionAlertIcon(n.type)}</span>
-          <div><b>${esc(n.title||"MISSION ALERT")}</b><br>${esc(n.text)}<small>${esc(n.time||"")}</small></div>
-        </div>
-      `).join("")
-      :'<div class="old-empty">NO MISSION ALERTS.</div>';
-  }
-  renderMissionAlerts();
-}
-
-async function markAllMissionAlertsRead(){
-  state.notifications.forEach(n=>n.read=true);
-  save();
-  renderNotifications();
-
-  if(boomUser && !window.__boomMissionUpgradeMissing){
-    const r=await boomDB.from("mission_alerts")
-      .update({read_at:new Date().toISOString()})
-      .eq("user_id",boomUser.id)
-      .is("read_at",null);
-    if(r.error)console.warn("Could not mark cloud alerts read:",r.error.message);
-  }
-
-  toast("MISSION ALERTS LOGGED");
-}
-
-$("#markReadBtn")?.addEventListener("click",markAllMissionAlertsRead);
-$("#missionMarkRead")?.addEventListener("click",markAllMissionAlertsRead);
-
-
-/* =========================================================
-   MISSION ALERTS + WEB PUSH
-   ========================================================= */
-const BOOM_VAPID_PUBLIC_KEY="BBkbMOH8lvuKv_G0AVC8fEsYKkut53uxCXCgUcSkpA-5Cn-0HJ3BfpFT0QONbNTDfgcSZygBzi264z9RWaEhgZg";
-
-function openMissionAlerts(){
-  $("#missionAlertDrawer")?.classList.add("open");
-  $("#missionAlertDrawer")?.setAttribute("aria-hidden","false");
-  $("#missionAlertBackdrop")?.classList.remove("hidden");
-  renderMissionAlerts();
-  updatePushStatus().catch(err=>console.warn("Push status unavailable:",err));
-}
-
-function closeMissionAlerts(){
-  $("#missionAlertDrawer")?.classList.remove("open");
-  $("#missionAlertDrawer")?.setAttribute("aria-hidden","true");
-  $("#missionAlertBackdrop")?.classList.add("hidden");
-}
-
-$("#missionAlertsBtn")?.addEventListener("click",openMissionAlerts);
-$("#missionAlertClose")?.addEventListener("click",closeMissionAlerts);
-$("#missionAlertBackdrop")?.addEventListener("click",closeMissionAlerts);
-
-function urlBase64ToUint8Array(base64String){
-  const padding="=".repeat((4-base64String.length%4)%4);
-  const base64=(base64String+padding).replace(/-/g,"+").replace(/_/g,"/");
-  const raw=atob(base64);
-  return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));
-}
-
-async function getBoomServiceWorker(){
-  if(!("serviceWorker" in navigator))throw new Error("SERVICE WORKERS NOT SUPPORTED");
-  const reg=await navigator.serviceWorker.register("./sw.js");
-  await navigator.serviceWorker.ready;
-  return reg;
-}
-
-async function hasPushSubscription(){
-  try{
-    const reg=await getBoomServiceWorker();
-    return !!(await reg.pushManager.getSubscription());
-  }catch{
-    return false;
-  }
-}
-
-async function updatePushStatus(){
-  const el=$("#pushStatusText");
-  const btn=$("#enablePushBtn");
-  if(!el||!btn)return;
-
-  if(!("Notification" in window)||!("serviceWorker" in navigator)||!("PushManager" in window)){
-    el.textContent="PUSH: UNSUPPORTED";
-    btn.disabled=true;
-    return;
-  }
-
-  if(Notification.permission==="denied"){
-    el.textContent="PUSH: BLOCKED";
-    btn.textContent="PUSH BLOCKED";
-    btn.disabled=true;
-    return;
-  }
-
-  const subscribed=await hasPushSubscription();
-  if(subscribed){
-    el.textContent="PUSH: ARMED";
-    btn.textContent="PUSH ENABLED ✓";
-  }else{
-    el.textContent="PUSH: STANDBY";
-    btn.textContent="ENABLE PUSH";
-  }
-}
-
-async function enableBoomPush(){
-  if(!boomUser)return toast("LOGIN REQUIRED");
-
-  try{
-    if(!("Notification" in window)||!("PushManager" in window)){
-      return toast("PUSH NOT SUPPORTED IN THIS BROWSER");
-    }
-
-    const permission=await Notification.requestPermission();
-    if(permission!=="granted"){
-      updatePushStatus();
-      return toast("NOTIFICATION PERMISSION NOT GRANTED");
-    }
-
-    const reg=await getBoomServiceWorker();
-    let sub=await reg.pushManager.getSubscription();
-
-    if(!sub){
-      sub=await reg.pushManager.subscribe({
-        userVisibleOnly:true,
-        applicationServerKey:urlBase64ToUint8Array(BOOM_VAPID_PUBLIC_KEY)
-      });
-    }
-
-    const json=sub.toJSON();
-    const r=await boomDB.from("push_subscriptions").upsert({
-      user_id:boomUser.id,
-      endpoint:sub.endpoint,
-      p256dh:json.keys?.p256dh,
-      auth:json.keys?.auth,
-      user_agent:navigator.userAgent
-    },{onConflict:"endpoint"});
-
-    if(r.error)throw r.error;
-
-    await updatePushStatus();
-    toast("PUSH NOTIFICATIONS ENABLED");
-  }catch(err){
-    console.error("Push setup error:",err);
-    const msg=String(err?.message||"PUSH SETUP FAILED");
-    if(msg.toLowerCase().includes("push_subscriptions")||msg.toLowerCase().includes("relation")){
-      toast("RUN V19 SUPABASE SQL FIRST");
-    }else{
-      toast(msg);
-    }
-  }
-}
-
-$("#enablePushBtn")?.addEventListener("click",enableBoomPush);
-
-function sendBoomPush(type,payload={}){
-  if(!boomUser)return;
-
-  // Fire-and-forget. Push is strictly optional and is isolated from
-  // likes/comments/messages so a missing Edge Function cannot freeze UI.
-  Promise.resolve()
-    .then(()=>boomDB.functions.invoke("push-notify",{body:{type,...payload}}))
-    .then(({error})=>{if(error)console.warn("Push function unavailable:",error.message)})
-    .catch(err=>console.warn("Push invoke unavailable:",err));
-}
-
-function handleIncomingMissionAlert(alert){
-  if(!alert)return;
-  const body=alert.body||"New mission signal received.";
-  toast("MISSION ALERT: "+body);
-}
-
-window.addEventListener("load",()=>{
-  const q=new URLSearchParams(location.search);
-  if(q.get("open")==="alerts"){
-    setTimeout(openMissionAlerts,700);
-  }
-});
-
-navigator.serviceWorker?.addEventListener?.("message",e=>{
-  if(e.data?.type==="OPEN_MISSION_ALERTS")openMissionAlerts();
-});
-
 
 /* 2. DRAFT MANAGER */
 function renderDrafts(){
@@ -14051,13 +13523,11 @@ $("#profileForm")?.addEventListener("submit",e=>{
     if(p.user==="guest_01"){p.user=me.name;p.avatar=me.avatar}
   });
   save();syncProfileUI();renderFeed();renderCommunity();
-  addNotification("Profile settings updated.");
   toast("PROFILE SAVED");
 });
 $("#saveMood")?.addEventListener("click",()=>{
   me.mood=$("#moodSelect").value;
   save();syncProfileUI();
-  addNotification(`Status changed to ${me.mood}.`);
   toast("STATUS UPDATED");
 });
 
@@ -14065,7 +13535,7 @@ $("#saveMood")?.addEventListener("click",()=>{
 const backupKeys=[
   "edgers_posts","edgers_rooms","edgers_chats","edgers_dms","edgers_room",
   "edgers_chat_mode","edgers_active_dm","edgers_saved","edgers_feed_sort",
-  "edgers_drafts","edgers_notifications","edgers_pokes","edgers_my_reactions",
+  "edgers_drafts","edgers_pokes","edgers_my_reactions",
   "edgers_poll_votes","edgers_liked_posts","edgers_friends","edgers_guestbook","edgers_search_history","edgers_notes",
   "edgers_profile","edgers_theme"
 ];
@@ -14142,21 +13612,18 @@ $("#saveNotes")?.addEventListener("click",()=>{
 
 /* My Desk renderer */
 function renderTools(){
-  renderNotifications();
   renderDrafts();
   renderHashtags();
   renderSearchHistory();
   syncProfileUI();
   if($("#personalNotes"))$("#personalNotes").value=state.notes||"";
-  state.notifications.forEach(n=>n.read=true);
-  save();updateNoticeBadge();
+  save();
 }
 
 /* startup UI sync */
 syncProfileUI();
 renderHashtags();
 renderGuestbook();
-updateNoticeBadge();
 
 
 
@@ -14220,8 +13687,7 @@ document.addEventListener("visibilitychange",()=>{
   if(document.hidden)return;
   renderFeed();
   updateDeskStats();
-  updateNoticeBadge();
-});
+  });
 
 
 
@@ -14661,35 +14127,6 @@ async function loadBoomCloud(){
   state.notes=notesR.data?.content||"";
   state.drafts=(draftsR.data||[]).map(d=>{try{const j=JSON.parse(d.body||"{}");return{id:d.id,...j,savedAt:new Date(d.updated_at).toLocaleString()}}catch{return{id:d.id,text:d.body||"",savedAt:new Date(d.updated_at).toLocaleString()}}});
 
-  /* Mission Alerts are optional. A missing/broken alert table must never
-     stop feed, likes, comments, chat, profile or navigation from loading. */
-  try{
-    const alertsR=await boomDB
-      .from("mission_alerts")
-      .select("*")
-      .eq("user_id",boomUser.id)
-      .order("created_at",{ascending:false})
-      .limit(100);
-
-    if(alertsR.error)throw alertsR.error;
-
-    state.notifications=(alertsR.data||[]).map(a=>({
-      id:a.id,
-      type:a.type||"system",
-      title:a.title||"MISSION ALERT",
-      text:a.body||"New signal received.",
-      time:fmtTime(a.created_at),
-      created_at:a.created_at,
-      read:!!a.read_at
-    }));
-
-    window.__boomMissionUpgradeMissing=false;
-  }catch(alertErr){
-    console.warn("Mission Alerts unavailable — core app continues:",alertErr?.message||alertErr);
-    window.__boomMissionUpgradeMissing=true;
-    if(!Array.isArray(state.notifications))state.notifications=[];
-  }
-
   save();
   // A realtime/cloud refresh must never undo the conversation the user
   // just selected. IDs are immutable, so restore selection before rendering.
@@ -14712,8 +14149,6 @@ async function loadBoomCloud(){
     ["guestbook",renderGuestbook],
     ["hashtags",renderHashtags],
     ["drafts",renderDrafts],
-    ["notifications",renderNotifications],
-    ["mission-alerts",renderMissionAlerts],
     ["desk-stats",updateDeskStats],
     ["profile-ui",syncProfileUI],
     ["profile-page",renderProfilePage]
@@ -14752,17 +14187,6 @@ function startBoomRealtime(){
     .on("postgres_changes",{event:"*",schema:"public",table:"direct_message_reactions"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"friendships"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"guestbook_entries"},boomReloadSoon);
-
-  if(!window.__boomMissionUpgradeMissing){
-    channel=channel.on(
-      "postgres_changes",
-      {event:"*",schema:"public",table:"mission_alerts",filter:`user_id=eq.${boomUser.id}`},
-      payload=>{
-        boomReloadSoon();
-        handleIncomingMissionAlert(payload.new);
-      }
-    );
-  }
 
   boomRealtime=channel.subscribe(status=>{
     if(status==="CHANNEL_ERROR"){
@@ -14908,7 +14332,6 @@ renderFeed=function(){
         :await boomDB.from('likes').insert({post_id:id,user_id:boomUser.id});
 
       if(r.error)throw r.error;
-      if(!liked)sendBoomPush("like",{post_id:id});
 
       try{await loadBoomCloud()}catch(syncErr){
         console.warn("Like saved; refresh delayed:",syncErr);
@@ -14931,7 +14354,6 @@ renderFeed=function(){
 
       if(r.error)throw r.error;
       if(inp)inp.value="";
-      sendBoomPush("comment",{comment_id:r.data.id});
 
       try{await loadBoomCloud()}catch(syncErr){
         console.warn("Comment saved; refresh delayed:",syncErr);
@@ -15384,7 +14806,6 @@ async function markActiveDmSeen(){
   if(!r.error){
     const now=new Date().toISOString();
     boomRawDirectMessages.forEach(m=>{if(m.sender_id===p.id&&m.receiver_id===boomUser.id&&!m.read_at)m.read_at=now});
-    updateNoticeBadge();
   }
 }
 
@@ -15712,7 +15133,6 @@ $("#sendChat").onclick=async()=>{
 
   if(r.error)return toast(r.error.message);
   if(state.chatMode==="dm"&&r.data?.id){
-    sendBoomPush("dm",{message_id:r.data.id});
   }
   $("#chatInput").value="";
   $("#chatImage").value="";
@@ -16550,7 +15970,6 @@ async function v23Send(){
 
       if(result.error)throw result.error;
       boomRawDirectMessages.push(result.data);
-      if(result.data?.id)sendBoomPush("dm",{message_id:result.data.id});
     }else{
       let payload={
         room_id:room.id,
