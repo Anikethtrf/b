@@ -8864,9 +8864,261 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
   }
 }
 
+
+/* =========================================================
+   DARK FEED POST AUTHOR VISIBILITY FIX V12
+   ========================================================= */
+
+html[data-theme="dark"] .post-top,
+html[data-theme="midnight"] .post-top,
+html[data-theme="forest"] .post-top,
+html[data-theme="rose"] .post-top,
+html[data-theme="ocean"] .post-top,
+html[data-theme="lavender"] .post-top{
+  background:color-mix(in srgb,var(--m-surface) 82%,#ffffff 18%)!important;
+  border-bottom:1px solid var(--m-line)!important;
+  border-top-left-radius:14px!important;
+  border-top-right-radius:14px!important;
+  padding-top:14px!important;
+  padding-bottom:12px!important;
+  margin-bottom:2px!important;
+}
+
+html[data-theme="dark"] .post-top .user-line,
+html[data-theme="midnight"] .post-top .user-line,
+html[data-theme="forest"] .post-top .user-line,
+html[data-theme="rose"] .post-top .user-line,
+html[data-theme="ocean"] .post-top .user-line,
+html[data-theme="lavender"] .post-top .user-line{
+  align-items:center!important;
+}
+
+html[data-theme="dark"] .post-top .user-line b,
+html[data-theme="midnight"] .post-top .user-line b,
+html[data-theme="forest"] .post-top .user-line b,
+html[data-theme="rose"] .post-top .user-line b,
+html[data-theme="ocean"] .post-top .user-line b,
+html[data-theme="lavender"] .post-top .user-line b{
+  color:#ffffff!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  letter-spacing:.01em!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.25)!important;
+}
+
+html[data-theme="dark"] .post-top .meta,
+html[data-theme="midnight"] .post-top .meta,
+html[data-theme="forest"] .post-top .meta,
+html[data-theme="rose"] .post-top .meta,
+html[data-theme="ocean"] .post-top .meta,
+html[data-theme="lavender"] .post-top .meta{
+  color:rgba(255,255,255,.82)!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.2)!important;
+}
+
+html[data-theme="dark"] .post-top .avatar,
+html[data-theme="midnight"] .post-top .avatar,
+html[data-theme="forest"] .post-top .avatar,
+html[data-theme="rose"] .post-top .avatar,
+html[data-theme="ocean"] .post-top .avatar,
+html[data-theme="lavender"] .post-top .avatar{
+  border-color:rgba(255,255,255,.26)!important;
+  background:color-mix(in srgb,var(--m-surface) 60%,var(--m-accent) 40%)!important;
+  color:#ffffff!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.22)!important;
+}
+
+html[data-theme="dark"] .post .btn.danger,
+html[data-theme="midnight"] .post .btn.danger,
+html[data-theme="forest"] .post .btn.danger,
+html[data-theme="rose"] .post .btn.danger,
+html[data-theme="ocean"] .post .btn.danger,
+html[data-theme="lavender"] .post .btn.danger{
+  align-self:center!important;
+}
+
+@media(max-width:700px){
+  html[data-theme="dark"] .post-top,
+  html[data-theme="midnight"] .post-top,
+  html[data-theme="forest"] .post-top,
+  html[data-theme="rose"] .post-top,
+  html[data-theme="ocean"] .post-top,
+  html[data-theme="lavender"] .post-top{
+    padding-left:13px!important;
+    padding-right:13px!important;
+  }
+
+  html[data-theme="dark"] .post-top .user-line b,
+  html[data-theme="midnight"] .post-top .user-line b,
+  html[data-theme="forest"] .post-top .user-line b,
+  html[data-theme="rose"] .post-top .user-line b,
+  html[data-theme="ocean"] .post-top .user-line b,
+  html[data-theme="lavender"] .post-top .user-line b{
+    font-size:13px!important;
+  }
+
+  html[data-theme="dark"] .post-top .meta,
+  html[data-theme="midnight"] .post-top .meta,
+  html[data-theme="forest"] .post-top .meta,
+  html[data-theme="rose"] .post-top .meta,
+  html[data-theme="ocean"] .post-top .meta,
+  html[data-theme="lavender"] .post-top .meta{
+    font-size:10px!important;
+  }
+}
+
+
+/* =========================================================
+   PROFILE PAGE V13
+   ========================================================= */
+.boom-brand[data-go="profile"]{cursor:pointer!important}
+.profile-open-btn{width:100%!important;margin-top:9px!important}
+
+.avatar-photo-img{
+  width:100%!important;height:100%!important;display:block!important;
+  object-fit:cover!important;border-radius:inherit!important;
+}
+.avatar.has-photo,.desk-avatar.has-photo{padding:0!important;overflow:hidden!important}
+
+.boom-profile-shell{width:min(1180px,100%)!important;margin:0 auto!important}
+.boom-profile-card{overflow:hidden!important}
+.boom-profile-cover{
+  height:150px!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--m-accent) 78%,#00162d 22%),color-mix(in srgb,var(--m-accent) 36%,var(--m-soft) 64%))!important;
+  border-bottom:1px solid var(--m-line)!important;
+}
+.boom-profile-main{
+  position:relative!important;padding:0 24px 22px!important;
+  display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;
+  gap:26px!important;align-items:start!important;
+}
+.boom-profile-photo-wrap{
+  margin-top:-62px!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;gap:8px!important;
+}
+.boom-profile-photo{
+  width:132px!important;height:132px!important;display:grid!important;place-items:center!important;
+  overflow:hidden!important;border:5px solid var(--m-surface)!important;
+  outline:1px solid var(--m-line-strong)!important;border-radius:50%!important;
+  background:var(--m-soft)!important;color:var(--m-text)!important;
+  font:800 36px Arial,sans-serif!important;
+}
+.boom-profile-photo-btn{
+  min-height:34px!important;padding:0 12px!important;display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;border:1px solid var(--m-line-strong)!important;
+  border-radius:4px!important;background:var(--m-surface)!important;color:var(--m-text)!important;
+  font:800 8px Verdana,Arial,sans-serif!important;letter-spacing:.06em!important;cursor:pointer!important;
+}
+.boom-profile-photo-wrap small{color:var(--m-muted)!important;font-size:7px!important;text-align:center!important}
+
+.boom-profile-form{
+  padding-top:20px!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr) 180px!important;gap:13px 14px!important;
+}
+.boom-profile-form label{display:flex!important;flex-direction:column!important;gap:6px!important}
+.boom-profile-form label:nth-child(2){grid-column:1/-1!important}
+.boom-profile-form label>span{
+  color:var(--m-muted)!important;font:800 8px Verdana,Arial,sans-serif!important;letter-spacing:.08em!important
+}
+.boom-profile-form input,.boom-profile-form textarea,.boom-profile-form select{
+  width:100%!important;min-width:0!important;border:1px solid var(--m-line-strong)!important;
+  border-radius:4px!important;background:var(--m-chat)!important;color:var(--m-text)!important;
+  font:12px Verdana,Arial,sans-serif!important;
+}
+.boom-profile-form input,.boom-profile-form select{height:42px!important;padding:0 11px!important}
+.boom-profile-form textarea{min-height:88px!important;padding:10px 11px!important;resize:vertical!important}
+.boom-profile-save{align-self:end!important;min-height:42px!important}
+
+.boom-profile-stats{
+  padding:13px 24px!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;
+  border-top:1px solid var(--m-line)!important;
+  background:color-mix(in srgb,var(--m-soft) 70%,var(--m-surface) 30%)!important;
+}
+.boom-profile-stats>div{
+  min-width:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;
+  gap:3px!important;border-right:1px solid var(--m-line)!important;
+}
+.boom-profile-stats>div:last-child{border-right:0!important}
+.boom-profile-stats b{color:var(--m-text)!important;font-size:18px!important}
+.boom-profile-stats span{
+  color:var(--m-muted)!important;font:800 7px Verdana,Arial,sans-serif!important;letter-spacing:.09em!important
+}
+
+.boom-profile-posts{margin-top:16px!important}
+.boom-profile-posts-head{
+  margin-bottom:10px!important;display:flex!important;align-items:flex-end!important;
+  justify-content:space-between!important;gap:10px!important;
+}
+.boom-profile-posts-head small{color:var(--m-muted)!important;font-size:7px!important;letter-spacing:.1em!important}
+.boom-profile-posts-head h3{margin:3px 0 0!important;color:var(--m-text)!important;font-size:20px!important}
+
+.boom-profile-post-grid{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important
+}
+.boom-profile-post{
+  min-width:0!important;overflow:hidden!important;border:1px solid var(--m-line)!important;
+  border-radius:8px!important;background:var(--m-surface)!important;
+}
+.boom-profile-post-media{
+  aspect-ratio:1/1!important;padding:18px!important;display:flex!important;align-items:center!important;
+  justify-content:center!important;overflow:hidden!important;background:var(--m-soft)!important;
+  color:var(--m-text)!important;text-align:center!important;font-size:13px!important;line-height:1.5!important;
+}
+.boom-profile-post-media.has-media{padding:0!important;background:#111!important}
+.boom-profile-post-media img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important}
+.boom-profile-post-body{padding:10px!important}
+.boom-profile-post-meta{
+  display:flex!important;justify-content:space-between!important;gap:7px!important;
+  color:var(--m-muted)!important;font-size:7px!important;
+}
+.boom-profile-post-body p{margin:8px 0 0!important;color:var(--m-text)!important;font-size:10px!important;line-height:1.45!important}
+.boom-profile-post-actions{margin-top:10px!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important}
+
+.boom-profile-empty{
+  grid-column:1/-1!important;min-height:220px!important;padding:24px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  gap:8px!important;border:1px dashed var(--m-line-strong)!important;border-radius:8px!important;
+  background:var(--m-surface)!important;text-align:center!important;
+}
+.boom-profile-empty b{color:var(--m-text)!important}
+.boom-profile-empty span{color:var(--m-muted)!important;font-size:10px!important}
+
+@media(max-width:900px){
+  .boom-profile-shell{width:100%!important}
+  .boom-profile-main{
+    grid-template-columns:160px minmax(0,1fr)!important;gap:18px!important;
+    padding-left:16px!important;padding-right:16px!important;
+  }
+  .boom-profile-form{grid-template-columns:1fr!important}
+  .boom-profile-form label:nth-child(2){grid-column:auto!important}
+  .boom-profile-post-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(max-width:600px){
+  .boom-profile-cover{height:112px!important}
+  .boom-profile-main{padding:0 12px 16px!important;display:block!important}
+  .boom-profile-photo-wrap{margin-top:-50px!important;align-items:flex-start!important}
+  .boom-profile-photo{width:104px!important;height:104px!important;font-size:28px!important}
+  .boom-profile-photo-btn{width:104px!important}
+  .boom-profile-photo-wrap small{max-width:160px!important;text-align:left!important}
+  .boom-profile-form{
+    margin-top:14px!important;padding-top:0!important;display:grid!important;grid-template-columns:1fr!important
+  }
+  .boom-profile-form input,.boom-profile-form select{height:46px!important;font-size:16px!important}
+  .boom-profile-form textarea{min-height:96px!important;font-size:16px!important}
+  .boom-profile-stats{padding:12px 8px!important}
+  .boom-profile-post-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  .boom-profile-post-body{padding:7px!important}
+  .boom-profile-post-meta{display:block!important}
+  .boom-profile-post-meta span{display:block!important;margin-top:2px!important}
+  .boom-profile-post-actions{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
-<body data-boom-build="V11-DESKTOP-FIX">
+<body data-boom-build="V13-PROFILE">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -8900,9 +9152,9 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
 </section>
 <div class="app auth-hidden" id="appRoot">
   <div class="top-nav" id="sideNav">
-    <div class="boom-brand" aria-label="Boom Chat">
+    <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V11</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V13</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -8913,6 +9165,7 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
       <button class="menu-btn" id="menuBtn" data-tip="SETTINGS"><span class="nav-ico">⋯</span><span class="nav-copy"><b>SETTINGS</b><small>saved + desk + themes</small></span></button>
       <div class="menu hidden settings-menu" id="menu">
         <div class="menu-section-label">Quick Access</div>
+        <button data-go-menu="profile">Profile</button>
         <button data-go-menu="saved">Saved</button>
         <button data-go-menu="tools">Desk</button>
 
@@ -9021,6 +9274,7 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
           </div>
           <p id="deskBio">Your Boom Chat profile. Post thoughts, photos and sketches.</p>
           <div class="desk-stats"><span><b id="deskPostCount">02</b><small>POSTS</small></span><span><b id="deskSavedCount">00</b><small>SAVED</small></span><span><b>128</b><small>ONLINE</small></span></div>
+          <button class="btn profile-open-btn" type="button" data-go="profile">VIEW PROFILE</button>
         </section>
 
         <section class="desk-card quick-desk">
@@ -9404,6 +9658,80 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
     </div>
   </section>
 
+
+  <!-- PROFILE -->
+  <section class="page" id="page-profile">
+    <div class="page-title">
+      <div>
+        <div class="eyebrow">05 / ACCOUNT</div>
+        <h2>Profile</h2>
+        <small>Your identity · photo · posts</small>
+      </div>
+      <button class="btn" data-go="feed">← FEED</button>
+    </div>
+
+    <div class="boom-profile-shell">
+      <section class="panel boom-profile-card">
+        <div class="boom-profile-cover"></div>
+
+        <div class="boom-profile-main">
+          <div class="boom-profile-photo-wrap">
+            <div class="boom-profile-photo" id="profilePagePhoto">B</div>
+            <label class="boom-profile-photo-btn">
+              CHANGE DP
+              <input id="profileDpInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            </label>
+            <small id="profileDpStatus">PNG / JPG / WEBP · MAX 5MB</small>
+          </div>
+
+          <form class="boom-profile-form" id="profilePageForm">
+            <label>
+              <span>USERNAME</span>
+              <input id="profilePageName" maxlength="24" required autocomplete="username">
+            </label>
+
+            <label>
+              <span>BIO</span>
+              <textarea id="profilePageBio" maxlength="120" placeholder="Tell people something about you..."></textarea>
+            </label>
+
+            <label>
+              <span>STATUS</span>
+              <select id="profilePageMood">
+                <option>ONLINE</option>
+                <option>BUSY</option>
+                <option>STUDYING</option>
+                <option>CHILLING</option>
+                <option>AWAY</option>
+                <option>DO NOT DISTURB</option>
+              </select>
+            </label>
+
+            <button class="btn dark boom-profile-save" id="profilePageSave" type="submit">SAVE PROFILE</button>
+          </form>
+        </div>
+
+        <div class="boom-profile-stats">
+          <div><b id="profilePagePostCount">0</b><span>POSTS</span></div>
+          <div><b id="profilePageFriendCount">0</b><span>FRIENDS</span></div>
+          <div><b id="profilePageSavedCount">0</b><span>SAVED</span></div>
+        </div>
+      </section>
+
+      <section class="boom-profile-posts">
+        <div class="boom-profile-posts-head">
+          <div>
+            <small>YOUR ARCHIVE</small>
+            <h3>My Posts</h3>
+          </div>
+          <button class="btn" type="button" id="profileNewPost">+ NEW POST</button>
+        </div>
+
+        <div class="boom-profile-post-grid" id="profilePostGrid"></div>
+      </section>
+    </div>
+  </section>
+
 <!-- Desk -->
   <section class="page" id="page-tools">
     <div class="page-title">
@@ -9694,6 +10022,21 @@ function toast(t){
 }
 
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+function isAvatarImage(v){
+  return typeof v==="string" && /^(https?:\/\/|data:image\/|blob:)/i.test(v);
+}
+function avatarVisual(v,fallback="B"){
+  if(isAvatarImage(v)){
+    return `<img class="avatar-photo-img" src="${esc(v)}" alt="">`;
+  }
+  return esc((v||fallback||"B").slice(0,4));
+}
+function setAvatarNode(el,v,fallback="B"){
+  if(!el)return;
+  el.innerHTML=avatarVisual(v,fallback);
+  el.classList.toggle("has-photo",isAvatarImage(v));
+}
 function fileToData(file){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -9776,6 +10119,7 @@ function go(page){
   if(page==="draw")setTimeout(()=>mainCtl.resize(),30);
   if(page==="explore"){renderExplore();renderCommunity();renderGuestbook();}
   if(page==="community"){renderExplore();renderCommunity();renderGuestbook(); page="explore";}
+  if(page==="profile")renderProfilePage();
   if(page==="saved")renderSaved();
   if(page==="tools")renderTools();
   window.scrollTo({top:0,behavior:"auto"});
@@ -9831,7 +10175,7 @@ function renderFeed(){
     el.innerHTML=`
       <div class="post-top">
         <div class="user-line">
-          <div class="avatar">${esc(p.avatar||"◉")}</div>
+          <div class="avatar">${avatarVisual(p.avatar,p.user?.[0]||"B")}</div>
           <div><b>${esc(p.user)}</b><div class="meta">${esc(p.time||"now")}</div></div>
         </div>
         ${(p.user_id&&window.__boomAuthUserId?p.user_id===window.__boomAuthUserId:p.user===me.name)?`<button class="btn danger" data-delete="${p.id}">DELETE</button>`:""}
@@ -10777,12 +11121,12 @@ $("#newDraftPost")?.addEventListener("click",()=>{go("feed");setComposer(true)})
 function syncProfileUI(){
   $("#deskName")&&( $("#deskName").textContent=me.name );
   $("#deskHandle")&&( $("#deskHandle").textContent="@"+me.name.toLowerCase().replace(/\s+/g,"_") );
-  $("#deskAvatar")&&( $("#deskAvatar").textContent=me.avatar||"G" );
+  $("#deskAvatar")&&setAvatarNode($("#deskAvatar"),me.avatar,me.name?.[0]||"G");
   $("#deskBio")&&( $("#deskBio").textContent=me.bio||"" );
   $("#deskMood")&&( $("#deskMood").textContent="STATUS: "+(me.mood||"ONLINE") );
 
   $("#profileName")&&( $("#profileName").value=me.name||"" );
-  $("#profileAvatar")&&( $("#profileAvatar").value=me.avatar||"G" );
+  $("#profileAvatar")&&( $("#profileAvatar").value=isAvatarImage(me.avatar)?"":(me.avatar||"G") );
   $("#profileBio")&&( $("#profileBio").value=me.bio||"" );
   $("#moodSelect")&&( $("#moodSelect").value=me.mood||"ONLINE" );
 }
@@ -10970,6 +11314,191 @@ document.addEventListener("visibilitychange",()=>{
 });
 
 
+
+/* =========================================================
+   PROFILE PAGE + CLOUD AVATAR
+   ========================================================= */
+let pendingProfileDpFile=null;
+let pendingProfilePreviewUrl=null;
+
+function renderProfilePage(){
+  const page=$("#page-profile");
+  if(!page||!boomUser)return;
+
+  setAvatarNode($("#profilePagePhoto"),me.avatar,me.name?.[0]||"B");
+  $("#profilePageName").value=me.name||"";
+  $("#profilePageBio").value=me.bio||"";
+  $("#profilePageMood").value=me.mood||"ONLINE";
+
+  const mine=state.posts
+    .filter(p=>p.user_id===boomUser.id || (!p.user_id&&p.user===me.name))
+    .sort((a,b)=>new Date(b.created_at||b.id||0)-new Date(a.created_at||a.id||0));
+
+  $("#profilePagePostCount").textContent=String(mine.length);
+  $("#profilePageFriendCount").textContent=String(state.friends.length);
+  $("#profilePageSavedCount").textContent=String(state.saved.length);
+
+  const grid=$("#profilePostGrid");
+  grid.innerHTML=mine.length?mine.map(p=>`
+    <article class="boom-profile-post">
+      <div class="boom-profile-post-media ${p.image?"has-media":""}">
+        ${p.image?`<img src="${esc(p.image)}" alt="Post media">`:`<span>${esc((p.text||"TEXT POST").slice(0,72))}</span>`}
+      </div>
+      <div class="boom-profile-post-body">
+        <div class="boom-profile-post-meta">
+          <span>${esc(p.time||"now")}</span>
+          <span>♡ ${p.likes||0} · ${(p.comments||[]).length} COMMENTS</span>
+        </div>
+        ${p.image&&p.text?`<p>${esc(p.text.slice(0,120))}</p>`:""}
+        <div class="boom-profile-post-actions">
+          <button class="btn" type="button" data-profile-open="${p.id}">OPEN</button>
+          <button class="btn danger" type="button" data-profile-delete="${p.id}">DELETE</button>
+        </div>
+      </div>
+    </article>
+  `).join(""):`
+    <div class="boom-profile-empty">
+      <b>NO POSTS YET</b>
+      <span>Your posts will appear here.</span>
+      <button class="btn dark" type="button" id="profileEmptyNewPost">CREATE FIRST POST</button>
+    </div>`;
+
+  $$("[data-profile-open]").forEach(btn=>btn.onclick=()=>{
+    const id=btn.dataset.profileOpen;
+    go("feed");
+    setTimeout(()=>document.getElementById("post-"+id)?.scrollIntoView({behavior:"smooth",block:"center"}),80);
+  });
+
+  $$("[data-profile-delete]").forEach(btn=>btn.onclick=async()=>{
+    const id=btn.dataset.profileDelete;
+    if(!confirm("Delete this post?"))return;
+    const r=await boomDB.from("posts").delete().eq("id",id).eq("user_id",boomUser.id);
+    if(r.error)return toast(r.error.message);
+    await loadBoomCloud();
+    toast("POST DELETED");
+  });
+
+  $("#profileEmptyNewPost")?.addEventListener("click",()=>{
+    go("feed");
+    setComposer(true);
+  });
+}
+
+$("#profileNewPost")?.addEventListener("click",()=>{
+  go("feed");
+  setComposer(true);
+});
+
+$("#profileDpInput")?.addEventListener("change",e=>{
+  const file=e.target.files?.[0];
+  if(!file)return;
+
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+    e.target.value="";
+    return toast("USE JPG, PNG OR WEBP");
+  }
+
+  if(file.size>5*1024*1024){
+    e.target.value="";
+    return toast("DP MAX SIZE IS 5MB");
+  }
+
+  pendingProfileDpFile=file;
+
+  if(pendingProfilePreviewUrl){
+    try{URL.revokeObjectURL(pendingProfilePreviewUrl)}catch{}
+  }
+
+  pendingProfilePreviewUrl=URL.createObjectURL(file);
+  setAvatarNode($("#profilePagePhoto"),pendingProfilePreviewUrl,me.name?.[0]||"B");
+  $("#profileDpStatus").textContent="NEW PHOTO READY · SAVE PROFILE";
+});
+
+async function uploadProfileDp(){
+  if(!pendingProfileDpFile)return me.avatar;
+
+  const path=`${boomUser.id}/avatar`;
+  const upload=await boomDB.storage
+    .from("avatars")
+    .upload(path,pendingProfileDpFile,{
+      upsert:true,
+      contentType:pendingProfileDpFile.type,
+      cacheControl:"3600"
+    });
+
+  if(upload.error)throw upload.error;
+
+  const pub=boomDB.storage.from("avatars").getPublicUrl(path);
+  if(!pub.data?.publicUrl)throw new Error("Could not get avatar URL.");
+
+  return pub.data.publicUrl+"?v="+Date.now();
+}
+
+$("#profilePageForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!boomUser)return toast("LOGIN REQUIRED");
+
+  const btn=$("#profilePageSave");
+  const username=$("#profilePageName").value.trim();
+  const bio=$("#profilePageBio").value.trim().slice(0,120);
+  const mood=$("#profilePageMood").value;
+
+  if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username)){
+    return toast("USERNAME: 3–24 LETTERS / NUMBERS / _ . -");
+  }
+
+  btn.disabled=true;
+  btn.textContent="SAVING...";
+
+  try{
+    let avatarUrl=me.avatar;
+    if(pendingProfileDpFile){
+      avatarUrl=await uploadProfileDp();
+    }
+
+    const update=await boomDB.from("profiles")
+      .update({
+        username,
+        display_name:username,
+        bio,
+        mood,
+        avatar_url:avatarUrl
+      })
+      .eq("id",boomUser.id);
+
+    if(update.error)throw update.error;
+
+    pendingProfileDpFile=null;
+    if(pendingProfilePreviewUrl){
+      try{URL.revokeObjectURL(pendingProfilePreviewUrl)}catch{}
+      pendingProfilePreviewUrl=null;
+    }
+
+    $("#profileDpInput").value="";
+    $("#profileDpStatus").textContent="PROFILE PHOTO SAVED";
+
+    await ensureBoomProfile();
+    await loadBoomCloud();
+    renderProfilePage();
+    toast("PROFILE UPDATED");
+  }catch(err){
+    console.error("Profile save error:",err);
+    const msg=String(err?.message||"PROFILE SAVE FAILED");
+
+    if(msg.toLowerCase().includes("bucket")||msg.toLowerCase().includes("storage")){
+      toast("RUN PROFILE STORAGE SQL FIRST");
+    }else if(msg.toLowerCase().includes("duplicate")||msg.toLowerCase().includes("unique")){
+      toast("USERNAME ALREADY TAKEN");
+    }else{
+      toast(msg);
+    }
+  }finally{
+    btn.disabled=false;
+    btn.textContent="SAVE PROFILE";
+  }
+});
+
+
 /* FOOTER */
 $("#aboutBtn").onclick=()=>alert("BOOM CHAT — feeds, realtime chat, sketches, discovery and personal tools.");
 $("#helpBtn").onclick=()=>alert("FEED: posts, photos, polls, comments, reactions, likes and saves\\nCHAT: rooms, DMs, images, doodles and pokes\\nSKETCH: brushes, opacity, mirror, undo/redo, PNG, post/send\\nDISCOVER+: post search, people, friends, messages and guestbook\\nSETTINGS: Saved, Desk, 8 themes, backup/restore and reset");
@@ -11066,7 +11595,7 @@ async function ensureBoomProfile(){
     if(!upd.error){data=upd.data||data;localStorage.removeItem("boom_pending_username")}
   }
   me.name=data.username||data.display_name||"user";
-  me.avatar=(data.avatar_url&&data.avatar_url.length<=4)?data.avatar_url:(me.name[0]||"B").toUpperCase();
+  me.avatar=data.avatar_url||(me.name[0]||"B").toUpperCase();
   me.bio=data.bio||"";
   me.mood=data.mood||"ONLINE";
   save();syncProfileUI();
@@ -11162,7 +11691,7 @@ async function loadBoomCloud(){
 
   state.posts=(postsR.data||[]).map(p=>{
     const u=personFor(p.user_id), opts=optionsByPost[p.id]||[];
-    return {id:p.id,user_id:p.user_id,user:u.username,avatar:(u.avatar_url&&u.avatar_url.length<=4)?u.avatar_url:(u.username?.[0]||"B").toUpperCase(),text:p.body||"",image:p.image_url||p.drawing_url||null,likes:likeCounts[p.id]||0,comments:commentsByPost[p.id]||[],reactions:reactionCounts[p.id]||{},poll:p.post_type==="poll"?{question:p.body||"POLL",options:opts}:null,time:fmtTime(p.created_at),created_at:p.created_at};
+    return {id:p.id,user_id:p.user_id,user:u.username,avatar:u.avatar_url||(u.username?.[0]||"B").toUpperCase(),text:p.body||"",image:p.image_url||p.drawing_url||null,likes:likeCounts[p.id]||0,comments:commentsByPost[p.id]||[],reactions:reactionCounts[p.id]||{},poll:p.post_type==="poll"?{question:p.body||"POLL",options:opts}:null,time:fmtTime(p.created_at),created_at:p.created_at};
   });
 
   state.rooms=boomRooms.map(x=>x.name);
@@ -11194,7 +11723,7 @@ async function loadBoomCloud(){
   state.drafts=(draftsR.data||[]).map(d=>{try{const j=JSON.parse(d.body||"{}");return{id:d.id,...j,savedAt:new Date(d.updated_at).toLocaleString()}}catch{return{id:d.id,text:d.body||"",savedAt:new Date(d.updated_at).toLocaleString()}}});
 
   save();
-  renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();renderDrafts();updateDeskStats();syncProfileUI();
+  renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();renderDrafts();updateDeskStats();syncProfileUI();renderProfilePage();
   if($("#personalNotes"))$("#personalNotes").value=state.notes;
   if($("#onlineCount"))$("#onlineCount").textContent=String(boomProfiles.length);
 }
@@ -11406,7 +11935,7 @@ let boomReplyTarget=null;
 
 function avatarForProfile(p){
   if(!p)return "B";
-  return (p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username?.[0]||"B").toUpperCase();
+  return p.avatar_url||(p.username?.[0]||"B").toUpperCase();
 }
 function truncateChatText(v,n=38){
   const s=String(v||"").replace(/\s+/g," ").trim();
