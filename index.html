@@ -10274,9 +10274,54 @@ html[data-theme="lavender"] #page-chat .chat-page-title{border-bottom-color:#c3a
   font-size:8px!important;
 }
 
+
+/* =========================================================
+   CLOUD PROFILE PHOTO RENDER FIX V17
+   ========================================================= */
+.igdm-conversation-avatar,
+.igdm-chat-avatar,
+.igdm-details-avatar,
+.room-member-avatar,
+.new-dm-user .igdm-conversation-avatar,
+.profile-card .avatar{
+  overflow:hidden!important;
+  padding:0!important;
+}
+
+.igdm-conversation-avatar .avatar-photo-img,
+.igdm-chat-avatar .avatar-photo-img,
+.igdm-details-avatar .avatar-photo-img,
+.room-member-avatar .avatar-photo-img,
+.profile-card .avatar .avatar-photo-img{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  border-radius:inherit!important;
+}
+
+/* Chat header DP */
+#page-chat .igdm-chat-avatar.has-photo,
+#page-chat .igdm-details-avatar.has-photo{
+  background:transparent!important;
+}
+
+/* Conversation list photos keep the NASA square-frame style */
+#page-chat .igdm-conversation-avatar .avatar-photo-img{
+  border-radius:1px!important;
+}
+
+/* Profile page DP keeps circular crop */
+.boom-profile-photo .avatar-photo-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  border-radius:50%!important;
+}
+
 </style>
 </head>
-<body data-boom-build="V16-POST-MEDIA">
+<body data-boom-build="V17-DP-RENDER">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -10312,7 +10357,7 @@ html[data-theme="lavender"] #page-chat .chat-page-title{border-bottom-color:#c3a
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V16</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V17</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -13276,11 +13321,11 @@ function setChatHeader(){
   const manage=$("#manageRoomBtn");
   if(state.chatMode==="dm"){
     const p=activeDmProfile();
-    $("#chatAvatar").textContent=avatarForProfile(p);
+    setAvatarNode($("#chatAvatar"),avatarForProfile(p),p?.username?.[0]||"B");
     $("#chatTitle").textContent=p?("@"+p.username):"Select a direct link";
     $("#chatSubline").textContent=p?(p.display_name||"Direct link"):"Choose a user from the link directory";
     $("#roomStatus").textContent=p?(p.mood||"PRIVATE"):"";
-    $("#chatDetailsAvatar").textContent=avatarForProfile(p);
+    setAvatarNode($("#chatDetailsAvatar"),avatarForProfile(p),p?.username?.[0]||"B");
     $("#chatDetailsName").textContent=p?("@"+p.username):"No chat selected";
     $("#chatDetailsStatus").textContent=p?(p.bio||p.mood||"Boom Chat user"):"";
     $("#chatPeopleTitle").textContent="LINK PROFILE";
@@ -13288,11 +13333,11 @@ function setChatHeader(){
   }else{
     const room=activeRoomRecord();
     const ids=activeRoomMemberIds();
-    $("#chatAvatar").textContent=(room?.name?.[0]||"#").toUpperCase();
+    setAvatarNode($("#chatAvatar"),(room?.name?.[0]||"#").toUpperCase(),"#");
     $("#chatTitle").textContent=room?room.name:"Select a channel";
     $("#chatSubline").textContent=room?.name==="general"?"Public channel":"Mission channel";
     $("#roomStatus").textContent=room?(room.name==="general"?"PUBLIC":ids.length+" MEMBERS"):"";
-    $("#chatDetailsAvatar").textContent=(room?.name?.[0]||"#").toUpperCase();
+    setAvatarNode($("#chatDetailsAvatar"),(room?.name?.[0]||"#").toUpperCase(),"#");
     $("#chatDetailsName").textContent=room?("#"+room.name):"No group selected";
     $("#chatDetailsStatus").textContent=room?.name==="general"?"Everyone on Boom Chat can join.":(canManageActiveRoom()?"You created this group.":"Restricted channel");
     $("#chatPeopleTitle").textContent="CREW";
@@ -13343,7 +13388,7 @@ function renderDMs(){
     const unread=dmUnreadCount(name);
     const preview=last?(last.body||((last.image_url||last.drawing_url)?"Photo":"Message")):"Start a conversation";
     return `<button class="${state.chatMode==="dm"&&name===state.activeDM?"active":""}" data-dm="${esc(name)}" type="button">
-      <span class="igdm-conversation-avatar">${esc(avatarForProfile(p))}</span>
+      <span class="igdm-conversation-avatar">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
       <span class="igdm-conversation-copy">
         <b>${esc(name)}</b>
         <span>${last?.sender_id===boomUser.id?"You: ":""}${esc(truncateChatText(preview))}</span>
@@ -13448,7 +13493,7 @@ function renderOnline(){
     $("#chatPeopleCount").textContent=p?"1":"0";
     wrap.innerHTML=p?`
       <div class="person">
-        <span class="igdm-conversation-avatar" style="width:34px!important;height:34px!important">${esc(avatarForProfile(p))}</span>
+        <span class="igdm-conversation-avatar" style="width:34px!important;height:34px!important">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
         <span>@${esc(p.username)}</span>
         <span class="meta">${esc(p.mood||"")}</span>
       </div>`:'';
@@ -13458,7 +13503,7 @@ function renderOnline(){
   $("#chatPeopleCount").textContent=String(people.length);
   wrap.innerHTML=people.length?people.map(p=>`
     <div class="person">
-      <span class="igdm-conversation-avatar" style="width:34px!important;height:34px!important">${esc(avatarForProfile(p))}</span>
+      <span class="igdm-conversation-avatar" style="width:34px!important;height:34px!important">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
       <span>@${esc(p.username)}</span>
       ${p.id===boomUser.id?`<span class="meta">YOU</span>`:`<button class="igdm-text-btn" data-person-dm="${esc(p.username)}" type="button">MESSAGE</button>`}
     </div>`).join(""):'<div class="meta" style="padding:12px">NO MEMBERS.</div>';
@@ -13733,7 +13778,7 @@ function renderNewDmUsers(){
   const users=boomProfiles.filter(p=>p.id!==boomUser.id).filter(p=>!q||p.username.toLowerCase().includes(q)||(p.display_name||"").toLowerCase().includes(q));
   $("#newDmUserList").innerHTML=users.length?users.map(p=>`
     <button class="new-dm-user" type="button" data-new-dm="${esc(p.username)}">
-      <span class="igdm-conversation-avatar">${esc(avatarForProfile(p))}</span>
+      <span class="igdm-conversation-avatar">${avatarVisual(avatarForProfile(p),p?.username?.[0]||"B")}</span>
       <span class="igdm-conversation-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
       <span>CHAT</span>
     </button>`).join(""):'<div class="meta" style="padding:18px;text-align:center">NO USERS FOUND.</div>';
@@ -13777,10 +13822,10 @@ function renderRoomMemberPicker(){
 
   $("#roomMemberPicker").innerHTML=users.length?users.map(p=>{
     const checked=selected.has(p.id);
-    const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+    const avatar=p.avatar_url||(p.username[0]||"B").toUpperCase();
     return `<label class="room-member-row">
       <input type="checkbox" data-room-member-check value="${p.id}" ${checked?"checked":""}>
-      <span class="room-member-avatar">${esc(avatar)}</span>
+      <span class="room-member-avatar">${avatarVisual(avatar,p.username?.[0]||"B")}</span>
       <span class="room-member-copy">
         <b>@${esc(p.username)}</b>
         <small>${esc(p.bio||p.mood||"Boom Chat user")}</small>
@@ -13815,10 +13860,10 @@ function openRoomManager(mode="create"){
       boomRoomMembers.filter(m=>m.room_id===room.id).map(m=>m.user_id)
     );
     $("#roomMemberPicker").innerHTML=boomProfiles.filter(p=>p.id!==boomUser.id).map(p=>{
-      const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+      const avatar=p.avatar_url||(p.username[0]||"B").toUpperCase();
       return `<label class="room-member-row">
         <input type="checkbox" data-room-member-check value="${p.id}" ${members.has(p.id)?"checked":""}>
-        <span class="room-member-avatar">${esc(avatar)}</span>
+        <span class="room-member-avatar">${avatarVisual(avatar,p.username?.[0]||"B")}</span>
         <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
       </label>`;
     }).join("");
@@ -13832,10 +13877,10 @@ function openRoomManager(mode="create"){
     name.disabled=false;
     save.textContent="CREATE GROUP";
     $("#roomMemberPicker").innerHTML=boomProfiles.filter(p=>p.id!==boomUser.id).map(p=>{
-      const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+      const avatar=p.avatar_url||(p.username[0]||"B").toUpperCase();
       return `<label class="room-member-row">
         <input type="checkbox" data-room-member-check value="${p.id}">
-        <span class="room-member-avatar">${esc(avatar)}</span>
+        <span class="room-member-avatar">${avatarVisual(avatar,p.username?.[0]||"B")}</span>
         <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
       </label>`;
     }).join("");
@@ -13861,10 +13906,10 @@ $("#roomMemberSearch").oninput=()=>{
   const q=$("#roomMemberSearch").value.trim().toLowerCase();
   const users=boomProfiles.filter(p=>p.id!==boomUser.id).filter(p=>!q||p.username.toLowerCase().includes(q)||(p.display_name||"").toLowerCase().includes(q));
   $("#roomMemberPicker").innerHTML=users.length?users.map(p=>{
-    const avatar=(p.avatar_url&&p.avatar_url.length<=4)?p.avatar_url:(p.username[0]||"B").toUpperCase();
+    const avatar=p.avatar_url||(p.username[0]||"B").toUpperCase();
     return `<label class="room-member-row">
       <input type="checkbox" data-room-member-check value="${p.id}" ${already.has(p.id)?"checked":""}>
-      <span class="room-member-avatar">${esc(avatar)}</span>
+      <span class="room-member-avatar">${avatarVisual(avatar,p.username?.[0]||"B")}</span>
       <span class="room-member-copy"><b>@${esc(p.username)}</b><small>${esc(p.bio||p.mood||"Boom Chat user")}</small></span>
     </label>`;
   }).join(""):'<div class="meta" style="padding:14px">NO USERS FOUND.</div>';
@@ -13942,7 +13987,7 @@ const renderCommunityLocal=renderCommunity;
 renderCommunity=function(){
   const wrap=$("#communityGrid");if(!wrap||!boomUser)return renderCommunityLocal();
   const users=boomProfiles.filter(p=>p.id!==boomUser.id);
-  wrap.innerHTML=users.length?users.map(u=>`<div class="panel card profile-card"><div class="avatar" style="width:64px;height:64px;font-size:24px">${esc((u.avatar_url&&u.avatar_url.length<=4)?u.avatar_url:(u.username[0]||'B').toUpperCase())}</div><div><h3>${esc(u.username)}</h3><div>${esc(u.bio||'Boom Chat user')}</div><div class="meta">● ${esc(u.mood||'ONLINE')}</div><div class="row" style="margin-top:9px"><button class="btn ${state.friends.includes(u.username)?'friend-active':''}" data-cloud-friend="${u.id}">${state.friends.includes(u.username)?'FRIEND ✓':'ADD FRIEND'}</button><button class="btn" data-cloud-poke="${u.id}">POKE</button><button class="btn dark" data-cloud-message="${u.id}">MESSAGE</button></div></div></div>`).join(''):'<div class="panel panel-body">NO OTHER USERS YET.</div>';
+  wrap.innerHTML=users.length?users.map(u=>`<div class="panel card profile-card"><div class="avatar" style="width:64px;height:64px;font-size:24px">${avatarVisual(u.avatar_url,u.username?.[0]||'B')}</div><div><h3>${esc(u.username)}</h3><div>${esc(u.bio||'Boom Chat user')}</div><div class="meta">● ${esc(u.mood||'ONLINE')}</div><div class="row" style="margin-top:9px"><button class="btn ${state.friends.includes(u.username)?'friend-active':''}" data-cloud-friend="${u.id}">${state.friends.includes(u.username)?'FRIEND ✓':'ADD FRIEND'}</button><button class="btn" data-cloud-poke="${u.id}">POKE</button><button class="btn dark" data-cloud-message="${u.id}">MESSAGE</button></div></div></div>`).join(''):'<div class="panel panel-body">NO OTHER USERS YET.</div>';
   $$('[data-cloud-message]').forEach(b=>b.onclick=()=>{const u=personFor(b.dataset.cloudMessage);openDM(u.username);go('chat')});
   $$('[data-cloud-friend]').forEach(b=>b.onclick=async()=>{const other=b.dataset.cloudFriend,rel=boomFriendships.find(f=>(f.user_id===boomUser.id&&f.friend_id===other)||(f.friend_id===boomUser.id&&f.user_id===other));const r=rel?await boomDB.from('friendships').delete().eq('id',rel.id):await boomDB.from('friendships').insert({user_id:boomUser.id,friend_id:other,status:'accepted'});if(r.error)return toast(r.error.message);await loadBoomCloud();toast(rel?'FRIEND REMOVED':'FRIEND ADDED')});
   $$('[data-cloud-poke]').forEach(b=>b.onclick=async()=>{const r=await boomDB.from('pokes').insert({sender_id:boomUser.id,receiver_id:b.dataset.cloudPoke});if(r.error)return toast(r.error.message);toast('POKE SENT')});
@@ -13952,7 +13997,35 @@ renderCommunity=function(){
 $("#signGuestbook").onclick=async()=>{const inp=$("#guestbookInput"),message=inp.value.trim();if(!message)return toast("WRITE SOMETHING FIRST");const r=await boomDB.from("guestbook_entries").insert({user_id:boomUser.id,message});if(r.error)return toast(r.error.message);inp.value="";await loadBoomCloud();toast("GUESTBOOK SIGNED")};
 
 /* profile */
-$("#profileForm")?.addEventListener("submit",async e=>{e.preventDefault();if(!boomUser)return;const username=$("#profileName").value.trim().slice(0,24),avatar=$("#profileAvatar").value.trim().slice(0,4)||"B",bio=$("#profileBio").value.trim().slice(0,120);if(!username)return toast("NAME REQUIRED");const r=await boomDB.from("profiles").update({username,display_name:username,avatar_url:avatar,bio}).eq("id",boomUser.id);if(r.error)return toast(r.error.message);await ensureBoomProfile();await loadBoomCloud();toast("PROFILE SAVED")},true);
+$("#profileForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!boomUser)return;
+
+  const username=$("#profileName").value.trim().slice(0,24);
+  const avatarInput=$("#profileAvatar").value.trim().slice(0,4);
+  const bio=$("#profileBio").value.trim().slice(0,120);
+
+  if(!username)return toast("NAME REQUIRED");
+
+  // If a cloud DP already exists, leaving the old symbol field blank
+  // must preserve the uploaded image instead of replacing it with "B".
+  const avatar=avatarInput || (isAvatarImage(me.avatar)?me.avatar:(me.avatar||"B"));
+
+  const r=await boomDB.from("profiles")
+    .update({
+      username,
+      display_name:username,
+      avatar_url:avatar,
+      bio
+    })
+    .eq("id",boomUser.id);
+
+  if(r.error)return toast(r.error.message);
+
+  await ensureBoomProfile();
+  await loadBoomCloud();
+  toast("PROFILE SAVED");
+},true);
 $("#saveMood").onclick=async()=>{const mood=$("#moodSelect").value,r=await boomDB.from("profiles").update({mood}).eq("id",boomUser.id);if(r.error)return toast(r.error.message);me.mood=mood;syncProfileUI();toast("STATUS UPDATED")};
 
 /* notes and drafts are account-scoped in Supabase */
