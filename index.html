@@ -9116,9 +9116,757 @@ html[data-theme="lavender"] .post .btn.danger{
   .boom-profile-post-actions{grid-template-columns:1fr!important}
 }
 
+
+/* =========================================================
+   BOOM CHAT — NASA MISSION CONTROL CHAT V14
+   Early-2000s science / mission-network visual language.
+   Functionality unchanged.
+   ========================================================= */
+
+#page-chat{
+  --nasa-navy:#003b73;
+  --nasa-deep:#001f3d;
+  --nasa-blue:#1f5f99;
+  --nasa-red:#b51f2a;
+  --nasa-steel:#8495a6;
+  --nasa-line:#8a9cad;
+  --nasa-pale:#e8edf1;
+  --nasa-paper:#f7f8f8;
+}
+
+/* Page heading becomes a mission section banner */
+#page-chat .chat-page-title{
+  border:1px solid #71879b!important;
+  border-bottom:4px solid var(--nasa-navy)!important;
+  border-radius:0!important;
+  background:linear-gradient(#f4f6f7,#dbe2e8)!important;
+  color:#17293a!important;
+  box-shadow:none!important;
+}
+
+#page-chat .chat-page-title .eyebrow{
+  color:var(--nasa-red)!important;
+  font:700 8px "Courier New",monospace!important;
+  letter-spacing:.12em!important;
+}
+
+#page-chat .chat-page-title h2{
+  color:var(--nasa-navy)!important;
+  font:700 23px Arial,Helvetica,sans-serif!important;
+  text-transform:uppercase!important;
+  letter-spacing:.05em!important;
+}
+
+#page-chat .chat-page-title small{
+  color:#536575!important;
+  font:10px Verdana,Arial,sans-serif!important;
+}
+
+/* Main mission network shell */
+#page-chat .igdm-shell{
+  border:1px solid var(--nasa-line)!important;
+  border-radius:0!important;
+  background:#d7dfe6!important;
+  box-shadow:none!important;
+}
+
+#page-chat .igdm-shell > .panel{
+  border-radius:0!important;
+  background:#eef2f5!important;
+}
+
+/* LEFT: communications directory */
+#page-chat .igdm-inbox{
+  border-right:1px solid var(--nasa-line)!important;
+  background:#e6ebef!important;
+}
+
+#page-chat .igdm-inbox-head{
+  position:relative!important;
+  min-height:62px!important;
+  border-bottom:1px solid #00152b!important;
+  background:linear-gradient(#174f82,#003b73)!important;
+  color:#fff!important;
+}
+
+#page-chat .igdm-inbox-head::before{
+  content:"";
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:4px!important;
+  background:var(--nasa-red)!important;
+}
+
+#page-chat .igdm-inbox-head b{
+  color:#fff!important;
+  font:700 11px Verdana,Arial,sans-serif!important;
+  letter-spacing:.05em!important;
+}
+
+#page-chat .igdm-inbox-head small{
+  color:#d9e7f3!important;
+  font:700 7px "Courier New",monospace!important;
+  letter-spacing:.08em!important;
+}
+
+#page-chat .igdm-icon-btn{
+  border:1px solid rgba(255,255,255,.65)!important;
+  border-radius:2px!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+}
+
+/* Search = old government portal query field */
+#page-chat .igdm-search{
+  height:38px!important;
+  margin:9px!important;
+  border:1px solid #8799aa!important;
+  border-radius:1px!important;
+  background:#fff!important;
+}
+
+#page-chat .igdm-search span{
+  color:var(--nasa-navy)!important;
+}
+
+#page-chat .igdm-search input{
+  color:#162636!important;
+  font:10px "Courier New",monospace!important;
+  text-transform:uppercase!important;
+}
+
+/* Direct / channels navigation */
+#page-chat .igdm-tabs{
+  margin:0 9px 7px!important;
+  border:1px solid #8b9cac!important;
+  background:#d6dde3!important;
+}
+
+#page-chat .igdm-tabs button{
+  min-height:34px!important;
+  border:0!important;
+  border-right:1px solid #8b9cac!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+  background:linear-gradient(#f7f8f9,#cfd7de)!important;
+  color:#31485c!important;
+  font:700 8px Verdana,Arial,sans-serif!important;
+  letter-spacing:.08em!important;
+}
+
+#page-chat .igdm-tabs button:last-child{
+  border-right:0!important;
+}
+
+#page-chat .igdm-tabs button.active{
+  background:var(--nasa-navy)!important;
+  color:#fff!important;
+  border-bottom:0!important;
+}
+
+/* Directory items: mission link records */
+#page-chat .igdm-conversation-list{
+  padding:0 7px 8px!important;
+}
+
+#page-chat .igdm-conversation-list button{
+  min-height:62px!important;
+  margin:0 0 4px!important;
+  border:1px solid #a7b3bd!important;
+  border-radius:0!important;
+  background:#f7f8f8!important;
+  color:#14283a!important;
+}
+
+#page-chat .igdm-conversation-list button:hover{
+  background:#e3eaf0!important;
+}
+
+#page-chat .igdm-conversation-list button.active{
+  border-left:4px solid var(--nasa-red)!important;
+  background:#dbe7f1!important;
+}
+
+#page-chat .igdm-conversation-avatar{
+  width:40px!important;
+  height:40px!important;
+  border:1px solid #6f8396!important;
+  border-radius:2px!important;
+  background:#d9e1e8!important;
+  color:var(--nasa-navy)!important;
+  font:700 13px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-conversation-copy b{
+  color:#183a58!important;
+  font:700 10px Verdana,Arial,sans-serif!important;
+}
+
+#page-chat .igdm-conversation-copy span{
+  color:#657786!important;
+  font:9px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-conversation-meta{
+  color:#627485!important;
+  font:7px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-unread{
+  border-radius:2px!important;
+  background:var(--nasa-red)!important;
+  color:#fff!important;
+}
+
+/* Channel label */
+#page-chat .igdm-list-label{
+  border-top:1px solid #a3b0bc!important;
+  border-bottom:1px solid #a3b0bc!important;
+  background:#d8e0e6!important;
+  color:#38526a!important;
+  font:700 8px "Courier New",monospace!important;
+  letter-spacing:.08em!important;
+}
+
+#page-chat .igdm-text-btn{
+  color:var(--nasa-navy)!important;
+  font:700 8px Arial,sans-serif!important;
+  text-decoration:underline!important;
+}
+
+/* CENTER: active communication log */
+#page-chat .igdm-conversation{
+  border-right:1px solid var(--nasa-line)!important;
+  background:#f3f5f6!important;
+}
+
+#page-chat .igdm-chat-head{
+  position:relative!important;
+  min-height:64px!important;
+  border-bottom:1px solid #00152b!important;
+  background:linear-gradient(#174f82,#003b73)!important;
+  color:#fff!important;
+}
+
+#page-chat .igdm-chat-head::before{
+  content:"LINK ACTIVE";
+  position:absolute!important;
+  right:12px!important;
+  bottom:4px!important;
+  color:#cfe4f6!important;
+  font:700 6px "Courier New",monospace!important;
+  letter-spacing:.12em!important;
+}
+
+#page-chat .igdm-chat-avatar{
+  border:1px solid #8fb1cf!important;
+  border-radius:2px!important;
+  background:#dbe8f2!important;
+  color:var(--nasa-navy)!important;
+}
+
+#page-chat .chat-head-copy > span{
+  color:#fff!important;
+  font:700 11px Verdana,Arial,sans-serif!important;
+  letter-spacing:.035em!important;
+  text-transform:uppercase!important;
+}
+
+#page-chat .chat-head-copy small,
+#page-chat #roomStatus{
+  color:#d5e7f5!important;
+  font:7px "Courier New",monospace!important;
+  letter-spacing:.07em!important;
+  text-transform:uppercase!important;
+}
+
+#page-chat .chat-head-actions .igdm-icon-btn{
+  color:#fff!important;
+}
+
+/* Transmission log */
+#page-chat .igdm-messages{
+  padding:18px!important;
+  background:
+    linear-gradient(rgba(247,249,250,.94),rgba(247,249,250,.94)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 27px,
+      rgba(58,87,111,.08) 28px
+    )!important;
+}
+
+#page-chat .msg{
+  margin:5px 0!important;
+}
+
+#page-chat .msg-line{
+  gap:6px!important;
+}
+
+/* Incoming transmission */
+#page-chat .bubble{
+  position:relative!important;
+  max-width:min(76%,620px)!important;
+  padding:10px 12px 9px!important;
+  border:1px solid #8ea0b0!important;
+  border-left:4px solid var(--nasa-blue)!important;
+  border-radius:0!important;
+  background:#ffffff!important;
+  color:#13283a!important;
+  box-shadow:none!important;
+}
+
+/* Outgoing transmission */
+#page-chat .msg.me .bubble{
+  border:1px solid #123d62!important;
+  border-right:4px solid var(--nasa-red)!important;
+  border-left:1px solid #123d62!important;
+  border-radius:0!important;
+  background:#164f7d!important;
+  color:#ffffff!important;
+}
+
+#page-chat .bubble .msg-topline b{
+  color:inherit!important;
+  font:700 8px "Courier New",monospace!important;
+  letter-spacing:.05em!important;
+}
+
+#page-chat .bubble .msg-text{
+  color:inherit!important;
+  font:12px "Courier New",monospace!important;
+  line-height:1.5!important;
+}
+
+#page-chat .bubble .meta{
+  color:inherit!important;
+  opacity:.7!important;
+  font:7px "Courier New",monospace!important;
+  letter-spacing:.04em!important;
+}
+
+#page-chat .igdm-reply-preview{
+  border-left:3px solid currentColor!important;
+  border-radius:0!important;
+  background:rgba(100,120,140,.11)!important;
+  font:8px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-reaction-pill{
+  border:1px solid #8c9eae!important;
+  border-radius:2px!important;
+  background:#eef2f5!important;
+  color:#1e3b55!important;
+  font:8px Arial,sans-serif!important;
+}
+
+#page-chat .igdm-seen{
+  color:#657786!important;
+  font:7px "Courier New",monospace!important;
+}
+
+/* 3-dot message control becomes technical menu switch */
+#page-chat .msg-more-btn{
+  border:1px solid #8497a8!important;
+  border-radius:2px!important;
+  background:#e4e9ed!important;
+  color:#23435f!important;
+  box-shadow:none!important;
+  font-size:18px!important;
+}
+
+#page-chat .msg-more-btn:hover,
+#page-chat .msg-more-btn:focus-visible{
+  background:var(--nasa-navy)!important;
+  color:#fff!important;
+  border-color:#001f3d!important;
+}
+
+/* reply / attachment status bands */
+#page-chat .igdm-reply-banner,
+#page-chat .igdm-attachment-preview{
+  border-top:1px solid #879aaa!important;
+  border-bottom:1px solid #879aaa!important;
+  background:#dce4ea!important;
+}
+
+#page-chat .igdm-reply-banner small,
+#page-chat .igdm-attachment-preview small{
+  color:#506a7f!important;
+  font:7px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-reply-banner span,
+#page-chat .igdm-attachment-preview b{
+  color:#173a57!important;
+  font:700 9px Verdana,Arial,sans-serif!important;
+}
+
+/* Reaction keypad */
+#page-chat .igdm-emoji-panel{
+  border-top:1px solid #8497a8!important;
+  background:#dbe2e8!important;
+}
+
+#page-chat .igdm-emoji-panel button{
+  border:1px solid #8fa0af!important;
+  border-radius:2px!important;
+  background:#f7f8f8!important;
+}
+
+/* Transmission console */
+#page-chat .igdm-compose{
+  min-height:64px!important;
+  border-top:3px double #667e91!important;
+  background:linear-gradient(#dce3e9,#c5d0d8)!important;
+}
+
+#page-chat .igdm-compose input#chatInput{
+  height:40px!important;
+  border:1px solid #647c90!important;
+  border-radius:1px!important;
+  background:#ffffff!important;
+  color:#112b41!important;
+  font:11px "Courier New",monospace!important;
+}
+
+#page-chat .igdm-compose-icon{
+  border:1px solid #7890a3!important;
+  border-radius:2px!important;
+  background:#edf1f4!important;
+  color:#173c5a!important;
+}
+
+#page-chat .igdm-compose-icon:hover{
+  background:#d6e1ea!important;
+}
+
+#page-chat .igdm-send-btn{
+  min-width:86px!important;
+  border:1px solid #001d38!important;
+  border-radius:2px!important;
+  background:linear-gradient(#205f93,#003b73)!important;
+  color:#fff!important;
+  font:700 8px Verdana,Arial,sans-serif!important;
+  letter-spacing:.09em!important;
+}
+
+/* RIGHT: link-status panel */
+#page-chat .igdm-details{
+  background:#e5ebef!important;
+}
+
+#page-chat .igdm-details-head{
+  min-height:52px!important;
+  border-bottom:1px solid #00152b!important;
+  background:linear-gradient(#174f82,#003b73)!important;
+}
+
+#page-chat .igdm-details-head b{
+  color:#fff!important;
+  font:700 9px Verdana,Arial,sans-serif!important;
+  letter-spacing:.08em!important;
+}
+
+#page-chat .igdm-profile-summary{
+  border-bottom:1px solid #9baab6!important;
+  background:#f3f5f6!important;
+}
+
+#page-chat .igdm-details-avatar{
+  border:2px solid #6f8598!important;
+  border-radius:2px!important;
+  background:#dbe4eb!important;
+  color:var(--nasa-navy)!important;
+  font-family:"Courier New",monospace!important;
+}
+
+#page-chat .igdm-profile-summary b{
+  color:#183b58!important;
+  font-family:Verdana,Arial,sans-serif!important;
+}
+
+#page-chat .igdm-profile-summary small{
+  color:#657787!important;
+  font-family:"Courier New",monospace!important;
+}
+
+#page-chat .igdm-detail-title{
+  border-bottom:1px solid #9baab6!important;
+  background:#d5dde4!important;
+  color:#38546c!important;
+  font:700 8px "Courier New",monospace!important;
+}
+
+#page-chat .online-list .person{
+  border-top:0!important;
+  border-bottom:1px solid #a6b3bd!important;
+  background:#f5f7f8!important;
+}
+
+/* Popup menus follow mission-console styling */
+.msg-more-menu,
+.new-dm-window,
+.room-manager-window{
+  border:1px solid #667e91!important;
+  border-radius:2px!important;
+  background:#edf1f4!important;
+  box-shadow:0 10px 28px rgba(0,31,61,.22)!important;
+}
+
+.msg-more-menu button{
+  border-radius:0!important;
+  color:#173b59!important;
+  font-family:Verdana,Arial,sans-serif!important;
+}
+
+.msg-more-menu button:hover{
+  background:#d4e0e9!important;
+}
+
+/* ---------- DARK NASA MODES ---------- */
+html[data-theme="dark"] #page-chat,
+html[data-theme="midnight"] #page-chat,
+html[data-theme="forest"] #page-chat,
+html[data-theme="rose"] #page-chat,
+html[data-theme="ocean"] #page-chat,
+html[data-theme="lavender"] #page-chat{
+  --nasa-line:#40596e;
+}
+
+html[data-theme="dark"] #page-chat .igdm-shell,
+html[data-theme="midnight"] #page-chat .igdm-shell,
+html[data-theme="forest"] #page-chat .igdm-shell,
+html[data-theme="rose"] #page-chat .igdm-shell,
+html[data-theme="ocean"] #page-chat .igdm-shell,
+html[data-theme="lavender"] #page-chat .igdm-shell{
+  background:#0c1722!important;
+  border-color:#425b70!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-shell>.panel,
+html[data-theme="midnight"] #page-chat .igdm-shell>.panel,
+html[data-theme="forest"] #page-chat .igdm-shell>.panel,
+html[data-theme="rose"] #page-chat .igdm-shell>.panel,
+html[data-theme="ocean"] #page-chat .igdm-shell>.panel,
+html[data-theme="lavender"] #page-chat .igdm-shell>.panel,
+html[data-theme="dark"] #page-chat .igdm-inbox,
+html[data-theme="midnight"] #page-chat .igdm-inbox,
+html[data-theme="forest"] #page-chat .igdm-inbox,
+html[data-theme="rose"] #page-chat .igdm-inbox,
+html[data-theme="ocean"] #page-chat .igdm-inbox,
+html[data-theme="lavender"] #page-chat .igdm-inbox,
+html[data-theme="dark"] #page-chat .igdm-details,
+html[data-theme="midnight"] #page-chat .igdm-details,
+html[data-theme="forest"] #page-chat .igdm-details,
+html[data-theme="rose"] #page-chat .igdm-details,
+html[data-theme="ocean"] #page-chat .igdm-details,
+html[data-theme="lavender"] #page-chat .igdm-details{
+  background:#111e2a!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-conversation-list button,
+html[data-theme="midnight"] #page-chat .igdm-conversation-list button,
+html[data-theme="forest"] #page-chat .igdm-conversation-list button,
+html[data-theme="rose"] #page-chat .igdm-conversation-list button,
+html[data-theme="ocean"] #page-chat .igdm-conversation-list button,
+html[data-theme="lavender"] #page-chat .igdm-conversation-list button{
+  border-color:#3d5366!important;
+  background:#132230!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-conversation-list button.active,
+html[data-theme="midnight"] #page-chat .igdm-conversation-list button.active,
+html[data-theme="forest"] #page-chat .igdm-conversation-list button.active,
+html[data-theme="rose"] #page-chat .igdm-conversation-list button.active,
+html[data-theme="ocean"] #page-chat .igdm-conversation-list button.active,
+html[data-theme="lavender"] #page-chat .igdm-conversation-list button.active{
+  background:#173451!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-conversation-copy b,
+html[data-theme="midnight"] #page-chat .igdm-conversation-copy b,
+html[data-theme="forest"] #page-chat .igdm-conversation-copy b,
+html[data-theme="rose"] #page-chat .igdm-conversation-copy b,
+html[data-theme="ocean"] #page-chat .igdm-conversation-copy b,
+html[data-theme="lavender"] #page-chat .igdm-conversation-copy b{
+  color:#f0f6fb!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-conversation-copy span,
+html[data-theme="midnight"] #page-chat .igdm-conversation-copy span,
+html[data-theme="forest"] #page-chat .igdm-conversation-copy span,
+html[data-theme="rose"] #page-chat .igdm-conversation-copy span,
+html[data-theme="ocean"] #page-chat .igdm-conversation-copy span,
+html[data-theme="lavender"] #page-chat .igdm-conversation-copy span,
+html[data-theme="dark"] #page-chat .igdm-conversation-meta,
+html[data-theme="midnight"] #page-chat .igdm-conversation-meta,
+html[data-theme="forest"] #page-chat .igdm-conversation-meta,
+html[data-theme="rose"] #page-chat .igdm-conversation-meta,
+html[data-theme="ocean"] #page-chat .igdm-conversation-meta,
+html[data-theme="lavender"] #page-chat .igdm-conversation-meta{
+  color:#aabac7!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-messages,
+html[data-theme="midnight"] #page-chat .igdm-messages,
+html[data-theme="forest"] #page-chat .igdm-messages,
+html[data-theme="rose"] #page-chat .igdm-messages,
+html[data-theme="ocean"] #page-chat .igdm-messages,
+html[data-theme="lavender"] #page-chat .igdm-messages{
+  background:
+    linear-gradient(rgba(7,16,25,.96),rgba(7,16,25,.96)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 27px,
+      rgba(89,133,170,.12) 28px
+    )!important;
+}
+
+html[data-theme="dark"] #page-chat .msg:not(.me) .bubble,
+html[data-theme="midnight"] #page-chat .msg:not(.me) .bubble,
+html[data-theme="forest"] #page-chat .msg:not(.me) .bubble,
+html[data-theme="rose"] #page-chat .msg:not(.me) .bubble,
+html[data-theme="ocean"] #page-chat .msg:not(.me) .bubble,
+html[data-theme="lavender"] #page-chat .msg:not(.me) .bubble{
+  border-color:#49647b!important;
+  border-left-color:#4b91c8!important;
+  background:#132536!important;
+  color:#edf5fb!important;
+}
+
+html[data-theme="dark"] #page-chat .msg.me .bubble,
+html[data-theme="midnight"] #page-chat .msg.me .bubble,
+html[data-theme="forest"] #page-chat .msg.me .bubble,
+html[data-theme="rose"] #page-chat .msg.me .bubble,
+html[data-theme="ocean"] #page-chat .msg.me .bubble,
+html[data-theme="lavender"] #page-chat .msg.me .bubble{
+  background:#174e79!important;
+  border-color:#497aa0!important;
+  border-right-color:#e15b65!important;
+  color:#ffffff!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-compose,
+html[data-theme="midnight"] #page-chat .igdm-compose,
+html[data-theme="forest"] #page-chat .igdm-compose,
+html[data-theme="rose"] #page-chat .igdm-compose,
+html[data-theme="ocean"] #page-chat .igdm-compose,
+html[data-theme="lavender"] #page-chat .igdm-compose{
+  background:#172531!important;
+  border-top-color:#526b7e!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-compose input#chatInput,
+html[data-theme="midnight"] #page-chat .igdm-compose input#chatInput,
+html[data-theme="forest"] #page-chat .igdm-compose input#chatInput,
+html[data-theme="rose"] #page-chat .igdm-compose input#chatInput,
+html[data-theme="ocean"] #page-chat .igdm-compose input#chatInput,
+html[data-theme="lavender"] #page-chat .igdm-compose input#chatInput{
+  border-color:#536b7f!important;
+  background:#08131d!important;
+  color:#edf6fc!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-compose-icon,
+html[data-theme="midnight"] #page-chat .igdm-compose-icon,
+html[data-theme="forest"] #page-chat .igdm-compose-icon,
+html[data-theme="rose"] #page-chat .igdm-compose-icon,
+html[data-theme="ocean"] #page-chat .igdm-compose-icon,
+html[data-theme="lavender"] #page-chat .igdm-compose-icon{
+  border-color:#526a7d!important;
+  background:#20313e!important;
+  color:#eef6fc!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-profile-summary,
+html[data-theme="midnight"] #page-chat .igdm-profile-summary,
+html[data-theme="forest"] #page-chat .igdm-profile-summary,
+html[data-theme="rose"] #page-chat .igdm-profile-summary,
+html[data-theme="ocean"] #page-chat .igdm-profile-summary,
+html[data-theme="lavender"] #page-chat .igdm-profile-summary,
+html[data-theme="dark"] #page-chat .online-list .person,
+html[data-theme="midnight"] #page-chat .online-list .person,
+html[data-theme="forest"] #page-chat .online-list .person,
+html[data-theme="rose"] #page-chat .online-list .person,
+html[data-theme="ocean"] #page-chat .online-list .person,
+html[data-theme="lavender"] #page-chat .online-list .person{
+  background:#132330!important;
+  border-color:#3d5365!important;
+}
+
+html[data-theme="dark"] #page-chat .igdm-profile-summary b,
+html[data-theme="midnight"] #page-chat .igdm-profile-summary b,
+html[data-theme="forest"] #page-chat .igdm-profile-summary b,
+html[data-theme="rose"] #page-chat .igdm-profile-summary b,
+html[data-theme="ocean"] #page-chat .igdm-profile-summary b,
+html[data-theme="lavender"] #page-chat .igdm-profile-summary b{
+  color:#edf5fb!important;
+}
+
+/* ---------- RESPONSIVE MISSION CONTROL ---------- */
+@media(max-width:1050px) and (min-width:721px){
+  #page-chat .igdm-shell{
+    grid-template-columns:260px minmax(0,1fr)!important;
+  }
+
+  #page-chat .igdm-details{
+    background:#111f2b!important;
+  }
+}
+
+@media(max-width:720px){
+  #page-chat .igdm-shell{
+    border:1px solid var(--nasa-line)!important;
+  }
+
+  #page-chat .igdm-inbox,
+  #page-chat .igdm-conversation{
+    border-radius:0!important;
+  }
+
+  #page-chat .igdm-inbox-head,
+  #page-chat .igdm-chat-head{
+    min-height:56px!important;
+  }
+
+  #page-chat .igdm-conversation-list button{
+    min-height:64px!important;
+    border-radius:0!important;
+  }
+
+  #page-chat .igdm-conversation-avatar{
+    border-radius:2px!important;
+  }
+
+  #page-chat .bubble{
+    max-width:86%!important;
+  }
+
+  #page-chat .igdm-compose{
+    padding:6px!important;
+    gap:3px!important;
+  }
+
+  #page-chat .igdm-send-btn{
+    min-width:58px!important;
+    padding:0 6px!important;
+    font-size:7px!important;
+  }
+
+  #page-chat .msg-more-btn{
+    border-radius:2px!important;
+  }
+}
+
 </style>
 </head>
-<body data-boom-build="V13-PROFILE">
+<body data-boom-build="V14-NASA-CHAT">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -9154,7 +9902,7 @@ html[data-theme="lavender"] .post .btn.danger{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V13</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V14</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -9372,9 +10120,9 @@ html[data-theme="lavender"] .post .btn.danger{
   <section class="page" id="page-chat">
     <div class="page-title chat-page-title">
       <div>
-        <div class="eyebrow">02 / MESSAGES</div>
-        <h2>Messages</h2>
-        <small>Direct messages · groups · photos · replies</small>
+        <div class="eyebrow">02 / MISSION NETWORK</div>
+        <h2>Communications</h2>
+        <small>Direct links · mission channels · media transmission</small>
       </div>
       <button class="btn" data-go="feed">← FEED</button>
     </div>
@@ -9385,20 +10133,20 @@ html[data-theme="lavender"] .post .btn.danger{
       <aside class="panel igdm-inbox" id="igdmInbox">
         <div class="igdm-inbox-head">
           <div>
-            <b id="igdmMyName">MESSAGES</b>
-            <small>BOOM CHAT</small>
+            <b id="igdmMyName">COMMUNICATIONS NET</b>
+            <small>BOOM CHAT // LINK DIRECTORY</small>
           </div>
           <button class="igdm-icon-btn" id="igNewMessage" type="button" title="New message">✎</button>
         </div>
 
         <div class="igdm-search">
           <span>⌕</span>
-          <input id="chatSearch" placeholder="Search messages" autocomplete="off">
+          <input id="chatSearch" placeholder="SEARCH CHANNEL / USER" autocomplete="off">
         </div>
 
         <div class="chat-switch igdm-tabs">
-          <button id="dmModeBtn" class="active">CHATS</button>
-          <button id="roomModeBtn">GROUPS</button>
+          <button id="dmModeBtn" class="active">DIRECT</button>
+          <button id="roomModeBtn">CHANNELS</button>
         </div>
 
         <div id="dmsPane">
@@ -9411,8 +10159,8 @@ html[data-theme="lavender"] .post .btn.danger{
 
         <div id="roomsPane" class="hidden">
           <div class="igdm-list-label">
-            <span>YOUR GROUPS</span>
-            <button class="igdm-text-btn" id="newRoom" type="button">+ NEW GROUP</button>
+            <span>MISSION CHANNELS</span>
+            <button class="igdm-text-btn" id="newRoom" type="button">+ NEW CHANNEL</button>
           </div>
           <div class="room-list igdm-conversation-list" id="roomList"></div>
         </div>
@@ -9467,18 +10215,18 @@ html[data-theme="lavender"] .post .btn.danger{
 
         <div class="chat-compose igdm-compose">
           <button class="igdm-compose-icon" id="chatEmojiBtn" type="button" title="Emoji">☺</button>
-          <input id="chatInput" placeholder="Message..." autocomplete="off">
+          <input id="chatInput" placeholder="TRANSMIT MESSAGE..." autocomplete="off">
           <label class="igdm-compose-icon" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label>
           <label class="igdm-compose-icon" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label>
           <button class="igdm-compose-icon" id="chatDoodleBtn" type="button" title="Doodle">✎</button>
-          <button class="igdm-send-btn" id="sendChat" type="button">SEND</button>
+          <button class="igdm-send-btn" id="sendChat" type="button">TRANSMIT</button>
         </div>
       </main>
 
       <!-- DETAILS / MEMBERS -->
       <aside class="panel igdm-details" id="igdmDetails">
         <div class="igdm-details-head">
-          <b>DETAILS</b>
+          <b>LINK STATUS</b>
           <button class="igdm-icon-btn" id="chatDetailsClose" type="button">×</button>
         </div>
 
@@ -9529,8 +10277,8 @@ html[data-theme="lavender"] .post .btn.danger{
     <div class="new-dm-window">
       <div class="new-dm-head">
         <button id="newDmClose" type="button">×</button>
-        <b>NEW MESSAGE</b>
-        <button class="igdm-text-btn" id="newGroupFromDm" type="button">NEW GROUP</button>
+        <b>OPEN DIRECT LINK</b>
+        <button class="igdm-text-btn" id="newGroupFromDm" type="button">NEW CHANNEL</button>
       </div>
       <div class="new-dm-search">
         <span>TO:</span>
@@ -11978,25 +12726,25 @@ function setChatHeader(){
   if(state.chatMode==="dm"){
     const p=activeDmProfile();
     $("#chatAvatar").textContent=avatarForProfile(p);
-    $("#chatTitle").textContent=p?("@"+p.username):"Select a chat";
-    $("#chatSubline").textContent=p?(p.display_name||"Direct message"):"Choose someone from your inbox";
+    $("#chatTitle").textContent=p?("@"+p.username):"Select a direct link";
+    $("#chatSubline").textContent=p?(p.display_name||"Direct link"):"Choose a user from the link directory";
     $("#roomStatus").textContent=p?(p.mood||"PRIVATE"):"";
     $("#chatDetailsAvatar").textContent=avatarForProfile(p);
     $("#chatDetailsName").textContent=p?("@"+p.username):"No chat selected";
     $("#chatDetailsStatus").textContent=p?(p.bio||p.mood||"Boom Chat user"):"";
-    $("#chatPeopleTitle").textContent="PROFILE";
+    $("#chatPeopleTitle").textContent="LINK PROFILE";
     if(manage)manage.classList.add("hidden");
   }else{
     const room=activeRoomRecord();
     const ids=activeRoomMemberIds();
     $("#chatAvatar").textContent=(room?.name?.[0]||"#").toUpperCase();
-    $("#chatTitle").textContent=room?room.name:"Select a group";
-    $("#chatSubline").textContent=room?.name==="general"?"Public group":"Group chat";
+    $("#chatTitle").textContent=room?room.name:"Select a channel";
+    $("#chatSubline").textContent=room?.name==="general"?"Public channel":"Mission channel";
     $("#roomStatus").textContent=room?(room.name==="general"?"PUBLIC":ids.length+" MEMBERS"):"";
     $("#chatDetailsAvatar").textContent=(room?.name?.[0]||"#").toUpperCase();
     $("#chatDetailsName").textContent=room?("#"+room.name):"No group selected";
-    $("#chatDetailsStatus").textContent=room?.name==="general"?"Everyone on Boom Chat can join.":(canManageActiveRoom()?"You created this group.":"Private group");
-    $("#chatPeopleTitle").textContent="MEMBERS";
+    $("#chatDetailsStatus").textContent=room?.name==="general"?"Everyone on Boom Chat can join.":(canManageActiveRoom()?"You created this group.":"Restricted channel");
+    $("#chatPeopleTitle").textContent="CREW";
     if(manage)manage.classList.toggle("hidden",!canManageActiveRoom());
   }
 }
@@ -12071,7 +12819,7 @@ function renderRooms(){
   $("#roomList").innerHTML=rooms.length?rooms.map(r=>{
     const last=roomLastRaw(r.name);
     const u=last?personFor(last.user_id):null;
-    const preview=last?(last.body||((last.image_url||last.drawing_url)?"Photo":"Message")):(r.name==="general"?"Public group":"No messages yet");
+    const preview=last?(last.body||((last.image_url||last.drawing_url)?"Photo":"Message")):(r.name==="general"?"Public channel":"No messages yet");
     const count=r.name==="general"?boomProfiles.length:boomRoomMembers.filter(x=>x.room_id===r.id).length;
     return `<button class="${state.chatMode==="room"&&r.name===state.room?"active":""}" data-room="${esc(r.name)}" type="button">
       <span class="igdm-conversation-avatar">${esc((r.name[0]||"#").toUpperCase())}</span>
@@ -12504,13 +13252,13 @@ function openRoomManager(mode="create"){
 
   if(mode==="manage"){
     const room=activeRoomRecord();
-    if(!room||room.created_by!==boomUser.id)return toast("ONLY THE GROUP CREATOR CAN MANAGE MEMBERS");
+    if(!room||room.created_by!==boomUser.id)return toast("ONLY THE CHANNEL CREATOR CAN MANAGE CREW");
     roomManagerRoomId=room.id;
     title.textContent="MANAGE GROUP";
     hint.textContent="Add or remove people from #"+room.name+".";
     name.value=room.name;
     name.disabled=true;
-    save.textContent="SAVE MEMBERS";
+    save.textContent="SAVE CREW";
 
     const members=new Set(
       boomRoomMembers.filter(m=>m.room_id===room.id).map(m=>m.user_id)
@@ -12575,7 +13323,7 @@ $("#roomMemberSearch").oninput=()=>{
 
 $("#roomManagerSave").onclick=async()=>{
   if(!boomUser)return toast("LOGIN REQUIRED");
-  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL BEFORE CREATING PRIVATE GROUPS");
+  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL BEFORE CREATING RESTRICTED CHANNELS");
   const selected=[...new Set(roomManagerSelectedIds())];
 
   if(roomManagerMode==="create"){
@@ -12634,7 +13382,7 @@ $("#roomManagerSave").onclick=async()=>{
 
     closeRoomManager();
     await loadBoomCloud();
-    toast("GROUP MEMBERS UPDATED");
+    toast("CHANNEL CREW UPDATED");
   }
 };
 
