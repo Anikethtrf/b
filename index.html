@@ -9864,9 +9864,419 @@ html[data-theme="lavender"] #page-chat .igdm-profile-summary b{
   }
 }
 
+
+/* =========================================================
+   NASA CHAT — TRUE THEME SYNC V15
+   Mission-control structure stays the same.
+   Palette now follows the selected Boom Chat theme.
+   ========================================================= */
+
+/* Chat-local semantic palette derived from the active global theme */
+#page-chat{
+  --mc-accent:var(--m-accent);
+  --mc-head:color-mix(in srgb,var(--m-accent) 62%,#07121d 38%);
+  --mc-head-dark:color-mix(in srgb,var(--m-accent) 44%,#02080e 56%);
+  --mc-head-soft:color-mix(in srgb,var(--m-accent) 16%,var(--m-surface) 84%);
+  --mc-panel:var(--m-surface);
+  --mc-panel-soft:var(--m-soft);
+  --mc-log:var(--m-chat);
+  --mc-line:var(--m-line-strong);
+  --mc-line-soft:var(--m-line);
+  --mc-text:var(--m-text);
+  --mc-muted:var(--m-muted);
+  --mc-incoming:color-mix(in srgb,var(--m-surface) 91%,var(--m-accent) 9%);
+  --mc-outgoing:color-mix(in srgb,var(--m-accent) 58%,#07121d 42%);
+  --mc-control:color-mix(in srgb,var(--m-soft) 82%,var(--m-accent) 18%);
+  --mc-danger:#c13b45;
+}
+
+/* Each theme gets its own mission accent personality */
+html[data-theme="light"] #page-chat{
+  --mc-danger:#b51f2a;
+}
+html[data-theme="dark"] #page-chat{
+  --mc-danger:#ff7b84;
+}
+html[data-theme="midnight"] #page-chat{
+  --mc-danger:#ff6f7d;
+}
+html[data-theme="forest"] #page-chat{
+  --mc-danger:#e77b67;
+}
+html[data-theme="rose"] #page-chat{
+  --mc-danger:#ff708e;
+}
+html[data-theme="sepia"] #page-chat{
+  --mc-danger:#a94732;
+}
+html[data-theme="ocean"] #page-chat{
+  --mc-danger:#ff7780;
+}
+html[data-theme="lavender"] #page-chat{
+  --mc-danger:#ff7ea6;
+}
+
+/* ---------- PAGE / SHELL ---------- */
+#page-chat .chat-page-title{
+  border-color:var(--mc-line)!important;
+  border-bottom-color:var(--mc-accent)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--mc-panel) 94%,#fff 6%),
+    var(--mc-panel-soft)
+  )!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .chat-page-title .eyebrow{
+  color:var(--mc-danger)!important;
+}
+#page-chat .chat-page-title h2{
+  color:var(--mc-accent)!important;
+}
+#page-chat .chat-page-title small{
+  color:var(--mc-muted)!important;
+}
+
+#page-chat .igdm-shell{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel-soft)!important;
+}
+#page-chat .igdm-shell > .panel,
+#page-chat .igdm-inbox,
+#page-chat .igdm-details{
+  background:var(--mc-panel)!important;
+}
+#page-chat .igdm-inbox,
+#page-chat .igdm-conversation{
+  border-color:var(--mc-line)!important;
+}
+
+/* ---------- MISSION HEADERS ---------- */
+#page-chat .igdm-inbox-head,
+#page-chat .igdm-chat-head,
+#page-chat .igdm-details-head{
+  border-color:var(--mc-head-dark)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--mc-head) 86%,#fff 14%),
+    var(--mc-head-dark)
+  )!important;
+  color:#fff!important;
+}
+#page-chat .igdm-inbox-head::before{
+  background:var(--mc-danger)!important;
+}
+#page-chat .igdm-inbox-head b,
+#page-chat .igdm-chat-head .chat-head-copy > span,
+#page-chat .igdm-details-head b{
+  color:#fff!important;
+}
+#page-chat .igdm-inbox-head small,
+#page-chat .igdm-chat-head .chat-head-copy small,
+#page-chat #roomStatus,
+#page-chat .igdm-chat-head::before{
+  color:rgba(255,255,255,.78)!important;
+}
+#page-chat .igdm-icon-btn,
+#page-chat .chat-head-actions .igdm-icon-btn{
+  border-color:rgba(255,255,255,.5)!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+}
+
+/* ---------- SEARCH / TABS ---------- */
+#page-chat .igdm-search{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-log)!important;
+}
+#page-chat .igdm-search span{
+  color:var(--mc-accent)!important;
+}
+#page-chat .igdm-search input{
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-search input::placeholder{
+  color:var(--mc-muted)!important;
+}
+
+#page-chat .igdm-tabs{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel-soft)!important;
+}
+#page-chat .igdm-tabs button{
+  border-color:var(--mc-line)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--mc-panel) 92%,#fff 8%),
+    var(--mc-panel-soft)
+  )!important;
+  color:var(--mc-muted)!important;
+}
+#page-chat .igdm-tabs button.active{
+  background:var(--mc-head)!important;
+  color:#fff!important;
+}
+
+/* ---------- DIRECTORY / CHANNELS ---------- */
+#page-chat .igdm-list-label,
+#page-chat .igdm-detail-title{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel-soft)!important;
+  color:var(--mc-muted)!important;
+}
+#page-chat .igdm-text-btn{
+  color:var(--mc-accent)!important;
+}
+
+#page-chat .igdm-conversation-list button{
+  border-color:var(--mc-line-soft)!important;
+  background:var(--mc-panel)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-conversation-list button:hover{
+  background:var(--mc-head-soft)!important;
+}
+#page-chat .igdm-conversation-list button.active{
+  border-left-color:var(--mc-danger)!important;
+  background:var(--mc-head-soft)!important;
+}
+#page-chat .igdm-conversation-avatar,
+#page-chat .igdm-chat-avatar,
+#page-chat .igdm-details-avatar{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-control)!important;
+  color:var(--mc-accent)!important;
+}
+#page-chat .igdm-conversation-copy b{
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-conversation-copy span,
+#page-chat .igdm-conversation-meta{
+  color:var(--mc-muted)!important;
+}
+#page-chat .igdm-unread{
+  background:var(--mc-danger)!important;
+  color:#fff!important;
+}
+
+/* ---------- TRANSMISSION LOG ---------- */
+#page-chat .igdm-messages{
+  background:
+    linear-gradient(
+      color-mix(in srgb,var(--mc-log) 96%,transparent),
+      color-mix(in srgb,var(--mc-log) 96%,transparent)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 27px,
+      color-mix(in srgb,var(--mc-accent) 10%,transparent) 28px
+    )!important;
+}
+
+#page-chat .msg:not(.me) .bubble{
+  border-color:var(--mc-line)!important;
+  border-left-color:var(--mc-accent)!important;
+  background:var(--mc-incoming)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .msg.me .bubble{
+  border-color:color-mix(in srgb,var(--mc-accent) 62%,#111 38%)!important;
+  border-left-color:color-mix(in srgb,var(--mc-accent) 62%,#111 38%)!important;
+  border-right-color:var(--mc-danger)!important;
+  background:var(--mc-outgoing)!important;
+  color:#fff!important;
+}
+#page-chat .bubble .msg-topline b,
+#page-chat .bubble .msg-text,
+#page-chat .bubble .meta{
+  color:inherit!important;
+}
+#page-chat .igdm-reply-preview{
+  background:color-mix(in srgb,var(--mc-accent) 9%,transparent)!important;
+}
+#page-chat .igdm-reaction-pill{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel-soft)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-seen{
+  color:var(--mc-muted)!important;
+}
+
+/* ---------- MESSAGE MENU ---------- */
+#page-chat .msg-more-btn{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-control)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .msg-more-btn:hover,
+#page-chat .msg-more-btn:focus-visible{
+  border-color:var(--mc-accent)!important;
+  background:var(--mc-head)!important;
+  color:#fff!important;
+}
+.msg-more-menu{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel)!important;
+}
+.msg-more-menu button{
+  color:var(--mc-text)!important;
+}
+.msg-more-menu button:hover{
+  background:var(--mc-head-soft)!important;
+}
+.msg-more-menu button.danger{
+  color:var(--mc-danger)!important;
+}
+
+/* ---------- REPLY / ATTACHMENT / EMOJI ---------- */
+#page-chat .igdm-reply-banner,
+#page-chat .igdm-attachment-preview{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel-soft)!important;
+}
+#page-chat .igdm-reply-banner small,
+#page-chat .igdm-attachment-preview small{
+  color:var(--mc-muted)!important;
+}
+#page-chat .igdm-reply-banner span,
+#page-chat .igdm-attachment-preview b{
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-emoji-panel{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel)!important;
+}
+#page-chat .igdm-emoji-panel button{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-control)!important;
+}
+
+/* ---------- TRANSMISSION CONSOLE ---------- */
+#page-chat .igdm-compose{
+  border-top-color:var(--mc-line)!important;
+  background:linear-gradient(
+    var(--mc-panel-soft),
+    color-mix(in srgb,var(--mc-panel-soft) 80%,var(--mc-accent) 20%)
+  )!important;
+}
+#page-chat .igdm-compose input#chatInput{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-log)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-compose input#chatInput::placeholder{
+  color:var(--mc-muted)!important;
+}
+#page-chat .igdm-compose-icon{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-control)!important;
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-compose-icon:hover{
+  background:var(--mc-head-soft)!important;
+  color:var(--mc-accent)!important;
+}
+#page-chat .igdm-send-btn{
+  border-color:var(--mc-head-dark)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--mc-head) 88%,#fff 12%),
+    var(--mc-head-dark)
+  )!important;
+  color:#fff!important;
+}
+
+/* ---------- LINK STATUS / CREW ---------- */
+#page-chat .igdm-profile-summary,
+#page-chat .online-list .person{
+  border-color:var(--mc-line-soft)!important;
+  background:var(--mc-panel)!important;
+}
+#page-chat .igdm-profile-summary b,
+#page-chat .online-list .person > span:nth-child(2){
+  color:var(--mc-text)!important;
+}
+#page-chat .igdm-profile-summary small{
+  color:var(--mc-muted)!important;
+}
+
+/* ---------- MODALS ---------- */
+.new-dm-window,
+.room-manager-window{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-panel)!important;
+}
+.new-dm-head,
+.room-manager-titlebar{
+  border-color:var(--mc-head-dark)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--mc-head) 88%,#fff 12%),
+    var(--mc-head-dark)
+  )!important;
+}
+.new-dm-search,
+.room-member-search input,
+.room-field input{
+  border-color:var(--mc-line)!important;
+  background:var(--mc-log)!important;
+  color:var(--mc-text)!important;
+}
+.new-dm-user,
+.room-member-row{
+  border-color:var(--mc-line-soft)!important;
+  color:var(--mc-text)!important;
+}
+.new-dm-user:hover,
+.room-member-row:hover{
+  background:var(--mc-head-soft)!important;
+}
+
+/* ---------- THEME-SPECIFIC OUTGOING COLOR TUNING ---------- */
+/* Dark/pastel accents are intentionally darkened for readable white text. */
+html[data-theme="dark"] #page-chat,
+html[data-theme="midnight"] #page-chat,
+html[data-theme="forest"] #page-chat,
+html[data-theme="rose"] #page-chat,
+html[data-theme="ocean"] #page-chat,
+html[data-theme="lavender"] #page-chat{
+  --mc-outgoing:color-mix(in srgb,var(--m-accent) 42%,#08121b 58%);
+  --mc-head:color-mix(in srgb,var(--m-accent) 48%,#08121b 52%);
+  --mc-head-dark:color-mix(in srgb,var(--m-accent) 31%,#02070c 69%);
+  --mc-incoming:color-mix(in srgb,var(--m-surface) 88%,var(--m-accent) 12%);
+}
+
+/* Light/sepia can carry a little more theme color. */
+html[data-theme="light"] #page-chat,
+html[data-theme="sepia"] #page-chat{
+  --mc-outgoing:color-mix(in srgb,var(--m-accent) 74%,#07121d 26%);
+  --mc-head:color-mix(in srgb,var(--m-accent) 82%,#07121d 18%);
+  --mc-head-dark:color-mix(in srgb,var(--m-accent) 62%,#02070c 38%);
+}
+
+/* Theme visual identity in the mission heading underline */
+html[data-theme="light"] #page-chat .chat-page-title{border-bottom-color:#003b73!important}
+html[data-theme="dark"] #page-chat .chat-page-title{border-bottom-color:#7f93ff!important}
+html[data-theme="midnight"] #page-chat .chat-page-title{border-bottom-color:#76b7ff!important}
+html[data-theme="forest"] #page-chat .chat-page-title{border-bottom-color:#85c998!important}
+html[data-theme="rose"] #page-chat .chat-page-title{border-bottom-color:#f29ab3!important}
+html[data-theme="sepia"] #page-chat .chat-page-title{border-bottom-color:#8a6747!important}
+html[data-theme="ocean"] #page-chat .chat-page-title{border-bottom-color:#65d7df!important}
+html[data-theme="lavender"] #page-chat .chat-page-title{border-bottom-color:#c3a4ff!important}
+
+
+/* Post upload feedback */
+#publishPost:disabled{
+  opacity:.68!important;
+  cursor:wait!important;
+  pointer-events:none!important;
+}
+
+.post-upload-note{
+  color:var(--m-muted)!important;
+  font-size:8px!important;
+}
+
 </style>
 </head>
-<body data-boom-build="V14-NASA-CHAT">
+<body data-boom-build="V16-POST-MEDIA">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -9902,7 +10312,7 @@ html[data-theme="lavender"] #page-chat .igdm-profile-summary b{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V14</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V16</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -12634,17 +13044,158 @@ renderFeed=function(){
   $$('[data-pollvote]').forEach(b=>b.onclick=async()=>{const postId=b.dataset.pollvote,p=state.posts.find(x=>x.id===postId),opt=p?.poll?.options?.[Number(b.dataset.option)];if(!opt)return;if(state.pollVotes[postId]!==undefined)return toast('YOU ALREADY VOTED');const r=await boomDB.from('poll_votes').insert({post_id:postId,option_id:opt.id,user_id:boomUser.id});if(r.error)return toast(r.error.message);await loadBoomCloud()});
 };
 
+
+/* =========================================================
+   POST MEDIA STORAGE
+   Photos / camera images / doodles go to Supabase Storage.
+   Database stores only the public URL, never a huge data URL.
+   ========================================================= */
+function dataUrlToBlob(dataUrl){
+  const parts=String(dataUrl).split(",");
+  if(parts.length<2)throw new Error("INVALID IMAGE DATA");
+
+  const mimeMatch=parts[0].match(/data:([^;]+)/i);
+  const mime=mimeMatch?.[1]||"image/png";
+  const binary=atob(parts[1]);
+  const bytes=new Uint8Array(binary.length);
+
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  return new Blob([bytes],{type:mime});
+}
+
+function extensionForMime(mime=""){
+  if(mime.includes("jpeg"))return "jpg";
+  if(mime.includes("webp"))return "webp";
+  if(mime.includes("gif"))return "gif";
+  return "png";
+}
+
+async function uploadPostMedia(source){
+  if(!source)return null;
+
+  // Already a cloud/public URL.
+  if(/^https?:\/\//i.test(source))return source;
+
+  if(!/^data:image\//i.test(source)){
+    throw new Error("UNSUPPORTED POST IMAGE FORMAT");
+  }
+
+  const blob=dataUrlToBlob(source);
+  const ext=extensionForMime(blob.type);
+  const id=(crypto.randomUUID?.()||(`${Date.now()}-${Math.random().toString(36).slice(2)}`));
+  const path=`${boomUser.id}/${id}.${ext}`;
+
+  const upload=await boomDB.storage
+    .from("post-media")
+    .upload(path,blob,{
+      contentType:blob.type,
+      cacheControl:"31536000",
+      upsert:false
+    });
+
+  if(upload.error)throw upload.error;
+
+  const publicResult=boomDB.storage.from("post-media").getPublicUrl(path);
+  const url=publicResult?.data?.publicUrl;
+
+  if(!url)throw new Error("COULD NOT GET POST MEDIA URL");
+  return url;
+}
+
 $("#publishPost").onclick=async()=>{
   if(!boomUser)return toast("LOGIN REQUIRED");
-  const text=$("#postText").value.trim(),q=$("#pollQuestion")?.value.trim()||"";
-  const opts=[$("#pollOpt1")?.value,$("#pollOpt2")?.value,$("#pollOpt3")?.value].map(x=>(x||"").trim()).filter(Boolean);
-  const pollTouched=!!(q||opts.length);if(pollTouched&&(!q||opts.length<2))return toast("POLL NEEDS QUESTION + 2 OPTIONS");
-  if(!text&&!state.postImage&&!pollTouched)return toast("ADD TEXT, IMAGE, DOODLE OR POLL");
-  const body=pollTouched?q:text;
-  const ins=await boomDB.from("posts").insert({user_id:boomUser.id,body,image_url:state.postImage||null,post_type:pollTouched?"poll":"normal"}).select().single();
-  if(ins.error)return toast(ins.error.message);
-  if(pollTouched){const po=await boomDB.from("poll_options").insert(opts.map(option_text=>({post_id:ins.data.id,option_text})));if(po.error)return toast(po.error.message)}
-  $("#postText").value="";$("#postImage").value="";if($("#postCamera"))$("#postCamera").value="";state.postImage=null;$("#postPreview").style.display="none";clearPollBuilder();setComposer(false);await loadBoomCloud();toast("POST PUBLISHED")
+
+  const btn=$("#publishPost");
+  const text=$("#postText").value.trim();
+  const q=$("#pollQuestion")?.value.trim()||"";
+  const opts=[$("#pollOpt1")?.value,$("#pollOpt2")?.value,$("#pollOpt3")?.value]
+    .map(x=>(x||"").trim())
+    .filter(Boolean);
+
+  const pollTouched=!!(q||opts.length);
+
+  if(pollTouched&&(!q||opts.length<2)){
+    return toast("POLL NEEDS QUESTION + 2 OPTIONS");
+  }
+
+  if(!text&&!state.postImage&&!pollTouched){
+    return toast("ADD TEXT, IMAGE, DOODLE OR POLL");
+  }
+
+  btn.disabled=true;
+  const oldLabel=btn.textContent;
+  btn.textContent=state.postImage?"UPLOADING...":"POSTING...";
+
+  let uploadedMediaUrl=null;
+  let insertedPostId=null;
+
+  try{
+    if(state.postImage){
+      uploadedMediaUrl=await uploadPostMedia(state.postImage);
+      btn.textContent="POSTING...";
+    }
+
+    const body=pollTouched?q:text;
+
+    const ins=await boomDB
+      .from("posts")
+      .insert({
+        user_id:boomUser.id,
+        body,
+        image_url:uploadedMediaUrl,
+        post_type:pollTouched?"poll":"normal"
+      })
+      .select()
+      .single();
+
+    if(ins.error)throw ins.error;
+    insertedPostId=ins.data.id;
+
+    if(pollTouched){
+      const po=await boomDB
+        .from("poll_options")
+        .insert(opts.map(option_text=>({
+          post_id:insertedPostId,
+          option_text
+        })));
+
+      if(po.error){
+        // Keep database consistent if poll options fail.
+        await boomDB.from("posts").delete().eq("id",insertedPostId).eq("user_id",boomUser.id);
+        throw po.error;
+      }
+    }
+
+    $("#postText").value="";
+    $("#postImage").value="";
+    if($("#postCamera"))$("#postCamera").value="";
+
+    state.postImage=null;
+    $("#postPreview").removeAttribute("src");
+    $("#postPreview").style.display="none";
+
+    clearPollBuilder();
+    setComposer(false);
+
+    await loadBoomCloud();
+    toast("POST PUBLISHED");
+  }catch(err){
+    console.error("Post publish error:",err);
+
+    const msg=String(err?.message||"POST FAILED");
+    const lower=msg.toLowerCase();
+
+    if(lower.includes("bucket")||lower.includes("storage")||lower.includes("row-level security")){
+      toast("RUN POST MEDIA STORAGE SQL");
+    }else if(lower.includes("payload")||lower.includes("too large")){
+      toast("IMAGE TOO LARGE");
+    }else{
+      toast(msg);
+    }
+  }finally{
+    btn.disabled=false;
+    btn.textContent=oldLabel||"POST";
+  }
 };
 
 /* cloud chat */
