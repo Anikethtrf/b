@@ -8134,139 +8134,6 @@ html[data-theme="lavender"] .auth-status.error{
 
 
 /* =========================================================
-   V22 PERMANENT CHAT NAVIGATION CONTROLLER
-   Individual conversation-row listeners can disappear after realtime
-   re-renders. This capture-phase delegated controller never disappears.
-   ========================================================= */
-function selectDmImmediateByProfile(profile){
-  if(!profile||!boomUser)return false;
-  if(profile.id===boomUser.id){
-    toast("YOU CAN'T DM YOURSELF");
-    return false;
-  }
-
-  state.chatMode="dm";
-  state.activeDMId=profile.id;
-  state.activeDM=profile.username||profile.display_name||"user";
-  state.dms[state.activeDM]=state.dms[state.activeDM]||[];
-  boomReplyTarget=null;
-
-  save();
-
-  // UI selection happens NOW. Network/seen updates happen afterwards.
-  try{
-    renderChat();
-    showMobileConversation();
-  }catch(err){
-    console.error("Immediate DM render failed:",err);
-  }
-
-  Promise.resolve()
-    .then(()=>markActiveDmSeen())
-    .catch(err=>console.warn("Seen update skipped:",err));
-
-  return true;
-}
-
-async function recoverAndSelectDm(id,name){
-  const cleanId=String(id||"").trim();
-
-  if(cleanId){
-    const cached=boomProfileById[cleanId]||boomProfiles.find(p=>p.id===cleanId);
-    if(cached)return selectDmImmediateByProfile(cached);
-
-    try{
-      const r=await boomDB.from("profiles").select("*").eq("id",cleanId).maybeSingle();
-      if(!r.error&&r.data){
-        boomProfileById[r.data.id]=r.data;
-        const i=boomProfiles.findIndex(p=>p.id===r.data.id);
-        if(i>=0)boomProfiles[i]=r.data;
-        else boomProfiles.push(r.data);
-        return selectDmImmediateByProfile(r.data);
-      }
-    }catch(err){
-      console.warn("DM id recovery failed:",err);
-    }
-  }
-
-  const cleanName=String(name||"").trim().replace(/^@/,"");
-  if(cleanName){
-    const profile=await findProfileByUsername(cleanName);
-    if(profile)return selectDmImmediateByProfile(profile);
-  }
-
-  toast("CHAT ACCOUNT NOT AVAILABLE");
-  return false;
-}
-
-function selectRoomImmediate(roomName){
-  const clean=String(roomName||"").trim();
-  if(!clean)return false;
-
-  state.chatMode="room";
-  state.room=clean;
-  boomReplyTarget=null;
-  save();
-
-  try{
-    renderChat();
-    showMobileConversation();
-  }catch(err){
-    console.error("Immediate channel render failed:",err);
-  }
-
-  return true;
-}
-
-/* Capture phase is intentional:
-   even if an old row handler is missing/broken, this still catches the click. */
-document.addEventListener("click",event=>{
-  const dmButton=event.target.closest("#dmList button");
-  if(dmButton){
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
-    dmButton.classList.add("chat-row-pressed");
-
-    const id=dmButton.dataset.dmId||"";
-    const name=dmButton.dataset.dm||"";
-
-    recoverAndSelectDm(id,name).finally(()=>{
-      setTimeout(()=>dmButton.classList.remove("chat-row-pressed"),120);
-    });
-    return;
-  }
-
-  const roomButton=event.target.closest("#roomList button[data-room]");
-  if(roomButton){
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    selectRoomImmediate(roomButton.dataset.room);
-  }
-},true);
-
-/* Also support keyboard activation robustly. */
-document.addEventListener("keydown",event=>{
-  if(event.key!=="Enter"&&event.key!==" ")return;
-
-  const dmButton=event.target.closest?.("#dmList button");
-  if(dmButton){
-    event.preventDefault();
-    recoverAndSelectDm(dmButton.dataset.dmId||"",dmButton.dataset.dm||"");
-    return;
-  }
-
-  const roomButton=event.target.closest?.("#roomList button[data-room]");
-  if(roomButton){
-    event.preventDefault();
-    selectRoomImmediate(roomButton.dataset.room);
-  }
-},true);
-
-
-/* =========================================================
    MESSAGE 3-DOT MENU V7
    ========================================================= */
 .msg-hold-backdrop,
@@ -10995,9 +10862,862 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   box-shadow:inset 4px 0 0 var(--m-accent)!important;
 }
 
+
+/* =========================================================
+   BOOM CHAT V23 — FRESH CHAT CORE
+   Only #page-chat and its chat overlays are redesigned.
+   ========================================================= */
+#page-chat{
+  --c-accent:var(--m-accent);
+  --c-bg:var(--m-chat);
+  --c-surface:var(--m-surface);
+  --c-soft:var(--m-soft);
+  --c-line:var(--m-line);
+  --c-line-strong:var(--m-line-strong);
+  --c-text:var(--m-text);
+  --c-muted:var(--m-muted);
+  --c-head:color-mix(in srgb,var(--m-accent) 62%,#07131e 38%);
+  --c-head2:color-mix(in srgb,var(--m-accent) 36%,#02070d 64%);
+  --c-active:color-mix(in srgb,var(--m-accent) 14%,var(--m-surface) 86%);
+  --c-danger:#cf3f4b;
+}
+
+#page-chat .chat-page-title{
+  width:100%!important;
+  max-width:none!important;
+  margin:10px 0 12px!important;
+}
+#page-chat .v23-title-tools{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+#page-chat .v23-build-chip{
+  padding:5px 7px!important;
+  border:1px solid var(--c-line-strong)!important;
+  background:var(--c-soft)!important;
+  color:var(--c-muted)!important;
+  font:800 9px "Courier New",monospace!important;
+}
+
+#page-chat .v23-chat-shell{
+  width:100%!important;
+  max-width:none!important;
+  height:clamp(620px,calc(100dvh - 175px),920px)!important;
+  min-height:620px!important;
+  display:grid!important;
+  grid-template-columns:310px minmax(0,1fr) 260px!important;
+  overflow:hidden!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:3px!important;
+  background:var(--c-surface)!important;
+  box-sizing:border-box!important;
+}
+
+/* ---------- SIDEBAR ---------- */
+#page-chat .v23-sidebar{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-right:1px solid var(--c-line-strong)!important;
+  background:var(--c-surface)!important;
+}
+#page-chat .v23-side-head,
+#page-chat .v23-console-head,
+#page-chat .v23-details-head,
+.v23-modal-head{
+  background:linear-gradient(var(--c-head),var(--c-head2))!important;
+  color:#fff!important;
+}
+#page-chat .v23-side-head{
+  min-height:70px!important;
+  padding:10px 11px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  border-bottom:1px solid var(--c-head2)!important;
+}
+#page-chat .v23-side-brand{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+}
+#page-chat .v23-signal-dot{
+  width:10px!important;height:10px!important;
+  flex:0 0 10px!important;
+  border-radius:50%!important;
+  background:#55d87c!important;
+  box-shadow:0 0 0 3px rgba(85,216,124,.15)!important;
+}
+#page-chat .v23-side-brand b{
+  display:block!important;
+  color:#fff!important;
+  font:800 14px Arial,sans-serif!important;
+  letter-spacing:.04em!important;
+}
+#page-chat .v23-side-brand small{
+  display:block!important;
+  margin-top:3px!important;
+  color:rgba(255,255,255,.72)!important;
+  font:700 9px "Courier New",monospace!important;
+}
+
+#page-chat .v23-square-btn{
+  width:34px!important;height:34px!important;
+  flex:0 0 34px!important;
+  display:grid!important;place-items:center!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  border-radius:2px!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+  font-size:18px!important;
+  cursor:pointer!important;
+}
+
+#page-chat .v23-search{
+  height:44px!important;
+  margin:10px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--c-bg)!important;
+}
+#page-chat .v23-search span{
+  color:var(--c-accent)!important;
+  font-size:15px!important;
+}
+#page-chat .v23-search input{
+  width:100%!important;
+  min-width:0!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:var(--c-text)!important;
+  font:12px "Courier New",monospace!important;
+}
+#page-chat .v23-search input::placeholder{color:var(--c-muted)!important}
+
+#page-chat .v23-tabs{
+  margin:0 10px 8px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  border:1px solid var(--c-line-strong)!important;
+}
+#page-chat .v23-tabs button{
+  min-height:38px!important;
+  border:0!important;
+  border-right:1px solid var(--c-line-strong)!important;
+  border-radius:0!important;
+  background:var(--c-soft)!important;
+  color:var(--c-muted)!important;
+  font:800 10px Arial,sans-serif!important;
+  cursor:pointer!important;
+}
+#page-chat .v23-tabs button:last-child{border-right:0!important}
+#page-chat .v23-tabs button.active{
+  background:var(--c-head)!important;
+  color:#fff!important;
+}
+
+#page-chat .v23-directory-pane{
+  min-height:0!important;
+  flex:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#page-chat .v23-directory-pane.hidden{display:none!important}
+#page-chat .v23-directory-list{
+  min-height:0!important;
+  flex:1!important;
+  padding:0 8px 8px!important;
+  overflow:auto!important;
+}
+#page-chat .v23-chat-row{
+  width:100%!important;
+  min-height:76px!important;
+  margin:0 0 5px!important;
+  padding:9px!important;
+  display:grid!important;
+  grid-template-columns:46px minmax(0,1fr) auto!important;
+  gap:9px!important;
+  align-items:center!important;
+  border:1px solid var(--c-line)!important;
+  border-left:4px solid transparent!important;
+  border-radius:2px!important;
+  background:var(--c-surface)!important;
+  color:var(--c-text)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  box-sizing:border-box!important;
+}
+#page-chat .v23-chat-row:hover{background:var(--c-active)!important}
+#page-chat .v23-chat-row.active{
+  border-left-color:var(--c-accent)!important;
+  background:var(--c-active)!important;
+}
+#page-chat .v23-row-avatar,
+#page-chat .v23-avatar,
+#page-chat .v23-details-avatar{
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--c-soft)!important;
+  color:var(--c-accent)!important;
+  font:800 16px "Courier New",monospace!important;
+}
+#page-chat .v23-row-avatar{
+  width:44px!important;height:44px!important;
+}
+#page-chat .v23-row-avatar img,
+#page-chat .v23-avatar img,
+#page-chat .v23-details-avatar img{
+  width:100%!important;height:100%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+#page-chat .v23-row-copy{
+  min-width:0!important;
+}
+#page-chat .v23-row-copy b{
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:var(--c-text)!important;
+  font:800 14px Arial,sans-serif!important;
+}
+#page-chat .v23-row-copy span{
+  display:block!important;
+  margin-top:4px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:var(--c-muted)!important;
+  font:11px "Courier New",monospace!important;
+}
+#page-chat .v23-row-meta{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:5px!important;
+  color:var(--c-muted)!important;
+  font:9px "Courier New",monospace!important;
+}
+#page-chat .v23-unread{
+  min-width:21px!important;height:21px!important;
+  padding:0 5px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:11px!important;
+  background:var(--c-danger)!important;
+  color:#fff!important;
+  font:800 9px Arial,sans-serif!important;
+}
+#page-chat .v23-quick-link{
+  padding:9px!important;
+  border-top:1px solid var(--c-line)!important;
+  background:var(--c-soft)!important;
+}
+#page-chat .v23-quick-link>span,
+#page-chat .v23-channel-toolbar>span{
+  display:block!important;
+  margin-bottom:6px!important;
+  color:var(--c-muted)!important;
+  font:800 9px "Courier New",monospace!important;
+}
+#page-chat .v23-quick-link>div{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:5px!important;
+}
+#page-chat .v23-quick-link input{
+  min-width:0!important;
+  height:38px!important;
+  padding:0 9px!important;
+  border:1px solid var(--c-line-strong)!important;
+  background:var(--c-bg)!important;
+  color:var(--c-text)!important;
+  font-size:13px!important;
+}
+#page-chat .v23-channel-toolbar{
+  padding:8px 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  border-bottom:1px solid var(--c-line)!important;
+  background:var(--c-soft)!important;
+}
+#page-chat .v23-channel-toolbar>span{margin:0!important}
+
+/* ---------- CONSOLE ---------- */
+#page-chat .v23-console{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  background:var(--c-bg)!important;
+}
+#page-chat .v23-console-head{
+  min-height:70px!important;
+  padding:9px 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  border-bottom:1px solid var(--c-head2)!important;
+}
+#page-chat .v23-mobile-back{
+  display:none!important;
+  width:34px!important;height:34px!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+  font-size:17px!important;
+}
+#page-chat .v23-avatar{
+  width:44px!important;height:44px!important;
+  flex:0 0 44px!important;
+  background:rgba(255,255,255,.9)!important;
+}
+#page-chat .v23-console-copy{
+  min-width:0!important;
+  flex:1!important;
+}
+#page-chat .v23-console-copy b{
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:#fff!important;
+  font:800 15px Arial,sans-serif!important;
+}
+#page-chat .v23-console-copy span{
+  display:block!important;
+  margin-top:4px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:rgba(255,255,255,.73)!important;
+  font:10px "Courier New",monospace!important;
+}
+#page-chat .v23-console-status{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  color:rgba(255,255,255,.8)!important;
+  font:800 9px "Courier New",monospace!important;
+}
+#page-chat .v23-build-mini{
+  padding:3px 5px!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  color:#fff!important;
+}
+#page-chat .v23-manage{
+  min-height:32px!important;
+  padding:0 8px!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+  font:800 9px Arial,sans-serif!important;
+}
+#page-chat .v23-manage.hidden{display:none!important}
+
+#page-chat .v23-message-log{
+  min-height:0!important;
+  flex:1!important;
+  padding:18px 20px!important;
+  overflow:auto!important;
+  background:
+    linear-gradient(color-mix(in srgb,var(--c-bg) 96%,transparent),color-mix(in srgb,var(--c-bg) 96%,transparent)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 31px,color-mix(in srgb,var(--c-accent) 8%,transparent) 32px)!important;
+}
+#page-chat .v23-empty-log{
+  min-height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  color:var(--c-muted)!important;
+  text-align:center!important;
+}
+#page-chat .v23-empty-log b{
+  color:var(--c-text)!important;
+  font-size:14px!important;
+}
+#page-chat .v23-empty-log span{
+  font:11px "Courier New",monospace!important;
+}
+
+#page-chat .v23-msg{
+  margin:8px 0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+}
+#page-chat .v23-msg.mine{align-items:flex-end!important}
+#page-chat .v23-msg-line{
+  max-width:82%!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  gap:6px!important;
+}
+#page-chat .v23-msg.mine .v23-msg-line{flex-direction:row-reverse!important}
+#page-chat .v23-bubble{
+  min-width:80px!important;
+  max-width:720px!important;
+  padding:10px 12px!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-left:4px solid var(--c-accent)!important;
+  border-radius:2px!important;
+  background:var(--c-surface)!important;
+  color:var(--c-text)!important;
+}
+#page-chat .v23-msg.mine .v23-bubble{
+  border-left:1px solid color-mix(in srgb,var(--c-accent) 60%,#111 40%)!important;
+  border-right:4px solid var(--c-danger)!important;
+  background:color-mix(in srgb,var(--c-accent) 52%,#07121b 48%)!important;
+  color:#fff!important;
+}
+#page-chat .v23-sender{
+  margin-bottom:5px!important;
+  color:inherit!important;
+  opacity:.78!important;
+  font:800 10px "Courier New",monospace!important;
+}
+#page-chat .v23-reply-quote{
+  margin-bottom:7px!important;
+  padding:6px 8px!important;
+  border-left:3px solid currentColor!important;
+  background:rgba(127,127,127,.12)!important;
+  color:inherit!important;
+  opacity:.84!important;
+  font:10px "Courier New",monospace!important;
+}
+#page-chat .v23-msg-text{
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  font:15px "Courier New",monospace!important;
+  line-height:1.55!important;
+}
+#page-chat .v23-msg-image{
+  display:block!important;
+  max-width:min(440px,100%)!important;
+  max-height:440px!important;
+  margin-top:7px!important;
+  border:1px solid currentColor!important;
+  object-fit:contain!important;
+  background:#111!important;
+}
+#page-chat .v23-msg-time{
+  margin-top:7px!important;
+  color:inherit!important;
+  opacity:.64!important;
+  font:9px "Courier New",monospace!important;
+}
+#page-chat .v23-more{
+  width:31px!important;height:31px!important;
+  flex:0 0 31px!important;
+  padding:0!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--c-soft)!important;
+  color:var(--c-text)!important;
+  font-size:18px!important;
+  cursor:pointer!important;
+}
+#page-chat .v23-reaction{
+  margin-top:-2px!important;
+  padding:3px 6px!important;
+  border:1px solid var(--c-line)!important;
+  border-radius:10px!important;
+  background:var(--c-surface)!important;
+  color:var(--c-text)!important;
+  font-size:10px!important;
+}
+#page-chat .v23-seen{
+  margin-top:3px!important;
+  color:var(--c-muted)!important;
+  font:9px "Courier New",monospace!important;
+}
+
+#page-chat .v23-reply-banner,
+#page-chat .v23-attachment{
+  padding:8px 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  border-top:1px solid var(--c-line)!important;
+  background:var(--c-soft)!important;
+}
+#page-chat .v23-reply-banner.hidden,
+#page-chat .v23-attachment.hidden{display:none!important}
+#page-chat .v23-reply-banner>div,
+#page-chat .v23-attachment>div{
+  min-width:0!important;
+  flex:1!important;
+}
+#page-chat .v23-reply-banner small,
+#page-chat .v23-attachment small{
+  display:block!important;
+  color:var(--c-muted)!important;
+  font:9px "Courier New",monospace!important;
+}
+#page-chat .v23-reply-banner span,
+#page-chat .v23-attachment b{
+  display:block!important;
+  margin-top:2px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:var(--c-text)!important;
+  font-size:11px!important;
+}
+#page-chat .v23-reply-banner button,
+#page-chat .v23-attachment button{
+  width:30px!important;height:30px!important;
+  border:1px solid var(--c-line)!important;
+  background:var(--c-surface)!important;
+  color:var(--c-text)!important;
+}
+#page-chat .v23-attachment img{
+  width:48px!important;height:48px!important;
+  object-fit:cover!important;
+  border:1px solid var(--c-line-strong)!important;
+}
+
+#page-chat .v23-emoji-panel{
+  padding:6px 9px!important;
+  display:flex!important;
+  gap:5px!important;
+  border-top:1px solid var(--c-line)!important;
+  background:var(--c-surface)!important;
+}
+#page-chat .v23-emoji-panel.hidden{display:none!important}
+#page-chat .v23-emoji-panel button{
+  width:36px!important;height:34px!important;
+  border:1px solid var(--c-line)!important;
+  border-radius:2px!important;
+  background:var(--c-soft)!important;
+}
+
+#page-chat .v23-transmitter{
+  min-height:68px!important;
+  padding:9px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto auto auto auto!important;
+  gap:6px!important;
+  align-items:center!important;
+  border-top:3px double var(--c-line-strong)!important;
+  background:var(--c-soft)!important;
+}
+#page-chat .v23-transmitter input#chatInput{
+  width:100%!important;
+  min-width:0!important;
+  height:44px!important;
+  padding:0 11px!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--c-bg)!important;
+  color:var(--c-text)!important;
+  font:15px "Courier New",monospace!important;
+}
+#page-chat .v23-tool-btn{
+  width:38px!important;height:38px!important;
+  display:grid!important;place-items:center!important;
+  padding:0!important;
+  border:1px solid var(--c-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--c-surface)!important;
+  color:var(--c-text)!important;
+  cursor:pointer!important;
+}
+#page-chat .v23-transmit-btn{
+  min-width:92px!important;
+  height:40px!important;
+  border:1px solid var(--c-head2)!important;
+  border-radius:2px!important;
+  background:linear-gradient(var(--c-head),var(--c-head2))!important;
+  color:#fff!important;
+  font:800 10px Arial,sans-serif!important;
+  letter-spacing:.07em!important;
+  cursor:pointer!important;
+}
+#page-chat .v23-transmitter.disabled{
+  opacity:.52!important;
+}
+#page-chat .v23-transmitter.disabled input,
+#page-chat .v23-transmitter.disabled button,
+#page-chat .v23-transmitter.disabled label{
+  pointer-events:none!important;
+}
+
+/* ---------- DETAILS ---------- */
+#page-chat .v23-details{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-left:1px solid var(--c-line-strong)!important;
+  background:var(--c-surface)!important;
+}
+#page-chat .v23-details-head{
+  min-height:70px!important;
+  padding:10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+#page-chat .v23-details-head small{
+  display:block!important;
+  color:rgba(255,255,255,.7)!important;
+  font:8px "Courier New",monospace!important;
+}
+#page-chat .v23-details-head b{
+  display:block!important;
+  margin-top:2px!important;
+  color:#fff!important;
+  font-size:13px!important;
+}
+#page-chat .v23-details-profile{
+  padding:18px 12px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  text-align:center!important;
+  border-bottom:1px solid var(--c-line)!important;
+}
+#page-chat .v23-details-avatar{
+  width:76px!important;height:76px!important;
+  margin-bottom:10px!important;
+  font-size:23px!important;
+}
+#page-chat .v23-details-profile b{
+  color:var(--c-text)!important;
+  font-size:14px!important;
+}
+#page-chat .v23-details-profile span{
+  margin-top:5px!important;
+  color:var(--c-muted)!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+#page-chat .v23-crew-section{
+  min-height:0!important;
+  flex:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#page-chat .v23-crew-head{
+  min-height:36px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  border-bottom:1px solid var(--c-line)!important;
+  background:var(--c-soft)!important;
+  color:var(--c-muted)!important;
+  font:800 9px "Courier New",monospace!important;
+}
+#page-chat .v23-crew-list{
+  min-height:0!important;
+  flex:1!important;
+  overflow:auto!important;
+}
+#page-chat .v23-person-row{
+  padding:9px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  gap:8px!important;
+  align-items:center!important;
+  border-bottom:1px solid var(--c-line)!important;
+}
+#page-chat .v23-person-row .v23-row-avatar{
+  width:36px!important;height:36px!important;
+}
+#page-chat .v23-person-row b{
+  display:block!important;
+  color:var(--c-text)!important;
+  font-size:12px!important;
+}
+#page-chat .v23-person-row span{
+  display:block!important;
+  margin-top:2px!important;
+  color:var(--c-muted)!important;
+  font-size:10px!important;
+}
+
+/* ---------- MESSAGE MENU ---------- */
+.v23-message-menu{
+  position:fixed!important;
+  z-index:9300!important;
+  width:175px!important;
+  padding:5px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:3px!important;
+  background:var(--m-surface)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.25)!important;
+}
+.v23-message-menu.hidden{display:none!important}
+.v23-message-menu button{
+  min-height:38px!important;
+  padding:0 9px!important;
+  border:0!important;
+  border-radius:1px!important;
+  background:transparent!important;
+  color:var(--m-text)!important;
+  text-align:left!important;
+  font:800 11px Arial,sans-serif!important;
+}
+.v23-message-menu button:hover{background:var(--m-soft)!important}
+.v23-message-menu button.danger{color:#d04a54!important}
+.v23-message-menu button.hidden{display:none!important}
+
+/* ---------- MODALS ---------- */
+.v23-modal{
+  border-radius:3px!important;
+  border-color:var(--m-line-strong)!important;
+  background:var(--m-surface)!important;
+}
+.v23-modal-head{
+  color:#fff!important;
+}
+.new-dm-user{
+  border-radius:1px!important;
+}
+.room-member-avatar{
+  overflow:hidden!important;
+}
+
+/* ---------- LAPTOP ---------- */
+@media(max-width:1250px) and (min-width:761px){
+  #page-chat .v23-chat-shell{
+    grid-template-columns:285px minmax(0,1fr)!important;
+  }
+  #page-chat .v23-details{
+    position:fixed!important;
+    z-index:9100!important;
+    top:96px!important;
+    right:10px!important;
+    bottom:10px!important;
+    width:300px!important;
+    border:1px solid var(--c-line-strong)!important;
+    box-shadow:0 16px 40px rgba(0,0,0,.22)!important;
+    transform:translateX(calc(100% + 24px))!important;
+    transition:transform .16s ease!important;
+  }
+  #page-chat .v23-chat-shell.details-open .v23-details{
+    transform:none!important;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:760px){
+  #page-chat .chat-page-title{
+    margin-bottom:7px!important;
+  }
+  #page-chat .v23-build-chip{display:none!important}
+  #page-chat .v23-chat-shell{
+    height:calc(100dvh - 175px)!important;
+    min-height:520px!important;
+    display:block!important;
+    position:relative!important;
+    overflow:hidden!important;
+  }
+  #page-chat .v23-sidebar,
+  #page-chat .v23-console{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    border:0!important;
+  }
+  #page-chat .v23-sidebar{
+    display:flex!important;
+    transform:none!important;
+  }
+  #page-chat .v23-console{
+    display:flex!important;
+    transform:translateX(100%)!important;
+    transition:transform .16s ease!important;
+  }
+  #page-chat .v23-chat-shell.mobile-chat-open .v23-console{
+    transform:none!important;
+  }
+  #page-chat .v23-chat-shell.mobile-chat-open .v23-sidebar{
+    pointer-events:none!important;
+  }
+  #page-chat .v23-mobile-back{display:grid!important}
+  #page-chat .v23-console-status #roomStatus{display:none!important}
+  #page-chat .v23-message-log{padding:13px 10px!important}
+  #page-chat .v23-msg-line{max-width:94%!important}
+  #page-chat .v23-bubble{max-width:100%!important}
+  #page-chat .v23-msg-text{font-size:14px!important}
+  #page-chat .v23-transmitter{
+    grid-template-columns:auto minmax(0,1fr) auto auto auto!important;
+    gap:4px!important;
+    padding:6px!important;
+  }
+  #page-chat .v23-tool-btn{
+    width:34px!important;height:36px!important;
+  }
+  #page-chat .v23-transmitter label[title="Camera"]{
+    display:none!important;
+  }
+  #page-chat .v23-transmit-btn{
+    min-width:58px!important;
+    height:38px!important;
+    padding:0 5px!important;
+    font-size:8px!important;
+  }
+  #page-chat .v23-details{
+    position:absolute!important;
+    z-index:20!important;
+    inset:0 0 0 15%!important;
+    border-left:1px solid var(--c-line-strong)!important;
+    transform:translateX(110%)!important;
+    transition:transform .16s ease!important;
+    box-shadow:-12px 0 28px rgba(0,0,0,.22)!important;
+  }
+  #page-chat .v23-chat-shell.details-open .v23-details{
+    transform:none!important;
+  }
+  #page-chat .v23-chat-row{
+    min-height:72px!important;
+  }
+  #page-chat .v23-row-copy b{font-size:14px!important}
+  #page-chat .v23-row-copy span{font-size:11px!important}
+}
+
+/* Dark themes: use the active theme, not fixed NASA blue */
+html[data-theme="dark"] #page-chat,
+html[data-theme="midnight"] #page-chat,
+html[data-theme="forest"] #page-chat,
+html[data-theme="rose"] #page-chat,
+html[data-theme="ocean"] #page-chat,
+html[data-theme="lavender"] #page-chat{
+  --c-head:color-mix(in srgb,var(--m-accent) 44%,#07131e 56%);
+  --c-head2:color-mix(in srgb,var(--m-accent) 25%,#01060b 75%);
+  --c-active:color-mix(in srgb,var(--m-accent) 16%,var(--m-surface) 84%);
+}
+
 </style>
 </head>
-<body data-boom-build="V22-CHAT-CLICK">
+<body data-boom-build="V23-FRESH-CHAT">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -11033,7 +11753,7 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V22</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V23</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -11285,212 +12005,220 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   </section>
 
   <!-- CHAT -->
-  <section class="page" id="page-chat">
-    <div class="page-title chat-page-title">
-      <div>
-        <div class="eyebrow">02 / MISSION NETWORK</div>
-        <h2>Communications</h2>
-        <small>Direct links · mission channels · media transmission</small>
-      </div>
+  
+<section class="page" id="page-chat">
+  <div class="page-title chat-page-title">
+    <div>
+      <div class="eyebrow">02 / MISSION NETWORK</div>
+      <h2>Communications</h2>
+      <small>BOOM CHAT secure direct links + mission channels</small>
+    </div>
+    <div class="v23-title-tools">
+      <span class="v23-build-chip">V23 · FRESH CORE</span>
       <button class="btn" data-go="feed">← FEED</button>
     </div>
+  </div>
 
-    <div class="chat-layout igdm-shell" id="igdmShell">
+  <div class="v23-chat-shell" id="igdmShell">
 
-      <!-- INBOX -->
-      <aside class="panel igdm-inbox" id="igdmInbox">
-        <div class="igdm-inbox-head">
+    <!-- NETWORK DIRECTORY -->
+    <aside class="v23-sidebar" id="igdmInbox">
+      <header class="v23-side-head">
+        <div class="v23-side-brand">
+          <span class="v23-signal-dot"></span>
           <div>
             <b id="igdmMyName">COMMUNICATIONS NET</b>
-            <small>BOOM CHAT // LINK DIRECTORY</small>
-          </div>
-          <button class="igdm-icon-btn" id="igNewMessage" type="button" title="New message">✎</button>
-        </div>
-
-        <div class="igdm-search">
-          <span>⌕</span>
-          <input id="chatSearch" placeholder="SEARCH CHANNEL / USER" autocomplete="off">
-        </div>
-
-        <div class="chat-switch igdm-tabs">
-          <button id="dmModeBtn" class="active">DIRECT</button>
-          <button id="roomModeBtn">CHANNELS</button>
-        </div>
-
-        <div id="dmsPane">
-          <div class="room-list igdm-conversation-list" id="dmList"></div>
-          <div class="dm-tools igdm-quick-start">
-            <input id="dmUserInput" placeholder="USERNAME..." autocomplete="off">
-            <button class="btn dark" id="startDm" type="button">START</button>
+            <small>BOOM CHAT // NETWORK DIRECTORY</small>
           </div>
         </div>
+        <button class="v23-square-btn" id="igNewMessage" type="button" title="Open direct link">＋</button>
+      </header>
 
-        <div id="roomsPane" class="hidden">
-          <div class="igdm-list-label">
-            <span>MISSION CHANNELS</span>
-            <button class="igdm-text-btn" id="newRoom" type="button">+ NEW CHANNEL</button>
-          </div>
-          <div class="room-list igdm-conversation-list" id="roomList"></div>
-        </div>
-      </aside>
+      <label class="v23-search">
+        <span>⌕</span>
+        <input id="chatSearch" placeholder="SEARCH USER / CHANNEL" autocomplete="off">
+      </label>
 
-      <!-- ACTIVE CONVERSATION -->
-      <main class="panel chat-box igdm-conversation" id="igdmConversation">
-        <div class="panel-head chat-main-head igdm-chat-head">
-          <button class="igdm-mobile-back" id="chatMobileBack" type="button" aria-label="Back to inbox">←</button>
-
-          <div class="igdm-chat-avatar" id="chatAvatar">B</div>
-
-          <div class="chat-head-copy">
-            <span id="chatTitle">Select a conversation</span>
-            <small id="chatSubline">DIRECT MESSAGE</small>
-          </div>
-
-          <div class="chat-head-actions">
-            <span class="chat-live-build">V22</span><span id="roomStatus">ONLINE</span>
-            <button class="igdm-icon-btn" id="chatInfoBtn" type="button" title="Conversation details">ⓘ</button>
-            <button class="btn room-manage-btn hidden" id="manageRoomBtn" type="button">MEMBERS</button>
-          </div>
-        </div>
-
-        <div class="igdm-reply-banner hidden" id="chatReplyBanner">
-          <div>
-            <small>REPLYING TO <b id="chatReplyUser">USER</b></small>
-            <span id="chatReplyText">Message</span>
-          </div>
-          <button id="cancelChatReply" type="button">×</button>
-        </div>
-
-        <div class="messages igdm-messages" id="messages"></div>
-
-        <div class="igdm-attachment-preview hidden" id="chatAttachmentPreview">
-          <img id="chatAttachmentImage" alt="Attachment preview">
-          <div>
-            <b>PHOTO READY</b>
-            <small>It will be sent with your message.</small>
-          </div>
-          <button id="removeChatAttachment" type="button">×</button>
-        </div>
-
-        <div class="igdm-emoji-panel hidden" id="chatEmojiPanel">
-          <button type="button" data-chat-emoji="❤️">❤️</button>
-          <button type="button" data-chat-emoji="😂">😂</button>
-          <button type="button" data-chat-emoji="🔥">🔥</button>
-          <button type="button" data-chat-emoji="😮">😮</button>
-          <button type="button" data-chat-emoji="😭">😭</button>
-          <button type="button" data-chat-emoji="👍">👍</button>
-        </div>
-
-        <div class="chat-compose igdm-compose">
-          <button class="igdm-compose-icon" id="chatEmojiBtn" type="button" title="Emoji">☺</button>
-          <input id="chatInput" placeholder="TRANSMIT MESSAGE..." autocomplete="off">
-          <label class="igdm-compose-icon" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label>
-          <label class="igdm-compose-icon" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label>
-          <button class="igdm-compose-icon" id="chatDoodleBtn" type="button" title="Doodle">✎</button>
-          <button class="igdm-send-btn" id="sendChat" type="button">TRANSMIT</button>
-        </div>
-      </main>
-
-      <!-- DETAILS / MEMBERS -->
-      <aside class="panel igdm-details" id="igdmDetails">
-        <div class="igdm-details-head">
-          <b>LINK STATUS</b>
-          <button class="igdm-icon-btn" id="chatDetailsClose" type="button">×</button>
-        </div>
-
-        <div class="igdm-profile-summary">
-          <div class="igdm-details-avatar" id="chatDetailsAvatar">B</div>
-          <b id="chatDetailsName">Boom Chat</b>
-          <small id="chatDetailsStatus">Select a conversation</small>
-        </div>
-
-        <div class="igdm-detail-section">
-          <div class="igdm-detail-title">
-            <span id="chatPeopleTitle">PEOPLE</span>
-            <span id="chatPeopleCount">0</span>
-          </div>
-          <div class="online-list" id="onlineList"></div>
-        </div>
-      </aside>
-
-    </div>
-  </section>
-
-
-  <!-- MOBILE MESSAGE LONG-PRESS MENU -->
-  <div class="msg-hold-backdrop hidden" id="msgHoldBackdrop" aria-hidden="true"></div>
-  <div class="msg-hold-sheet hidden" id="msgHoldSheet" role="dialog" aria-modal="true" aria-label="Message options">
-    <div class="msg-hold-preview" id="msgHoldPreview">
-      <small id="msgHoldUser">MESSAGE</small>
-      <span id="msgHoldText">Message preview</span>
-    </div>
-    <div class="msg-hold-actions">
-      <button type="button" id="msgHoldReply"><span>↩</span><b>Reply</b></button>
-      <button type="button" id="msgHoldReact"><span>♡</span><b>React</b></button>
-      <button type="button" class="danger hidden" id="msgHoldDelete"><span>⌫</span><b>Delete</b></button>
-    </div>
-    <button class="msg-hold-cancel" type="button" id="msgHoldCancel">Cancel</button>
-  </div>
-
-
-  <!-- MESSAGE 3-DOT MENU -->
-  <div class="msg-more-menu hidden" id="msgMoreMenu" role="menu" aria-label="Message options">
-    <button type="button" id="msgMoreReply" role="menuitem">↩ Reply</button>
-    <button type="button" id="msgMoreReact" role="menuitem">♡ React</button>
-    <button type="button" class="danger hidden" id="msgMoreDelete" role="menuitem">⌫ Delete</button>
-  </div>
-
-  <!-- NEW MESSAGE MODAL -->
-  <div class="new-dm-overlay hidden" id="newDmModal" role="dialog" aria-modal="true">
-    <div class="new-dm-window">
-      <div class="new-dm-head">
-        <button id="newDmClose" type="button">×</button>
-        <b>OPEN DIRECT LINK</b>
-        <button class="igdm-text-btn" id="newGroupFromDm" type="button">NEW CHANNEL</button>
+      <div class="v23-tabs">
+        <button id="dmModeBtn" class="active" type="button">DIRECT LINKS</button>
+        <button id="roomModeBtn" type="button">CHANNELS</button>
       </div>
-      <div class="new-dm-search">
-        <span>TO:</span>
-        <input id="newDmSearch" placeholder="Search people..." autocomplete="off">
-      </div>
-      <div class="new-dm-list" id="newDmUserList"></div>
-    </div>
-  </div>
 
-  <!-- ROOM MANAGER -->
-  <div class="room-manager-overlay hidden" id="roomManagerModal" role="dialog" aria-modal="true" aria-labelledby="roomManagerTitle">
-    <div class="room-manager-window">
-      <div class="room-manager-titlebar">
+      <section id="dmsPane" class="v23-directory-pane">
+        <div class="v23-directory-list" id="dmList"></div>
+
+        <div class="v23-quick-link">
+          <span>DIRECT LINK BY USERNAME</span>
+          <div>
+            <input id="dmUserInput" placeholder="@USERNAME" autocomplete="off">
+            <button class="btn dark" id="startDm" type="button">OPEN</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="roomsPane" class="v23-directory-pane hidden">
+        <div class="v23-channel-toolbar">
+          <span>MISSION CHANNELS</span>
+          <button class="igdm-text-btn" id="newRoom" type="button">+ NEW CHANNEL</button>
+        </div>
+        <div class="v23-directory-list" id="roomList"></div>
+      </section>
+    </aside>
+
+    <!-- TRANSMISSION LOG -->
+    <main class="v23-console" id="igdmConversation">
+      <header class="v23-console-head">
+        <button class="v23-mobile-back" id="chatMobileBack" type="button" aria-label="Back">←</button>
+
+        <div class="v23-avatar" id="chatAvatar">B</div>
+
+        <div class="v23-console-copy">
+          <b id="chatTitle">SELECT A DIRECT LINK</b>
+          <span id="chatSubline">Choose a user from the directory</span>
+        </div>
+
+        <div class="v23-console-status">
+          <span class="v23-build-mini">V23</span>
+          <span id="roomStatus">STANDBY</span>
+          <button class="v23-square-btn" id="chatInfoBtn" type="button" title="Link information">ⓘ</button>
+          <button class="v23-manage hidden" id="manageRoomBtn" type="button">CREW</button>
+        </div>
+      </header>
+
+      <div class="v23-reply-banner hidden" id="chatReplyBanner">
         <div>
-          <b id="roomManagerTitle">CREATE GROUP</b>
-          <small id="roomManagerHint">Choose a name and add people.</small>
+          <small>REPLYING TO <b id="chatReplyUser">USER</b></small>
+          <span id="chatReplyText">Message</span>
         </div>
-        <button type="button" id="roomManagerClose" aria-label="Close">×</button>
+        <button id="cancelChatReply" type="button">×</button>
       </div>
 
-      <div class="room-manager-body">
-        <label class="room-field">
-          <span>GROUP NAME</span>
-          <input id="roomManagerName" maxlength="30" placeholder="e.g. school-gang">
+      <div class="v23-message-log" id="messages">
+        <div class="v23-empty-log">
+          <b>COMMUNICATION LINK STANDBY</b>
+          <span>Select a direct link or mission channel.</span>
+        </div>
+      </div>
+
+      <div class="v23-attachment hidden" id="chatAttachmentPreview">
+        <img id="chatAttachmentImage" alt="Attachment preview">
+        <div>
+          <b>MEDIA BUFFER READY</b>
+          <small>Photo / doodle will transmit with the message.</small>
+        </div>
+        <button id="removeChatAttachment" type="button">×</button>
+      </div>
+
+      <div class="v23-emoji-panel hidden" id="chatEmojiPanel">
+        <button type="button" data-chat-emoji="❤️">❤️</button>
+        <button type="button" data-chat-emoji="😂">😂</button>
+        <button type="button" data-chat-emoji="🔥">🔥</button>
+        <button type="button" data-chat-emoji="😮">😮</button>
+        <button type="button" data-chat-emoji="😭">😭</button>
+        <button type="button" data-chat-emoji="👍">👍</button>
+      </div>
+
+      <footer class="v23-transmitter">
+        <button class="v23-tool-btn" id="chatEmojiBtn" type="button" title="Emoji">☺</button>
+        <input id="chatInput" placeholder="TRANSMIT MESSAGE..." autocomplete="off">
+        <label class="v23-tool-btn" title="Photo">▧
+          <input id="chatImage" type="file" accept="image/*" hidden>
         </label>
+        <label class="v23-tool-btn" title="Camera">◉
+          <input id="chatCamera" type="file" accept="image/*" capture="environment" hidden>
+        </label>
+        <button class="v23-tool-btn" id="chatDoodleBtn" type="button" title="Doodle">✎</button>
+        <button class="v23-transmit-btn" id="sendChat" type="button">TRANSMIT</button>
+      </footer>
+    </main>
 
-        <div class="room-member-head">
-          <span>ADD PEOPLE</span>
-          <small id="roomMemberCount">0 selected</small>
+    <!-- LINK STATUS -->
+    <aside class="v23-details" id="igdmDetails">
+      <header class="v23-details-head">
+        <div>
+          <small>MISSION CONTROL</small>
+          <b>LINK STATUS</b>
         </div>
-        <div class="room-member-search">
-          <input id="roomMemberSearch" placeholder="SEARCH USERS..." autocomplete="off">
-        </div>
-        <div class="room-member-picker" id="roomMemberPicker"></div>
+        <button class="v23-square-btn" id="chatDetailsClose" type="button">×</button>
+      </header>
+
+      <div class="v23-details-profile">
+        <div class="v23-details-avatar" id="chatDetailsAvatar">B</div>
+        <b id="chatDetailsName">NO LINK SELECTED</b>
+        <span id="chatDetailsStatus">Awaiting communication target.</span>
       </div>
 
-      <div class="room-manager-actions">
-        <button class="btn" type="button" id="roomManagerCancel">CANCEL</button>
-        <button class="btn dark" type="button" id="roomManagerSave">CREATE GROUP</button>
+      <section class="v23-crew-section">
+        <div class="v23-crew-head">
+          <span id="chatPeopleTitle">LINK PROFILE</span>
+          <b id="chatPeopleCount">0</b>
+        </div>
+        <div class="v23-crew-list" id="onlineList"></div>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<!-- V23 MESSAGE MENU -->
+<div class="v23-message-menu hidden" id="v23MessageMenu">
+  <button type="button" id="v23ReplyAction">↩ REPLY</button>
+  <button type="button" id="v23ReactAction">♥ REACT</button>
+  <button type="button" class="danger hidden" id="v23DeleteAction">⌫ DELETE</button>
+</div>
+
+<!-- NEW DIRECT LINK -->
+<div class="new-dm-overlay hidden" id="newDmModal" role="dialog" aria-modal="true">
+  <div class="new-dm-window v23-modal">
+    <div class="new-dm-head v23-modal-head">
+      <button id="newDmClose" type="button">×</button>
+      <b>OPEN DIRECT LINK</b>
+      <button class="igdm-text-btn" id="newGroupFromDm" type="button">NEW CHANNEL</button>
+    </div>
+    <div class="new-dm-search">
+      <span>TO:</span>
+      <input id="newDmSearch" placeholder="SEARCH BOOM CHAT USERS..." autocomplete="off">
+    </div>
+    <div class="new-dm-list" id="newDmUserList"></div>
+  </div>
+</div>
+
+<!-- CHANNEL MANAGER -->
+<div class="room-manager-overlay hidden" id="roomManagerModal" role="dialog" aria-modal="true">
+  <div class="room-manager-window v23-modal">
+    <div class="room-manager-titlebar v23-modal-head">
+      <div>
+        <b id="roomManagerTitle">CREATE CHANNEL</b>
+        <small id="roomManagerHint">Choose a channel name and crew.</small>
       </div>
+      <button type="button" id="roomManagerClose">×</button>
+    </div>
+
+    <div class="room-manager-body">
+      <label class="room-field">
+        <span>CHANNEL NAME</span>
+        <input id="roomManagerName" maxlength="30" placeholder="e.g. robotics-lab">
+      </label>
+
+      <div class="room-member-head">
+        <span>CREW MEMBERS</span>
+        <small id="roomMemberCount">0 selected</small>
+      </div>
+
+      <div class="room-member-search">
+        <input id="roomMemberSearch" placeholder="SEARCH USERS..." autocomplete="off">
+      </div>
+
+      <div class="room-member-picker" id="roomMemberPicker"></div>
+    </div>
+
+    <div class="room-manager-actions">
+      <button class="btn" type="button" id="roomManagerCancel">CANCEL</button>
+      <button class="btn dark" type="button" id="roomManagerSave">CREATE CHANNEL</button>
     </div>
   </div>
+</div>
 
-  <!-- DRAW -->
+<!-- DRAW -->
   <section class="page" id="page-draw">
     <div class="page-title">
       <div><div class="eyebrow">03 / MAKE</div><h2>Sketchbook</h2><small>Draw · erase · undo · save · share</small></div>
@@ -15280,6 +16008,918 @@ renderDrafts=function(){renderDraftsLocal();if(!boomUser)return;$$('[data-load-d
 const renderSavedLocal=renderSaved;
 renderSaved=function(){renderSavedLocal();if(!boomUser)return;$$('[data-unsave]').forEach(b=>b.onclick=async()=>{const r=await boomDB.from('saved_posts').delete().eq('post_id',b.dataset.unsave).eq('user_id',boomUser.id);if(r.error)return toast(r.error.message);await loadBoomCloud()})};
 $("#clearSaved").onclick=async()=>{if(!state.saved.length)return toast("NOTHING SAVED");if(!confirm("Clear all saved posts?"))return;const r=await boomDB.from("saved_posts").delete().eq("user_id",boomUser.id);if(r.error)return toast(r.error.message);await loadBoomCloud();toast("SAVED ARCHIVE CLEARED")};
+
+
+/* =========================================================
+   BOOM CHAT V23 — FRESH CHAT CORE
+   Raw Supabase UUID/message-driven implementation.
+   ========================================================= */
+let v23ReplyTarget=null;
+let v23MenuMessage=null;
+let v23RoomManagerMode="create";
+let v23RoomManagerId=null;
+
+function v23Profile(id){
+  return boomProfileById[id]||boomProfiles.find(p=>p.id===id)||null;
+}
+function v23Avatar(profile,fallback="B"){
+  if(!profile)return esc(fallback);
+  return avatarVisual(profile.avatar_url,profile.username?.[0]||fallback);
+}
+function v23ActiveDm(){
+  return state.activeDMId?v23Profile(state.activeDMId):null;
+}
+function v23ActiveRoom(){
+  return boomRooms.find(r=>r.name===state.room)||null;
+}
+function v23RoomMemberIds(room){
+  if(!room)return [];
+  if(room.name==="general")return boomProfiles.map(p=>p.id);
+  return boomRoomMembers.filter(m=>m.room_id===room.id).map(m=>m.user_id);
+}
+function v23CanManageRoom(room){
+  return !!room && room.name!=="general" && room.created_by===boomUser?.id;
+}
+function v23Time(ts){
+  if(!ts)return "";
+  const d=new Date(ts);
+  const now=new Date();
+  const mins=Math.floor((now-d)/60000);
+  if(mins<1)return "now";
+  if(mins<60)return mins+"m";
+  if(mins<1440)return Math.floor(mins/60)+"h";
+  return d.toLocaleDateString();
+}
+function v23Clock(ts){
+  if(!ts)return "";
+  return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+}
+function v23Truncate(s,n=58){
+  s=String(s||"");
+  return s.length>n?s.slice(0,n-1)+"…":s;
+}
+function v23DmRaw(profileId){
+  if(!profileId||!boomUser)return [];
+  return boomRawDirectMessages
+    .filter(m=>
+      (m.sender_id===boomUser.id&&m.receiver_id===profileId) ||
+      (m.sender_id===profileId&&m.receiver_id===boomUser.id)
+    )
+    .sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+}
+function v23RoomRaw(room){
+  if(!room)return [];
+  return boomRawRoomMessages
+    .filter(m=>m.room_id===room.id)
+    .sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+}
+function v23CurrentRaw(){
+  return state.chatMode==="dm"?v23DmRaw(state.activeDMId):v23RoomRaw(v23ActiveRoom());
+}
+function v23ReactionRows(id){
+  const rows=state.chatMode==="dm"?boomDmMessageReactions:boomRoomMessageReactions;
+  return rows.filter(r=>String(r.message_id)===String(id));
+}
+function v23ReactionSummary(rows){
+  if(!rows.length)return "";
+  const count={};
+  rows.forEach(r=>count[r.reaction]=(count[r.reaction]||0)+1);
+  return Object.entries(count).map(([e,n])=>`${e}${n>1?" "+n:""}`).join(" ");
+}
+function v23RawModel(raw){
+  const sender=v23Profile(state.chatMode==="dm"?raw.sender_id:raw.user_id);
+  return {
+    id:raw.id,
+    user_id:state.chatMode==="dm"?raw.sender_id:raw.user_id,
+    user:sender?.username||"user",
+    text:raw.body||"",
+    image:raw.image_url||raw.drawing_url||null,
+    reply_to:raw.reply_to||null,
+    read_at:raw.read_at||null,
+    created_at:raw.created_at,
+    time:v23Clock(raw.created_at),
+    reactions:v23ReactionRows(raw.id)
+  };
+}
+function currentMessages(){
+  return v23CurrentRaw().map(v23RawModel);
+}
+function findCurrentMessage(id){
+  return currentMessages().find(m=>String(m.id)===String(id))||null;
+}
+
+function showMobileConversation(){
+  $("#igdmShell")?.classList.add("mobile-chat-open");
+}
+function showMobileInbox(){
+  $("#igdmShell")?.classList.remove("mobile-chat-open","details-open");
+}
+function closeChatDetails(){
+  $("#igdmShell")?.classList.remove("details-open");
+}
+function toggleChatDetails(){
+  $("#igdmShell")?.classList.toggle("details-open");
+}
+
+function v23SelectDm(id){
+  const p=v23Profile(String(id||""));
+  if(!p)return toast("ACCOUNT NOT AVAILABLE");
+  if(p.id===boomUser?.id)return toast("YOU CAN'T DM YOURSELF");
+
+  state.chatMode="dm";
+  state.activeDMId=p.id;
+  state.activeDM=p.username||p.display_name||"user";
+  v23ReplyTarget=null;
+  save();
+
+  renderChat();
+  showMobileConversation();
+  v23MarkSeen().catch(err=>console.warn("Seen update:",err));
+}
+async function openDMById(id){
+  const clean=String(id||"").trim();
+  if(!clean)return;
+
+  let p=v23Profile(clean);
+  if(!p){
+    const r=await boomDB.from("profiles").select("*").eq("id",clean).maybeSingle();
+    if(!r.error&&r.data){
+      p=r.data;
+      boomProfileById[p.id]=p;
+      if(!boomProfiles.some(x=>x.id===p.id))boomProfiles.push(p);
+    }
+  }
+  if(!p)return toast("ACCOUNT NOT AVAILABLE");
+  v23SelectDm(p.id);
+}
+openDM=async function(name){
+  const clean=String(name||"").trim().replace(/^@/,"");
+  if(!clean)return;
+  const p=await findProfileByUsername(clean);
+  if(!p)return toast("ACCOUNT NOT AVAILABLE");
+  v23SelectDm(p.id);
+};
+
+function v23SelectRoom(name){
+  const room=boomRooms.find(r=>r.name===String(name||""));
+  if(!room)return toast("CHANNEL NOT AVAILABLE");
+  state.chatMode="room";
+  state.room=room.name;
+  v23ReplyTarget=null;
+  save();
+  renderChat();
+  showMobileConversation();
+}
+
+async function v23MarkSeen(){
+  const p=v23ActiveDm();
+  if(!p||!boomUser||state.chatMode!=="dm")return;
+  const unread=boomRawDirectMessages.filter(m=>m.sender_id===p.id&&m.receiver_id===boomUser.id&&!m.read_at);
+  if(!unread.length)return;
+
+  const now=new Date().toISOString();
+  const r=await boomDB.from("direct_messages")
+    .update({read_at:now})
+    .eq("sender_id",p.id)
+    .eq("receiver_id",boomUser.id)
+    .is("read_at",null);
+
+  if(r.error)return console.warn("Seen update failed:",r.error.message);
+  unread.forEach(m=>m.read_at=now);
+  v23RenderDirectory();
+}
+
+function v23RenderDirectory(){
+  if(!boomUser)return;
+
+  const q=($("#chatSearch")?.value||"").trim().toLowerCase();
+  $("#dmModeBtn")?.classList.toggle("active",state.chatMode==="dm");
+  $("#roomModeBtn")?.classList.toggle("active",state.chatMode==="room");
+  $("#dmsPane")?.classList.toggle("hidden",state.chatMode!=="dm");
+  $("#roomsPane")?.classList.toggle("hidden",state.chatMode!=="room");
+
+  if(state.chatMode==="dm"){
+    let users=boomProfiles.filter(p=>p.id!==boomUser.id);
+    if(q){
+      users=users.filter(p=>
+        String(p.username||"").toLowerCase().includes(q) ||
+        String(p.display_name||"").toLowerCase().includes(q)
+      );
+    }
+
+    users.sort((a,b)=>{
+      const A=v23DmRaw(a.id).at(-1), B=v23DmRaw(b.id).at(-1);
+      const ta=new Date(A?.created_at||0).getTime();
+      const tb=new Date(B?.created_at||0).getTime();
+      if(tb!==ta)return tb-ta;
+      return String(a.username||"").localeCompare(String(b.username||""));
+    });
+
+    $("#dmList").innerHTML=users.length?users.map(p=>{
+      const arr=v23DmRaw(p.id);
+      const last=arr.at(-1);
+      const unread=arr.filter(m=>m.sender_id===p.id&&m.receiver_id===boomUser.id&&!m.read_at).length;
+      const preview=last
+        ?(last.body||((last.image_url||last.drawing_url)?"MEDIA TRANSMISSION":"MESSAGE"))
+        :"Open a direct link";
+
+      return `<button type="button" class="v23-chat-row ${state.activeDMId===p.id?"active":""}" data-v23-dm="${esc(p.id)}">
+        <span class="v23-row-avatar">${v23Avatar(p)}</span>
+        <span class="v23-row-copy">
+          <b>@${esc(p.username||p.display_name||"user")}</b>
+          <span>${last?.sender_id===boomUser.id?"You: ":""}${esc(v23Truncate(preview))}</span>
+        </span>
+        <span class="v23-row-meta">
+          <span>${esc(v23Time(last?.created_at))}</span>
+          ${unread?`<i class="v23-unread">${unread>99?"99+":unread}</i>`:""}
+        </span>
+      </button>`;
+    }).join(""):`<div class="v23-empty-log"><b>NO USERS FOUND</b><span>Try another search.</span></div>`;
+  }else{
+    let rooms=[...boomRooms];
+    if(q)rooms=rooms.filter(r=>String(r.name||"").toLowerCase().includes(q));
+
+    rooms.sort((a,b)=>{
+      const A=v23RoomRaw(a).at(-1),B=v23RoomRaw(b).at(-1);
+      return new Date(B?.created_at||b.created_at||0)-new Date(A?.created_at||a.created_at||0);
+    });
+
+    $("#roomList").innerHTML=rooms.length?rooms.map(room=>{
+      const arr=v23RoomRaw(room);
+      const last=arr.at(-1);
+      const sender=last?v23Profile(last.user_id):null;
+      const preview=last
+        ?(last.body||((last.image_url||last.drawing_url)?"MEDIA TRANSMISSION":"MESSAGE"))
+        :(room.name==="general"?"Public mission channel":"No transmissions yet");
+      const members=v23RoomMemberIds(room).length;
+
+      return `<button type="button" class="v23-chat-row ${state.room===room.name?"active":""}" data-v23-room="${esc(room.name)}">
+        <span class="v23-row-avatar">${esc((room.name?.[0]||"#").toUpperCase())}</span>
+        <span class="v23-row-copy">
+          <b>#${esc(room.name)}</b>
+          <span>${last&&sender?esc(sender.username)+": ":""}${esc(v23Truncate(preview))}</span>
+        </span>
+        <span class="v23-row-meta">
+          <span>${esc(v23Time(last?.created_at))}</span>
+          <span>${members}</span>
+        </span>
+      </button>`;
+    }).join(""):`<div class="v23-empty-log"><b>NO CHANNELS</b><span>Create your first mission channel.</span></div>`;
+  }
+}
+renderDMs=v23RenderDirectory;
+renderRooms=v23RenderDirectory;
+
+function v23RenderHeader(){
+  const manage=$("#manageRoomBtn");
+
+  if(state.chatMode==="dm"){
+    const p=v23ActiveDm();
+    setAvatarNode($("#chatAvatar"),p?.avatar_url,p?.username?.[0]||"B");
+    setAvatarNode($("#chatDetailsAvatar"),p?.avatar_url,p?.username?.[0]||"B");
+
+    $("#chatTitle").textContent=p?("@"+p.username):"SELECT A DIRECT LINK";
+    $("#chatSubline").textContent=p?(p.display_name||p.bio||"Private Boom Chat link"):"Choose a user from the directory";
+    $("#roomStatus").textContent=p?(p.mood||"PRIVATE"):"STANDBY";
+
+    $("#chatDetailsName").textContent=p?("@"+p.username):"NO LINK SELECTED";
+    $("#chatDetailsStatus").textContent=p?(p.bio||p.mood||"Boom Chat user"):"Awaiting communication target.";
+    $("#chatPeopleTitle").textContent="LINK PROFILE";
+    manage?.classList.add("hidden");
+  }else{
+    const room=v23ActiveRoom();
+    setAvatarNode($("#chatAvatar"),(room?.name?.[0]||"#").toUpperCase(),"#");
+    setAvatarNode($("#chatDetailsAvatar"),(room?.name?.[0]||"#").toUpperCase(),"#");
+
+    $("#chatTitle").textContent=room?("#"+room.name):"SELECT A CHANNEL";
+    $("#chatSubline").textContent=room?.name==="general"?"Public mission channel":"Restricted mission channel";
+    $("#roomStatus").textContent=room?(room.name==="general"?"PUBLIC":v23RoomMemberIds(room).length+" CREW"):"STANDBY";
+
+    $("#chatDetailsName").textContent=room?("#"+room.name):"NO CHANNEL SELECTED";
+    $("#chatDetailsStatus").textContent=room?.name==="general"
+      ?"Open network channel."
+      :(v23CanManageRoom(room)?"You are channel commander.":"Mission channel member.");
+
+    $("#chatPeopleTitle").textContent="CREW";
+    manage?.classList.toggle("hidden",!v23CanManageRoom(room));
+  }
+}
+
+function v23RenderPeople(){
+  const wrap=$("#onlineList");
+  if(!wrap)return;
+
+  if(state.chatMode==="dm"){
+    const p=v23ActiveDm();
+    $("#chatPeopleCount").textContent=p?"1":"0";
+    wrap.innerHTML=p?`
+      <div class="v23-person-row">
+        <span class="v23-row-avatar">${v23Avatar(p)}</span>
+        <div><b>@${esc(p.username)}</b><span>${esc(p.mood||"PRIVATE LINK")}</span></div>
+      </div>`:'';
+    return;
+  }
+
+  const room=v23ActiveRoom();
+  const ids=v23RoomMemberIds(room);
+  const people=ids.map(v23Profile).filter(Boolean);
+  $("#chatPeopleCount").textContent=String(people.length);
+  wrap.innerHTML=people.map(p=>`
+    <div class="v23-person-row">
+      <span class="v23-row-avatar">${v23Avatar(p)}</span>
+      <div><b>@${esc(p.username)}</b><span>${p.id===boomUser.id?"YOU":esc(p.mood||"MEMBER")}</span></div>
+    </div>`).join("");
+}
+renderOnline=v23RenderPeople;
+
+function v23UpdateReply(){
+  const box=$("#chatReplyBanner");
+  if(!box)return;
+  if(!v23ReplyTarget){
+    box.classList.add("hidden");
+    return;
+  }
+  $("#chatReplyUser").textContent="@"+(v23ReplyTarget.user||"user");
+  $("#chatReplyText").textContent=v23Truncate(v23ReplyTarget.text||(v23ReplyTarget.image?"MEDIA":"MESSAGE"),90);
+  box.classList.remove("hidden");
+}
+function updateReplyBanner(){v23UpdateReply()}
+
+function renderChatAttachmentPreview(){
+  const wrap=$("#chatAttachmentPreview");
+  if(!wrap)return;
+  if(!state.chatImage){
+    wrap.classList.add("hidden");
+    return;
+  }
+  $("#chatAttachmentImage").src=state.chatImage;
+  wrap.classList.remove("hidden");
+}
+
+function v23RenderMessages(){
+  const wrap=$("#messages");
+  if(!wrap)return;
+
+  const selected=state.chatMode==="dm"?!!v23ActiveDm():!!v23ActiveRoom();
+  $(".v23-transmitter")?.classList.toggle("disabled",!selected);
+
+  if(!selected){
+    wrap.innerHTML=`<div class="v23-empty-log"><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or mission channel.</span></div>`;
+    return;
+  }
+
+  const rows=currentMessages();
+  const byId=Object.fromEntries(rows.map(m=>[String(m.id),m]));
+  const lastOwn=[...rows].reverse().find(m=>m.user_id===boomUser.id);
+
+  if(!rows.length){
+    wrap.innerHTML=`<div class="v23-empty-log"><b>NO TRANSMISSIONS YET</b><span>Send the first message.</span></div>`;
+    return;
+  }
+
+  wrap.innerHTML=rows.map(m=>{
+    const mine=m.user_id===boomUser.id;
+    const replied=m.reply_to?byId[String(m.reply_to)]:null;
+    const reaction=v23ReactionSummary(m.reactions||[]);
+
+    return `<article class="v23-msg ${mine?"mine":""}" data-v23-message="${m.id}">
+      <div class="v23-msg-line">
+        <div class="v23-bubble">
+          ${state.chatMode==="room"&&!mine?`<div class="v23-sender">@${esc(m.user)}</div>`:""}
+          ${replied?`<div class="v23-reply-quote"><b>@${esc(replied.user)}</b><br>${esc(v23Truncate(replied.text||(replied.image?"MEDIA":"MESSAGE"),72))}</div>`:""}
+          ${m.text?`<div class="v23-msg-text">${esc(m.text)}</div>`:""}
+          ${m.image?`<img class="v23-msg-image" src="${esc(m.image)}" alt="shared media">`:""}
+          <div class="v23-msg-time">${esc(m.time)}</div>
+        </div>
+        <button class="v23-more" type="button" data-v23-more="${m.id}" aria-label="Message options">⋮</button>
+      </div>
+      ${reaction?`<div class="v23-reaction">${esc(reaction)}</div>`:""}
+      ${state.chatMode==="dm"&&mine&&lastOwn?.id===m.id&&m.read_at?`<div class="v23-seen">SEEN</div>`:""}
+    </article>`;
+  }).join("");
+
+  requestAnimationFrame(()=>{wrap.scrollTop=wrap.scrollHeight});
+}
+
+renderChat=function(){
+  if(!boomUser)return;
+  $("#igdmMyName").textContent="@"+me.name;
+  v23RenderDirectory();
+  v23RenderHeader();
+  v23RenderPeople();
+  v23UpdateReply();
+  renderChatAttachmentPreview();
+  v23RenderMessages();
+};
+
+function v23OpenMessageMenu(message,button){
+  v23MenuMessage=message;
+  const menu=$("#v23MessageMenu");
+  if(!menu||!button)return;
+
+  $("#v23DeleteAction").classList.toggle("hidden",message.user_id!==boomUser.id);
+  menu.classList.remove("hidden");
+
+  const rect=button.getBoundingClientRect();
+  const width=175;
+  const height=message.user_id===boomUser.id?124:84;
+  let left=rect.right-width;
+  let top=rect.bottom+5;
+
+  left=Math.max(8,Math.min(left,window.innerWidth-width-8));
+  if(top+height>window.innerHeight-8)top=Math.max(8,rect.top-height-5);
+
+  menu.style.left=left+"px";
+  menu.style.top=top+"px";
+}
+function v23CloseMessageMenu(){
+  $("#v23MessageMenu")?.classList.add("hidden");
+  v23MenuMessage=null;
+}
+
+async function v23ReactMessage(message){
+  if(!message)return;
+  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL FOR REACTIONS");
+
+  const table=state.chatMode==="dm"?"direct_message_reactions":"room_message_reactions";
+  const store=state.chatMode==="dm"?boomDmMessageReactions:boomRoomMessageReactions;
+  const existing=store.find(r=>String(r.message_id)===String(message.id)&&r.user_id===boomUser.id);
+
+  if(existing){
+    const r=await boomDB.from(table).delete().eq("message_id",message.id).eq("user_id",boomUser.id);
+    if(r.error)return toast(r.error.message);
+
+    if(state.chatMode==="dm"){
+      boomDmMessageReactions=boomDmMessageReactions.filter(x=>!(String(x.message_id)===String(message.id)&&x.user_id===boomUser.id));
+    }else{
+      boomRoomMessageReactions=boomRoomMessageReactions.filter(x=>!(String(x.message_id)===String(message.id)&&x.user_id===boomUser.id));
+    }
+  }else{
+    const r=await boomDB.from(table)
+      .upsert({message_id:message.id,user_id:boomUser.id,reaction:"❤️"},{onConflict:"message_id,user_id"})
+      .select()
+      .maybeSingle();
+    if(r.error)return toast(r.error.message);
+
+    const row=r.data||{message_id:message.id,user_id:boomUser.id,reaction:"❤️"};
+    if(state.chatMode==="dm")boomDmMessageReactions.push(row);
+    else boomRoomMessageReactions.push(row);
+  }
+
+  v23RenderMessages();
+}
+
+async function v23DeleteMessage(message){
+  if(!message||message.user_id!==boomUser.id)return;
+  const isDm=state.chatMode==="dm";
+  const table=isDm?"direct_messages":"room_messages";
+
+  let q=boomDB.from(table).delete().eq("id",message.id);
+  q=isDm?q.eq("sender_id",boomUser.id):q.eq("user_id",boomUser.id);
+  const r=await q;
+  if(r.error)return toast(r.error.message);
+
+  if(isDm){
+    boomRawDirectMessages=boomRawDirectMessages.filter(m=>String(m.id)!==String(message.id));
+  }else{
+    boomRawRoomMessages=boomRawRoomMessages.filter(m=>String(m.id)!==String(message.id));
+  }
+
+  if(v23ReplyTarget?.id===message.id)v23ReplyTarget=null;
+  v23CloseMessageMenu();
+  renderChat();
+  toast("MESSAGE DELETED");
+}
+
+async function v23PrepareChatMedia(){
+  let media=state.chatImage;
+  if(!media)return null;
+
+  if(/^data:image\//i.test(media)&&typeof uploadPostMedia==="function"){
+    try{
+      media=await uploadPostMedia(media);
+    }catch(err){
+      console.warn("Chat media cloud upload failed; attempting inline fallback:",err);
+      if(String(state.chatImage).length>900000){
+        throw new Error("MEDIA UPLOAD FAILED — CHECK POST MEDIA STORAGE");
+      }
+      media=state.chatImage;
+    }
+  }
+  return media;
+}
+
+async function v23Send(){
+  if(!boomUser)return toast("LOGIN REQUIRED");
+
+  const text=$("#chatInput").value.trim();
+  if(!text&&!state.chatImage)return;
+
+  const isDm=state.chatMode==="dm";
+  const profile=v23ActiveDm();
+  const room=v23ActiveRoom();
+
+  if(isDm&&!profile)return toast("SELECT A DIRECT LINK FIRST");
+  if(!isDm&&!room)return toast("SELECT A CHANNEL FIRST");
+
+  const btn=$("#sendChat");
+  const original=btn.textContent;
+  btn.disabled=true;
+  btn.textContent=state.chatImage?"UPLOADING":"SENDING";
+
+  try{
+    const media=await v23PrepareChatMedia();
+    const reply_to=v23ReplyTarget?.id||null;
+    let result;
+
+    if(isDm){
+      let payload={
+        sender_id:boomUser.id,
+        receiver_id:profile.id,
+        body:text,
+        image_url:media||null,
+        reply_to
+      };
+
+      result=await boomDB.from("direct_messages").insert(payload).select().single();
+
+      if(result.error&&String(result.error.message||"").toLowerCase().includes("reply_to")){
+        delete payload.reply_to;
+        result=await boomDB.from("direct_messages").insert(payload).select().single();
+      }
+
+      if(result.error)throw result.error;
+      boomRawDirectMessages.push(result.data);
+      if(result.data?.id)sendBoomPush("dm",{message_id:result.data.id});
+    }else{
+      let payload={
+        room_id:room.id,
+        user_id:boomUser.id,
+        body:text,
+        image_url:media||null,
+        reply_to
+      };
+
+      result=await boomDB.from("room_messages").insert(payload).select().single();
+
+      if(result.error&&String(result.error.message||"").toLowerCase().includes("reply_to")){
+        delete payload.reply_to;
+        result=await boomDB.from("room_messages").insert(payload).select().single();
+      }
+
+      if(result.error)throw result.error;
+      boomRawRoomMessages.push(result.data);
+    }
+
+    $("#chatInput").value="";
+    $("#chatImage").value="";
+    if($("#chatCamera"))$("#chatCamera").value="";
+    state.chatImage=null;
+    v23ReplyTarget=null;
+    $("#chatEmojiPanel").classList.add("hidden");
+
+    renderChat();
+    boomReloadSoon();
+  }catch(err){
+    console.error("V23 send failed:",err);
+    toast(err?.message||"MESSAGE FAILED");
+  }finally{
+    btn.disabled=false;
+    btn.textContent=original;
+  }
+}
+
+async function v23AttachFile(file,input){
+  if(!file)return;
+  if(!file.type.startsWith("image/")){
+    if(input)input.value="";
+    return toast("SELECT AN IMAGE");
+  }
+  if(file.size>8*1024*1024){
+    if(input)input.value="";
+    return toast("IMAGE TOO LARGE");
+  }
+
+  try{
+    state.chatImage=await fileToData(file);
+    renderChatAttachmentPreview();
+    toast("MEDIA READY");
+  }catch{
+    toast("COULD NOT READ IMAGE");
+  }
+  if(input)input.value="";
+}
+
+/* ---------- NEW DIRECT LINK ---------- */
+function v23RenderNewDmUsers(){
+  const q=($("#newDmSearch")?.value||"").trim().toLowerCase();
+  const users=boomProfiles
+    .filter(p=>p.id!==boomUser?.id)
+    .filter(p=>!q||
+      String(p.username||"").toLowerCase().includes(q)||
+      String(p.display_name||"").toLowerCase().includes(q)
+    );
+
+  $("#newDmUserList").innerHTML=users.length?users.map(p=>`
+    <button class="new-dm-user" type="button" data-v23-new-dm="${esc(p.id)}">
+      <span class="v23-row-avatar">${v23Avatar(p)}</span>
+      <span class="igdm-conversation-copy">
+        <b>@${esc(p.username)}</b>
+        <small>${esc(p.bio||p.mood||"Boom Chat user")}</small>
+      </span>
+      <span>OPEN</span>
+    </button>`).join(""):'<div class="meta" style="padding:18px;text-align:center">NO USERS FOUND.</div>';
+}
+function v23OpenNewDm(){
+  $("#newDmModal").classList.remove("hidden");
+  $("#newDmSearch").value="";
+  v23RenderNewDmUsers();
+  setTimeout(()=>$("#newDmSearch").focus(),0);
+}
+function v23CloseNewDm(){
+  $("#newDmModal").classList.add("hidden");
+}
+
+/* ---------- CHANNEL MANAGER ---------- */
+function v23SelectedMemberIds(){
+  return $$("[data-v23-member]:checked").map(x=>x.value);
+}
+function v23UpdateMemberCount(){
+  $("#roomMemberCount").textContent=v23SelectedMemberIds().length+" selected";
+}
+function v23RenderMemberPicker(){
+  const q=($("#roomMemberSearch")?.value||"").trim().toLowerCase();
+  const selected=new Set(v23SelectedMemberIds());
+
+  if(v23RoomManagerMode==="manage"){
+    const room=boomRooms.find(r=>r.id===v23RoomManagerId);
+    v23RoomMemberIds(room).forEach(id=>{if(id!==boomUser.id)selected.add(id)});
+  }
+
+  const users=boomProfiles
+    .filter(p=>p.id!==boomUser.id)
+    .filter(p=>!q||
+      String(p.username||"").toLowerCase().includes(q)||
+      String(p.display_name||"").toLowerCase().includes(q)
+    );
+
+  $("#roomMemberPicker").innerHTML=users.length?users.map(p=>`
+    <label class="room-member-row">
+      <input type="checkbox" data-v23-member value="${esc(p.id)}" ${selected.has(p.id)?"checked":""}>
+      <span class="room-member-avatar">${v23Avatar(p)}</span>
+      <span class="room-member-copy">
+        <b>@${esc(p.username)}</b>
+        <small>${esc(p.bio||p.mood||"Boom Chat user")}</small>
+      </span>
+    </label>`).join(""):'<div class="meta" style="padding:14px">NO USERS FOUND.</div>';
+
+  $$("[data-v23-member]").forEach(c=>c.onchange=v23UpdateMemberCount);
+  v23UpdateMemberCount();
+}
+
+function v23OpenRoomManager(mode="create"){
+  if(window.__boomMessagingUpgradeMissing)return toast("RUN MESSAGING V2 SQL FOR PRIVATE CHANNELS");
+
+  v23RoomManagerMode=mode;
+  const room=v23ActiveRoom();
+  const modal=$("#roomManagerModal");
+
+  if(mode==="manage"){
+    if(!v23CanManageRoom(room))return toast("ONLY CHANNEL CREATOR CAN MANAGE CREW");
+    v23RoomManagerId=room.id;
+    $("#roomManagerTitle").textContent="MANAGE CHANNEL";
+    $("#roomManagerHint").textContent="Update crew access.";
+    $("#roomManagerName").value=room.name;
+    $("#roomManagerName").disabled=true;
+    $("#roomManagerSave").textContent="SAVE CREW";
+  }else{
+    v23RoomManagerId=null;
+    $("#roomManagerTitle").textContent="CREATE CHANNEL";
+    $("#roomManagerHint").textContent="Choose a channel name and crew.";
+    $("#roomManagerName").value="";
+    $("#roomManagerName").disabled=false;
+    $("#roomManagerSave").textContent="CREATE CHANNEL";
+  }
+
+  $("#roomMemberSearch").value="";
+  $("#roomMemberPicker").innerHTML="";
+  v23RenderMemberPicker();
+  modal.classList.remove("hidden");
+}
+function v23CloseRoomManager(){
+  $("#roomManagerModal").classList.add("hidden");
+}
+
+async function v23SaveRoomManager(){
+  if(!boomUser)return toast("LOGIN REQUIRED");
+
+  const selected=[...new Set(v23SelectedMemberIds())];
+
+  if(v23RoomManagerMode==="create"){
+    const name=$("#roomManagerName").value
+      .trim()
+      .replace(/^#/,"")
+      .replace(/\s+/g,"-")
+      .slice(0,30);
+
+    if(!name)return toast("CHANNEL NAME REQUIRED");
+    if(name.toLowerCase()==="general")return toast("GENERAL ALREADY EXISTS");
+    if(boomRooms.some(r=>String(r.name).toLowerCase()===name.toLowerCase()))return toast("CHANNEL NAME EXISTS");
+
+    const created=await boomDB.from("chat_rooms")
+      .insert({name,created_by:boomUser.id})
+      .select()
+      .single();
+
+    if(created.error)return toast(created.error.message);
+
+    const ids=[...new Set([boomUser.id,...selected])];
+    if(ids.length){
+      const members=await boomDB.from("room_members").insert(
+        ids.map(user_id=>({room_id:created.data.id,user_id,added_by:boomUser.id}))
+      );
+
+      if(members.error){
+        await boomDB.from("chat_rooms").delete().eq("id",created.data.id);
+        return toast(members.error.message);
+      }
+    }
+
+    v23CloseRoomManager();
+    state.chatMode="room";
+    state.room=name;
+    await loadBoomCloud();
+    showMobileConversation();
+    toast("CHANNEL CREATED");
+    return;
+  }
+
+  const room=boomRooms.find(r=>r.id===v23RoomManagerId);
+  if(!room||!v23CanManageRoom(room))return toast("CHANNEL ACCESS CHANGED");
+
+  const wanted=new Set([boomUser.id,...selected]);
+  const current=boomRoomMembers.filter(m=>m.room_id===room.id);
+  const currentIds=new Set(current.map(m=>m.user_id));
+
+  const add=[...wanted].filter(id=>!currentIds.has(id));
+  const remove=current.filter(m=>m.user_id!==boomUser.id&&!wanted.has(m.user_id));
+
+  if(add.length){
+    const r=await boomDB.from("room_members").insert(
+      add.map(user_id=>({room_id:room.id,user_id,added_by:boomUser.id}))
+    );
+    if(r.error)return toast(r.error.message);
+  }
+
+  for(const member of remove){
+    const r=await boomDB.from("room_members")
+      .delete()
+      .eq("room_id",room.id)
+      .eq("user_id",member.user_id);
+    if(r.error)return toast(r.error.message);
+  }
+
+  v23CloseRoomManager();
+  await loadBoomCloud();
+  toast("CHANNEL CREW UPDATED");
+}
+
+/* ---------- ONE CLEAN EVENT CONTROLLER ---------- */
+$("#page-chat").onclick=e=>{
+  const dm=e.target.closest("[data-v23-dm]");
+  if(dm)return v23SelectDm(dm.dataset.v23Dm);
+
+  const room=e.target.closest("[data-v23-room]");
+  if(room)return v23SelectRoom(room.dataset.v23Room);
+
+  const more=e.target.closest("[data-v23-more]");
+  if(more){
+    const message=findCurrentMessage(more.dataset.v23More);
+    if(message)v23OpenMessageMenu(message,more);
+    return;
+  }
+};
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest("#v23MessageMenu")&&!e.target.closest("[data-v23-more]")){
+    v23CloseMessageMenu();
+  }
+
+  const newDm=e.target.closest("[data-v23-new-dm]");
+  if(newDm){
+    v23CloseNewDm();
+    v23SelectDm(newDm.dataset.v23NewDm);
+  }
+});
+
+$("#v23ReplyAction").onclick=()=>{
+  if(!v23MenuMessage)return;
+  v23ReplyTarget=v23MenuMessage;
+  v23UpdateReply();
+  v23CloseMessageMenu();
+  $("#chatInput").focus();
+};
+$("#v23ReactAction").onclick=()=>{
+  const m=v23MenuMessage;
+  v23CloseMessageMenu();
+  v23ReactMessage(m);
+};
+$("#v23DeleteAction").onclick=()=>{
+  const m=v23MenuMessage;
+  v23CloseMessageMenu();
+  v23DeleteMessage(m);
+};
+
+$("#cancelChatReply").onclick=()=>{
+  v23ReplyTarget=null;
+  v23UpdateReply();
+};
+$("#removeChatAttachment").onclick=()=>{
+  state.chatImage=null;
+  $("#chatImage").value="";
+  if($("#chatCamera"))$("#chatCamera").value="";
+  renderChatAttachmentPreview();
+};
+
+$("#sendChat").onclick=v23Send;
+$("#chatInput").onkeydown=e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    v23Send();
+  }
+};
+
+$("#dmModeBtn").onclick=()=>{
+  state.chatMode="dm";
+  v23ReplyTarget=null;
+  save();
+  renderChat();
+};
+$("#roomModeBtn").onclick=()=>{
+  state.chatMode="room";
+  v23ReplyTarget=null;
+  save();
+  renderChat();
+};
+$("#chatSearch").oninput=v23RenderDirectory;
+
+$("#startDm").onclick=async()=>{
+  const name=$("#dmUserInput").value.trim();
+  if(!name)return toast("ENTER A USERNAME");
+  $("#dmUserInput").value="";
+  await openDM(name);
+};
+$("#dmUserInput").onkeydown=e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    $("#startDm").click();
+  }
+};
+
+$("#chatMobileBack").onclick=showMobileInbox;
+$("#chatInfoBtn").onclick=toggleChatDetails;
+$("#chatDetailsClose").onclick=closeChatDetails;
+
+$("#igNewMessage").onclick=v23OpenNewDm;
+$("#newDmClose").onclick=v23CloseNewDm;
+$("#newDmSearch").oninput=v23RenderNewDmUsers;
+$("#newDmModal").onclick=e=>{if(e.target===$("#newDmModal"))v23CloseNewDm()};
+$("#newGroupFromDm").onclick=()=>{
+  v23CloseNewDm();
+  v23OpenRoomManager("create");
+};
+
+$("#newRoom").onclick=()=>v23OpenRoomManager("create");
+$("#manageRoomBtn").onclick=()=>v23OpenRoomManager("manage");
+$("#roomManagerClose").onclick=v23CloseRoomManager;
+$("#roomManagerCancel").onclick=v23CloseRoomManager;
+$("#roomManagerSave").onclick=v23SaveRoomManager;
+$("#roomManagerModal").onclick=e=>{if(e.target===$("#roomManagerModal"))v23CloseRoomManager()};
+$("#roomMemberSearch").oninput=v23RenderMemberPicker;
+
+$("#chatImage").onchange=e=>v23AttachFile(e.target.files?.[0],e.target);
+$("#chatCamera").onchange=e=>v23AttachFile(e.target.files?.[0],e.target);
+$("#chatDoodleBtn").onclick=()=>openQuick("chat");
+
+$("#chatEmojiBtn").onclick=()=>{
+  $("#chatEmojiPanel").classList.toggle("hidden");
+};
+$$("[data-chat-emoji]").forEach(btn=>btn.onclick=()=>{
+  const input=$("#chatInput");
+  const start=input.selectionStart??input.value.length;
+  const end=input.selectionEnd??start;
+  input.value=input.value.slice(0,start)+btn.dataset.chatEmoji+input.value.slice(end);
+  const pos=start+btn.dataset.chatEmoji.length;
+  input.focus();
+  input.setSelectionRange(pos,pos);
+});
+
+/* Keep existing external entry points working. */
+setChatHeader=v23RenderHeader;
+markActiveDmSeen=v23MarkSeen;
+reactToMessage=(id)=>v23ReactMessage(findCurrentMessage(id));
+
+
 
 /* Auth boot */
 boomDB.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){appRoot.classList.add("auth-hidden");authScreen.style.display="grid"}else if(event==="SIGNED_IN"&&session)setTimeout(()=>enterBoom(session),0)});
