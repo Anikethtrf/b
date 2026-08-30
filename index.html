@@ -8131,9 +8131,262 @@ html[data-theme="lavender"] .auth-status.error{
   }
 }
 
+
+/* =========================================================
+   MESSAGE 3-DOT MENU V7
+   ========================================================= */
+.msg-hold-backdrop,
+.msg-hold-sheet{
+  display:none!important;
+}
+
+#page-chat .igdm-message-actions{
+  display:none!important;
+}
+
+#page-chat .msg-line{
+  display:flex!important;
+  align-items:flex-end!important;
+  gap:5px!important;
+  max-width:100%!important;
+}
+
+#page-chat .msg.me .msg-line{
+  flex-direction:row-reverse!important;
+}
+
+.msg-more-btn{
+  flex:0 0 30px!important;
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  color:var(--m-muted)!important;
+  font-size:18px!important;
+  line-height:1!important;
+  cursor:pointer!important;
+}
+
+.msg-more-btn:hover,
+.msg-more-btn:focus-visible{
+  background:var(--m-soft)!important;
+  color:var(--m-text)!important;
+  outline:none!important;
+}
+
+.msg-more-menu{
+  position:fixed!important;
+  z-index:7000!important;
+  width:180px!important;
+  padding:6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:10px!important;
+  background:var(--m-surface)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.24)!important;
+  animation:boomMsgMenuIn .14s ease-out both!important;
+}
+
+.msg-more-menu.hidden{
+  display:none!important;
+}
+
+.msg-more-menu button{
+  width:100%!important;
+  min-height:38px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:var(--m-text)!important;
+  font:700 9px Verdana,Arial,sans-serif!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+
+.msg-more-menu button:hover{
+  background:var(--m-soft)!important;
+}
+
+.msg-more-menu button.danger{
+  color:#d63838!important;
+}
+
+.msg-more-menu button.hidden{
+  display:none!important;
+}
+
+@keyframes boomMsgMenuIn{
+  from{opacity:0;transform:translateY(-3px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(max-width:720px){
+  #page-chat .msg-line{
+    max-width:94%!important;
+  }
+
+  #page-chat .msg.me .msg-line{
+    align-self:flex-end!important;
+  }
+
+  #page-chat .msg:not(.me) .msg-line{
+    align-self:flex-start!important;
+  }
+
+  #page-chat .msg-line .bubble{
+    max-width:calc(100% - 35px)!important;
+  }
+
+  .msg-more-btn{
+    flex-basis:28px!important;
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+    font-size:17px!important;
+  }
+
+  .msg-more-menu{
+    width:170px!important;
+  }
+}
+
+
+/* =========================================================
+   MESSAGE 3-DOT VISIBILITY FIX V8
+   ========================================================= */
+#page-chat .msg{
+  overflow:visible!important;
+}
+
+#page-chat .msg-line{
+  position:relative!important;
+  width:max-content!important;
+  max-width:94%!important;
+  overflow:visible!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+
+#page-chat .msg:not(.me) .msg-line{
+  align-self:flex-start!important;
+  flex-direction:row!important;
+}
+
+#page-chat .msg.me .msg-line{
+  align-self:flex-end!important;
+  flex-direction:row-reverse!important;
+}
+
+#page-chat .msg-line .bubble{
+  flex:0 1 auto!important;
+  min-width:0!important;
+}
+
+#page-chat .msg-more-btn{
+  position:relative!important;
+  z-index:20!important;
+  flex:0 0 32px!important;
+  width:32px!important;
+  min-width:32px!important;
+  height:32px!important;
+  min-height:32px!important;
+  padding:0!important;
+  margin:0!important;
+
+  display:grid!important;
+  place-items:center!important;
+
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:50%!important;
+  background:var(--m-surface)!important;
+  color:var(--m-text)!important;
+
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:21px!important;
+  font-weight:700!important;
+  line-height:1!important;
+
+  box-shadow:0 1px 4px rgba(0,0,0,.14)!important;
+  cursor:pointer!important;
+}
+
+#page-chat .msg-more-btn:hover,
+#page-chat .msg-more-btn:focus-visible,
+#page-chat .msg-more-btn:active{
+  background:var(--m-soft)!important;
+  color:var(--m-accent)!important;
+  border-color:var(--m-accent)!important;
+}
+
+/* Dark themes: force strong contrast */
+html[data-theme="dark"] #page-chat .msg-more-btn,
+html[data-theme="midnight"] #page-chat .msg-more-btn,
+html[data-theme="forest"] #page-chat .msg-more-btn,
+html[data-theme="rose"] #page-chat .msg-more-btn,
+html[data-theme="ocean"] #page-chat .msg-more-btn,
+html[data-theme="lavender"] #page-chat .msg-more-btn{
+  background:color-mix(in srgb,var(--m-surface) 88%,#fff 12%)!important;
+  color:#ffffff!important;
+  border-color:var(--m-line-strong)!important;
+}
+
+/* Mobile */
+@media(max-width:720px){
+  #page-chat .msg-line{
+    width:auto!important;
+    max-width:96%!important;
+    gap:6px!important;
+  }
+
+  #page-chat .msg-line .bubble{
+    max-width:calc(100% - 38px)!important;
+  }
+
+  #page-chat .msg-more-btn{
+    flex-basis:32px!important;
+    width:32px!important;
+    min-width:32px!important;
+    height:32px!important;
+    min-height:32px!important;
+    font-size:20px!important;
+  }
+}
+
+/* Very small phones */
+@media(max-width:390px){
+  #page-chat .msg-line{
+    max-width:98%!important;
+    gap:4px!important;
+  }
+
+  #page-chat .msg-more-btn{
+    flex-basis:30px!important;
+    width:30px!important;
+    min-width:30px!important;
+    height:30px!important;
+    min-height:30px!important;
+    font-size:19px!important;
+  }
+}
+
 </style>
 </head>
-<body data-boom-build="V6-HOLD">
+<body data-boom-build="V8-3DOT-VISIBLE">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -8169,7 +8422,7 @@ html[data-theme="lavender"] .auth-status.error{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V6</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V8</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -8527,6 +8780,14 @@ html[data-theme="lavender"] .auth-status.error{
       <button type="button" class="danger hidden" id="msgHoldDelete"><span>⌫</span><b>Delete</b></button>
     </div>
     <button class="msg-hold-cancel" type="button" id="msgHoldCancel">Cancel</button>
+  </div>
+
+
+  <!-- MESSAGE 3-DOT MENU -->
+  <div class="msg-more-menu hidden" id="msgMoreMenu" role="menu" aria-label="Message options">
+    <button type="button" id="msgMoreReply" role="menuitem">↩ Reply</button>
+    <button type="button" id="msgMoreReact" role="menuitem">♡ React</button>
+    <button type="button" class="danger hidden" id="msgMoreDelete" role="menuitem">⌫ Delete</button>
   </div>
 
   <!-- NEW MESSAGE MODAL -->
@@ -10978,202 +11239,106 @@ renderChat=function(){
     const reacts=reactionSummary(m.reactions||[]);
     return `
       <div class="msg ${mine?"me":""}" data-message-row="${m.id}">
-        <div class="bubble">
-          ${!mine&&state.chatMode==="room"?`<div class="msg-topline"><b>@${esc(m.user||"user")}</b></div>`:""}
-          ${replied?`<div class="igdm-reply-preview"><b>${esc(replied.user||"user")}</b><br>${esc(truncateChatText(replied.text||(replied.image?"Photo":"Message"),70))}</div>`:""}
-          ${m.text?`<div class="msg-text">${esc(m.text)}</div>`:""}
-          ${m.image?`<img src="${m.image}" alt="shared media">`:""}
-          <div class="meta">${esc(m.time||"")}</div>
+        <div class="msg-line">
+          <div class="bubble">
+            ${!mine&&state.chatMode==="room"?`<div class="msg-topline"><b>@${esc(m.user||"user")}</b></div>`:""}
+            ${replied?`<div class="igdm-reply-preview"><b>${esc(replied.user||"user")}</b><br>${esc(truncateChatText(replied.text||(replied.image?"Photo":"Message"),70))}</div>`:""}
+            ${m.text?`<div class="msg-text">${esc(m.text)}</div>`:""}
+            ${m.image?`<img src="${m.image}" alt="shared media">`:""}
+            <div class="meta">${esc(m.time||"")}</div>
+          </div>
+          <button class="msg-more-btn" type="button" data-more-message="${m.id}" aria-label="Message options">⋮</button>
         </div>
         ${reacts?`<div class="igdm-reaction-pill">${esc(reacts)}</div>`:""}
-        <div class="igdm-message-actions">
-          <button type="button" data-reply-message="${m.id}">REPLY</button>
-          <button type="button" data-react-message="${m.id}" data-message-kind="${state.chatMode==="dm"?"dm":"room"}">♡</button>
-          ${mine?`<button type="button" data-delete-message="${m.id}" data-message-kind="${state.chatMode==="dm"?"dm":"room"}">UNSEND</button>`:""}
-        </div>
         ${state.chatMode==="dm"&&mine&&m.id===lastOwnId&&m.read_at?`<div class="igdm-seen">Seen</div>`:""}
       </div>`;
   }).join(""):'<div class="meta" style="margin:auto;text-align:center">NO MESSAGES YET.<br>SEND THE FIRST MESSAGE.</div>';
 
-  $$("[data-reply-message]").forEach(b=>b.onclick=()=>{
-    const m=findCurrentMessage(b.dataset.replyMessage);if(!m)return;
-    boomReplyTarget=m;updateReplyBanner();$("#chatInput").focus();
-  });
-  $$("[data-react-message]").forEach(b=>b.onclick=()=>reactToMessage(b.dataset.reactMessage,b.dataset.messageKind));
-  $$("[data-delete-message]").forEach(b=>b.onclick=async()=>{
-    if(!confirm("Unsend this message for everyone?"))return;
-    const table=b.dataset.messageKind==="dm"?"direct_messages":"room_messages";
-    const r=await boomDB.from(table).delete().eq("id",b.dataset.deleteMessage);
-    if(r.error)return toast(r.error.message);
-    if(boomReplyTarget?.id===b.dataset.deleteMessage)boomReplyTarget=null;
-    await loadBoomCloud();
-  });
 
   requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight;});
 };
 
 
+
+
 /* =========================================================
-   MOBILE MESSAGE LONG-PRESS CONTROLLER V6
-   Delegated touch events: survives every chat re-render and
-   works more reliably on Android / Brave.
+   MESSAGE 3-DOT MENU
    ========================================================= */
-let boomHoldMessage=null;
-let boomHoldTimer=null;
-let boomHoldStartX=0;
-let boomHoldStartY=0;
-let boomHoldRow=null;
-let boomHoldOpened=false;
+let boomMoreMessage=null;
 
-function mobileMessageHoldEnabled(){
-  return window.matchMedia("(max-width:720px)").matches;
+function closeMessageMoreMenu(){
+  const menu=$("#msgMoreMenu");
+  if(!menu)return;
+  menu.classList.add("hidden");
+  menu.style.left="";
+  menu.style.top="";
+  boomMoreMessage=null;
 }
 
-function clearMessageHoldTimer(){
-  if(boomHoldTimer){
-    clearTimeout(boomHoldTimer);
-    boomHoldTimer=null;
-  }
-}
+function openMessageMoreMenu(message,button){
+  if(!message||!button)return;
 
-function setHeldRow(row){
-  if(boomHoldRow&&boomHoldRow!==row)boomHoldRow.classList.remove("hold-active");
-  boomHoldRow=row||null;
-  if(boomHoldRow)boomHoldRow.classList.add("hold-active");
-}
-
-function closeMessageHoldMenu(animated=true){
-  clearMessageHoldTimer();
-
-  const sheet=$("#msgHoldSheet");
-  const back=$("#msgHoldBackdrop");
-  if(!sheet||!back)return;
-
-  setHeldRow(null);
-  boomHoldOpened=false;
-
-  const finish=()=>{
-    sheet.classList.add("hidden");
-    back.classList.add("hidden");
-    sheet.classList.remove("closing");
-    back.classList.remove("closing");
-    boomHoldMessage=null;
-  };
-
-  if(animated&&!sheet.classList.contains("hidden")){
-    sheet.classList.add("closing");
-    back.classList.add("closing");
-    setTimeout(finish,170);
-  }else{
-    finish();
-  }
-}
-
-function openMessageHoldMenu(message,row=null){
-  if(!message||!mobileMessageHoldEnabled())return;
-
-  boomHoldMessage=message;
-  boomHoldOpened=true;
-  setHeldRow(row);
-
+  boomMoreMessage=message;
   const mine=message.user_id===boomUser?.id;
-  const preview=message.text||(message.image?"Photo":"Message");
 
-  $("#msgHoldUser").textContent=mine?"YOUR MESSAGE":"@"+(message.user||"USER");
-  $("#msgHoldText").textContent=truncateChatText(preview,90);
-  $("#msgHoldDelete").classList.toggle("hidden",!mine);
+  $("#msgMoreDelete").classList.toggle("hidden",!mine);
 
-  $("#msgHoldBackdrop").classList.remove("hidden","closing");
-  $("#msgHoldSheet").classList.remove("hidden","closing");
+  const menu=$("#msgMoreMenu");
+  menu.classList.remove("hidden");
 
-  if(navigator.vibrate){
-    try{navigator.vibrate(35)}catch{}
-  }
+  const rect=button.getBoundingClientRect();
+  const menuWidth=Math.min(180,window.innerWidth-20);
+  const menuHeight=mine?126:86;
+
+  let left=rect.right-menuWidth;
+  let top=rect.bottom+6;
+
+  if(left<10)left=10;
+  if(left+menuWidth>window.innerWidth-10)left=window.innerWidth-menuWidth-10;
+  if(top+menuHeight>window.innerHeight-10)top=rect.top-menuHeight-6;
+  if(top<10)top=10;
+
+  menu.style.left=left+"px";
+  menu.style.top=top+"px";
 }
 
-/* Event delegation means new messages do not need listeners re-wired. */
-const boomMessagesEl=$("#messages");
-
-if(boomMessagesEl){
-  boomMessagesEl.addEventListener("touchstart",e=>{
-    if(!mobileMessageHoldEnabled())return;
-    if(e.touches.length!==1)return;
-    if(e.target.closest("button,a,input,label"))return;
-
-    const row=e.target.closest("[data-message-row]");
-    if(!row)return;
-
-    const message=findCurrentMessage(row.dataset.messageRow);
-    if(!message)return;
-
-    const touch=e.touches[0];
-    boomHoldStartX=touch.clientX;
-    boomHoldStartY=touch.clientY;
-    clearMessageHoldTimer();
-
-    boomHoldTimer=setTimeout(()=>{
-      boomHoldTimer=null;
-      openMessageHoldMenu(message,row);
-    },460);
-  },{passive:true});
-
-  boomMessagesEl.addEventListener("touchmove",e=>{
-    if(!boomHoldTimer||!e.touches.length)return;
-    const touch=e.touches[0];
-    const dx=Math.abs(touch.clientX-boomHoldStartX);
-    const dy=Math.abs(touch.clientY-boomHoldStartY);
-    if(dx>10||dy>10)clearMessageHoldTimer();
-  },{passive:true});
-
-  boomMessagesEl.addEventListener("touchend",()=>{
-    clearMessageHoldTimer();
-  },{passive:true});
-
-  boomMessagesEl.addEventListener("touchcancel",()=>{
-    clearMessageHoldTimer();
-  },{passive:true});
-
-  /* Block Android/Brave native text-selection/context menu. */
-  boomMessagesEl.addEventListener("contextmenu",e=>{
-    if(!mobileMessageHoldEnabled())return;
-    const row=e.target.closest("[data-message-row]");
-    if(!row)return;
-    e.preventDefault();
-    const message=findCurrentMessage(row.dataset.messageRow);
-    if(message&&!boomHoldOpened)openMessageHoldMenu(message,row);
-  });
-}
-
-$("#msgHoldBackdrop")?.addEventListener("click",()=>closeMessageHoldMenu());
-$("#msgHoldCancel")?.addEventListener("click",()=>closeMessageHoldMenu());
-
-$("#msgHoldReply")?.addEventListener("click",()=>{
-  if(!boomHoldMessage)return;
-  boomReplyTarget=boomHoldMessage;
-  updateReplyBanner();
-  closeMessageHoldMenu();
-  setTimeout(()=>$("#chatInput")?.focus(),180);
-});
-
-$("#msgHoldReact")?.addEventListener("click",async()=>{
-  if(!boomHoldMessage)return;
-  const id=boomHoldMessage.id;
-  const kind=state.chatMode==="dm"?"dm":"room";
-  closeMessageHoldMenu();
-  await reactToMessage(id,kind);
-});
-
-$("#msgHoldDelete")?.addEventListener("click",async()=>{
-  if(!boomHoldMessage)return;
-
-  const message=boomHoldMessage;
-  if(message.user_id!==boomUser?.id){
-    closeMessageHoldMenu();
+document.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-more-message]");
+  if(btn){
+    e.stopPropagation();
+    const message=findCurrentMessage(btn.dataset.moreMessage);
+    if(message)openMessageMoreMenu(message,btn);
     return;
   }
 
-  /* No browser confirm: the long-press + explicit Delete action
-     is already a deliberate two-step interaction. */
+  if(!e.target.closest("#msgMoreMenu"))closeMessageMoreMenu();
+});
+
+$("#msgMoreReply")?.addEventListener("click",()=>{
+  if(!boomMoreMessage)return;
+  boomReplyTarget=boomMoreMessage;
+  updateReplyBanner();
+  closeMessageMoreMenu();
+  $("#chatInput")?.focus();
+});
+
+$("#msgMoreReact")?.addEventListener("click",async()=>{
+  if(!boomMoreMessage)return;
+  const id=boomMoreMessage.id;
+  const kind=state.chatMode==="dm"?"dm":"room";
+  closeMessageMoreMenu();
+  await reactToMessage(id,kind);
+});
+
+$("#msgMoreDelete")?.addEventListener("click",async()=>{
+  if(!boomMoreMessage)return;
+
+  const message=boomMoreMessage;
+  if(message.user_id!==boomUser?.id){
+    closeMessageMoreMenu();
+    return;
+  }
+
   const table=state.chatMode==="dm"?"direct_messages":"room_messages";
   const r=await boomDB.from(table).delete().eq("id",message.id);
 
@@ -11184,10 +11349,14 @@ $("#msgHoldDelete")?.addEventListener("click",async()=>{
 
   if(boomReplyTarget?.id===message.id)boomReplyTarget=null;
 
-  closeMessageHoldMenu();
+  closeMessageMoreMenu();
   await loadBoomCloud();
   toast("MESSAGE DELETED");
 });
+
+window.addEventListener("resize",closeMessageMoreMenu);
+$("#messages")?.addEventListener("scroll",closeMessageMoreMenu,{passive:true});
+
 
 $("#sendChat").onclick=async()=>{
   const text=$("#chatInput").value.trim(),image=state.chatImage;
