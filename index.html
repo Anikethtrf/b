@@ -8384,9 +8384,176 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
   }
 }
 
+
+/* =========================================================
+   TOP NAV FULL-WIDTH HEADER FIX V9
+   Desktop/laptop: full-width top bar, not floating.
+   Mobile bottom-nav stays unchanged.
+   ========================================================= */
+
+@media(min-width:701px){
+  body{
+    margin:0!important;
+    padding-top:0!important;
+  }
+
+  .app{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+
+  .top-nav{
+    position:sticky!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+
+    width:100%!important;
+    max-width:none!important;
+    min-height:76px!important;
+
+    margin:0!important;
+    padding:8px 18px!important;
+
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+
+    border-left:0!important;
+    border-right:0!important;
+    border-top:0!important;
+    border-radius:0!important;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.10)!important;
+    z-index:1200!important;
+  }
+
+  .boom-brand{
+    flex:0 0 auto!important;
+    height:58px!important;
+    min-height:58px!important;
+    margin:0 8px 0 0!important;
+    padding:0 14px 0 8px!important;
+    border-radius:2px!important;
+  }
+
+  .boom-mark{
+    width:38px!important;
+    height:38px!important;
+    font-size:15px!important;
+  }
+
+  .boom-name b{
+    font-size:12px!important;
+  }
+
+  .boom-name small{
+    font-size:8px!important;
+  }
+
+  .boom-build-badge{
+    margin-left:3px!important;
+    margin-top:0!important;
+    align-self:center!important;
+  }
+
+  .top-nav > .nav-btn{
+    flex:0 0 auto!important;
+    min-width:96px!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:0 13px!important;
+  }
+
+  .top-nav .menu-wrap{
+    margin-left:auto!important;
+    flex:0 0 auto!important;
+  }
+
+  .top-nav .menu-wrap > .menu-btn{
+    height:58px!important;
+    min-height:58px!important;
+    min-width:118px!important;
+    padding:0 14px!important;
+  }
+
+  .nav-copy b{
+    font-size:10px!important;
+  }
+
+  .nav-ico{
+    font-size:15px!important;
+  }
+
+  .settings-menu{
+    top:66px!important;
+    right:12px!important;
+  }
+
+  /* content now sits naturally below full-width header */
+  .main-shell{
+    width:min(1420px,calc(100% - 28px))!important;
+    max-width:1420px!important;
+    margin:0 auto!important;
+  }
+}
+
+/* Laptop compacting */
+@media(min-width:701px) and (max-width:1100px){
+  .top-nav{
+    min-height:68px!important;
+    padding:6px 10px!important;
+    gap:4px!important;
+  }
+
+  .boom-brand{
+    height:52px!important;
+    min-height:52px!important;
+    padding-right:9px!important;
+  }
+
+  .boom-mark{
+    width:34px!important;
+    height:34px!important;
+  }
+
+  .top-nav > .nav-btn{
+    min-width:0!important;
+    height:52px!important;
+    min-height:52px!important;
+    padding:0 9px!important;
+  }
+
+  .top-nav .menu-wrap > .menu-btn{
+    height:52px!important;
+    min-height:52px!important;
+    min-width:100px!important;
+    padding:0 9px!important;
+  }
+
+  .nav-copy b{
+    font-size:9px!important;
+  }
+
+  .settings-menu{
+    top:59px!important;
+  }
+}
+
+/* Mobile retains bottom navigation layout */
+@media(max-width:700px){
+  .top-nav{
+    border-radius:8px!important;
+  }
+}
+
 </style>
 </head>
-<body data-boom-build="V8-3DOT-VISIBLE">
+<body data-boom-build="V9-FULL-HEADER">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -8422,7 +8589,7 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V8</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V9</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
