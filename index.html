@@ -10437,9 +10437,346 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
   .btn{font-size:11px!important}
 }
 
+
+/* =========================================================
+   V19 — MISSION ALERTS + MULTI PHOTO + LATEST FEED
+   ========================================================= */
+
+/* Newest is the only feed ordering mode */
+#sortTop{display:none!important}
+
+/* Alert nav badge */
+.mission-alert-nav{
+  position:relative!important;
+}
+.mission-alert-badge{
+  position:absolute!important;
+  right:6px!important;
+  top:5px!important;
+  min-width:19px!important;
+  height:19px!important;
+  padding:0 5px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:2px solid var(--m-surface)!important;
+  border-radius:10px!important;
+  background:#bd2834!important;
+  color:#fff!important;
+  font:800 9px Arial,sans-serif!important;
+}
+.mission-alert-badge.hidden{display:none!important}
+
+/* NASA Mission Alerts drawer */
+.mission-alert-drawer{
+  position:fixed!important;
+  z-index:8200!important;
+  top:88px!important;
+  right:10px!important;
+  width:min(430px,calc(100vw - 20px))!important;
+  max-height:calc(100dvh - 100px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--m-surface)!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.26)!important;
+
+  opacity:0!important;
+  visibility:hidden!important;
+  transform:translateX(24px)!important;
+  pointer-events:none!important;
+  transition:opacity .17s ease,transform .17s ease,visibility .17s!important;
+}
+.mission-alert-drawer.open{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  pointer-events:auto!important;
+}
+
+.mission-alert-titlebar{
+  min-height:68px!important;
+  padding:10px 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--m-accent) 50%,#000 50%)!important;
+  background:linear-gradient(
+    color-mix(in srgb,var(--m-accent) 72%,#16202a 28%),
+    color-mix(in srgb,var(--m-accent) 48%,#071019 52%)
+  )!important;
+  color:#fff!important;
+}
+.mission-alert-titlebar small{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:rgba(255,255,255,.7)!important;
+  font:700 9px "Courier New",monospace!important;
+}
+.mission-alert-titlebar b{
+  color:#fff!important;
+  font:800 18px Arial,sans-serif!important;
+  letter-spacing:.06em!important;
+}
+.mission-alert-titlebar button{
+  width:34px!important;height:34px!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  border-radius:2px!important;
+  background:rgba(0,0,0,.12)!important;
+  color:#fff!important;
+  font-size:20px!important;
+}
+
+.mission-alert-statusbar{
+  min-height:32px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  border-bottom:1px solid var(--m-line)!important;
+  background:var(--m-soft)!important;
+  color:var(--m-muted)!important;
+  font:700 9px "Courier New",monospace!important;
+}
+.mission-alert-statusbar i{
+  display:inline-block!important;
+  width:7px!important;height:7px!important;
+  margin-right:5px!important;
+  border-radius:50%!important;
+  background:#30a65a!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,#30a65a 20%,transparent)!important;
+}
+
+.mission-alert-controls{
+  padding:8px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  border-bottom:1px solid var(--m-line)!important;
+}
+
+.mission-alert-list{
+  flex:1!important;
+  min-height:180px!important;
+  overflow:auto!important;
+  background:var(--m-chat)!important;
+}
+.mission-alert-row{
+  min-height:76px!important;
+  padding:10px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  gap:9px!important;
+  align-items:start!important;
+  border-bottom:1px solid var(--m-line)!important;
+  background:var(--m-surface)!important;
+}
+.mission-alert-row.unread{
+  border-left:4px solid var(--m-accent)!important;
+  background:color-mix(in srgb,var(--m-accent) 8%,var(--m-surface) 92%)!important;
+}
+.mission-alert-type{
+  width:32px!important;height:32px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:2px!important;
+  background:var(--m-soft)!important;
+  color:var(--m-accent)!important;
+  font-size:15px!important;
+}
+.mission-alert-copy{
+  min-width:0!important;
+}
+.mission-alert-copy b{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:var(--m-text)!important;
+  font-size:12px!important;
+}
+.mission-alert-copy span{
+  display:block!important;
+  color:var(--m-text)!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+.mission-alert-copy small{
+  display:block!important;
+  margin-top:5px!important;
+  color:var(--m-muted)!important;
+  font:10px "Courier New",monospace!important;
+}
+.mission-alert-state{
+  padding:2px 4px!important;
+  border:1px solid var(--m-line)!important;
+  color:var(--m-muted)!important;
+  font:700 8px "Courier New",monospace!important;
+  font-style:normal!important;
+}
+.mission-alert-row.unread .mission-alert-state{
+  border-color:#b72c38!important;
+  background:#b72c38!important;
+  color:#fff!important;
+}
+.mission-alert-empty{
+  padding:32px 14px!important;
+  color:var(--m-muted)!important;
+  text-align:center!important;
+  font:700 11px "Courier New",monospace!important;
+}
+.mission-alert-footer{
+  min-height:28px!important;
+  padding:0 9px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  border-top:1px solid var(--m-line)!important;
+  background:var(--m-soft)!important;
+  color:var(--m-muted)!important;
+  font:700 8px "Courier New",monospace!important;
+}
+.mission-alert-backdrop{
+  position:fixed!important;
+  inset:0!important;
+  z-index:8100!important;
+  background:rgba(0,0,0,.18)!important;
+}
+.mission-alert-backdrop.hidden{display:none!important}
+
+/* Multiple photo selection preview */
+.legacy-post-preview{display:none!important}
+.post-preview-grid{
+  display:none!important;
+  margin-top:10px!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+.post-preview-grid.show{display:grid!important}
+.post-preview-item{
+  position:relative!important;
+  aspect-ratio:1/1!important;
+  overflow:hidden!important;
+  border:1px solid var(--m-line-strong)!important;
+  border-radius:4px!important;
+  background:var(--m-soft)!important;
+}
+.post-preview-item img{
+  width:100%!important;height:100%!important;
+  display:block!important;object-fit:cover!important;
+}
+.post-preview-item button{
+  position:absolute!important;
+  right:4px!important;top:4px!important;
+  width:26px!important;height:26px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid rgba(255,255,255,.6)!important;
+  border-radius:50%!important;
+  background:rgba(0,0,0,.7)!important;
+  color:#fff!important;
+  font-size:16px!important;
+}
+.post-preview-item small{
+  position:absolute!important;
+  left:4px!important;bottom:4px!important;
+  padding:2px 5px!important;
+  background:rgba(0,0,0,.7)!important;
+  color:#fff!important;
+  font-size:9px!important;
+}
+
+/* Multiple-photo post carousel */
+.post-media-carousel{
+  width:calc(100% - 89px)!important;
+  margin:9px 17px 12px 72px!important;
+  overflow:hidden!important;
+  border:1px solid var(--m-line)!important;
+  border-radius:8px!important;
+  background:#111!important;
+}
+.post-media-track{
+  display:flex!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scroll-snap-type:x mandatory!important;
+  scrollbar-width:thin!important;
+}
+.post-media-track figure{
+  position:relative!important;
+  flex:0 0 100%!important;
+  width:100%!important;
+  margin:0!important;
+  scroll-snap-align:start!important;
+  background:#111!important;
+}
+.post-media-track img{
+  width:100%!important;
+  height:min(620px,68vh)!important;
+  display:block!important;
+  object-fit:contain!important;
+  background:#111!important;
+}
+.post-media-track figcaption{
+  position:absolute!important;
+  right:10px!important;
+  top:10px!important;
+  padding:4px 7px!important;
+  border-radius:12px!important;
+  background:rgba(0,0,0,.68)!important;
+  color:#fff!important;
+  font:700 10px Arial,sans-serif!important;
+}
+.post-media-hint{
+  padding:5px 8px!important;
+  border-top:1px solid var(--m-line)!important;
+  background:var(--m-soft)!important;
+  color:var(--m-muted)!important;
+  text-align:center!important;
+  font:700 9px "Courier New",monospace!important;
+}
+
+/* mobile nav now has 6 cells */
+@media(max-width:700px){
+  .top-nav{
+    grid-template-columns:repeat(6,1fr)!important;
+  }
+  .mission-alert-drawer{
+    top:8px!important;
+    right:8px!important;
+    left:8px!important;
+    width:auto!important;
+    max-height:calc(100dvh - 16px)!important;
+  }
+  .mission-alert-titlebar b{font-size:16px!important}
+  .mission-alert-statusbar{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    padding:6px 10px!important;
+  }
+  .mission-alert-controls{
+    grid-template-columns:1fr!important;
+  }
+  .post-preview-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .post-media-carousel{
+    width:calc(100% - 26px)!important;
+    margin-left:13px!important;
+    margin-right:13px!important;
+  }
+  .post-media-track img{
+    height:min(520px,62vh)!important;
+  }
+}
+
 </style>
 </head>
-<body data-boom-build="V18-BIGGER-FONTS">
+<body data-boom-build="V19-MISSION-MEDIA">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -10475,12 +10812,17 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V18</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V19</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
     <button class="nav-btn" data-page="draw" data-tip="DRAW"><span class="nav-ico">✎</span><span class="nav-copy"><b>SKETCH</b><small>draw + doodle</small></span></button>
     <button class="nav-btn" data-page="explore" data-tip="DISCOVER"><span class="nav-ico">⌕</span><span class="nav-copy"><b>DISCOVER+</b><small>search + people</small></span></button>
+    <button class="nav-btn mission-alert-nav" id="missionAlertsBtn" type="button" data-tip="MISSION ALERTS">
+      <span class="nav-ico mission-alert-icon">⚠</span>
+      <span class="nav-copy"><b>ALERTS</b><small>mission signals</small></span>
+      <span class="mission-alert-badge hidden" id="noticeBadge">0</span>
+    </button>
 
     <div class="menu-wrap">
       <button class="menu-btn" id="menuBtn" data-tip="SETTINGS"><span class="nav-ico">⋯</span><span class="nav-copy"><b>SETTINGS</b><small>saved + desk + themes</small></span></button>
@@ -10507,6 +10849,37 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       </div>
     </div>
   </div>
+
+
+  <aside class="mission-alert-drawer" id="missionAlertDrawer" aria-hidden="true">
+    <div class="mission-alert-titlebar">
+      <div>
+        <small>BOOM CHAT // NETWORK OPERATIONS</small>
+        <b>MISSION ALERTS</b>
+      </div>
+      <button type="button" id="missionAlertClose" aria-label="Close alerts">×</button>
+    </div>
+
+    <div class="mission-alert-statusbar">
+      <span><i></i> ALERT CHANNEL ONLINE</span>
+      <span id="pushStatusText">PUSH: NOT ENABLED</span>
+    </div>
+
+    <div class="mission-alert-controls">
+      <button class="btn dark" id="enablePushBtn" type="button">ENABLE PUSH</button>
+      <button class="btn" id="missionMarkRead" type="button">MARK ALL READ</button>
+    </div>
+
+    <div class="mission-alert-list" id="missionAlertList">
+      <div class="mission-alert-empty">NO ACTIVE SIGNALS.</div>
+    </div>
+
+    <div class="mission-alert-footer">
+      <span>SYS/ALERT-NET</span>
+      <span>LIKES · COMMENTS · DIRECT MESSAGES</span>
+    </div>
+  </aside>
+  <div class="mission-alert-backdrop hidden" id="missionAlertBackdrop"></div>
 
   <div class="main-shell">
 
@@ -10613,7 +10986,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
         <div class="feed-commandbar">
           <div class="feed-mode-group">
             <button class="feed-mode active" id="sortLatest" type="button">LATEST</button>
-            <button class="feed-mode" id="sortTop" type="button">TOP</button>
+            <button class="feed-mode" id="sortTop" type="button" hidden>TOP</button>
           </div>
           <div class="feed-command-actions">
             <button class="feed-tool" id="surprisePost" type="button">↯ SURPRISE ME</button>
@@ -10625,7 +10998,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <button class="create-post-btn" id="createPostToggle" type="button">
             <span class="create-post-plus">＋</span>
             <span>MAKE A POST</span>
-            <small>TEXT · PHOTO · DOODLE</small>
+            <small>TEXT · MULTI-PHOTO · DOODLE</small>
           </button>
         </div>
 
@@ -10634,7 +11007,8 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
           <div class="panel-head"><span>NEW POST</span><button class="composer-close" id="composerClose" type="button">CLOSE ×</button></div>
           <div class="panel-body">
             <textarea id="postText" placeholder="Share something with the world..."></textarea>
-            <img id="postPreview" class="preview" alt="">
+            <div id="postPreviewGrid" class="post-preview-grid"></div>
+            <img id="postPreview" class="preview legacy-post-preview" alt="">
 
             <div id="pollBuilder" class="old-poll-builder hidden">
               <div class="old-subbar">POLL EDITOR</div>
@@ -10646,7 +11020,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
             </div>
 
             <div class="row" style="margin-top:10px">
-              <label class="btn">PHOTO<input id="postImage" type="file" accept="image/*" hidden></label>
+              <label class="btn">PHOTOS<input id="postImage" type="file" accept="image/*" multiple hidden></label>
               <label class="btn camera-btn">CAMERA<input id="postCamera" type="file" accept="image/*" capture="environment" hidden></label>
               <button class="btn" id="postDoodleBtn">DOODLE</button>
               <button class="btn" id="pollToggle" type="button">POLL</button>
@@ -11065,7 +11439,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
       <!-- 1 Notifications -->
       <section class="old-tool-window">
         <div class="old-window-title">
-          <span>1. NOTIFICATION CENTER</span>
+          <span>1. MISSION ALERTS ARCHIVE</span>
           <button id="markReadBtn" type="button">MARK ALL READ</button>
         </div>
         <div id="noticeList" class="old-window-body"></div>
@@ -11275,11 +11649,12 @@ const state={
   chatMode:ls.get("edgers_chat_mode","room"),
   activeDM:ls.get("edgers_active_dm","pixelkid"),
   postImage:null,
+  postImages:[],
   chatImage:null,
   quickMode:"post",
   filter:"all",
   saved:ls.get("edgers_saved",[]),
-  feedSort:ls.get("edgers_feed_sort","latest"),
+  feedSort:"latest",
   drafts:ls.get("edgers_drafts",[]),
   notifications:ls.get("edgers_notifications",[
     {id:Date.now()-9000,text:"WELCOME TO BOOM CHAT. Your account is ready.",time:"SYSTEM",read:false}
@@ -11474,14 +11849,16 @@ $$("[data-go-menu]").forEach(b=>b.onclick=()=>{
 
 /* POSTS */
 function filteredPosts(){
-  let arr=[...state.posts];
-  if(state.feedSort==="top"){
-    arr.sort((a,b)=>(b.likes||0)-(a.likes||0) || (b.id||0)-(a.id||0));
-  }else{
-    arr.reverse();
-  }
-  if(state.filter==="image")return arr.filter(p=>p.image);
-  if(state.filter==="text")return arr.filter(p=>p.text&&!p.image);
+  const stamp=p=>{
+    const t=p?.created_at ? new Date(p.created_at).getTime() : Number(p?.id)||0;
+    return Number.isFinite(t)?t:0;
+  };
+
+  // FEED is permanently chronological: newest first.
+  let arr=[...state.posts].sort((a,b)=>stamp(b)-stamp(a));
+
+  if(state.filter==="image")return arr.filter(p=>(p.images?.length||p.image));
+  if(state.filter==="text")return arr.filter(p=>p.text&&!(p.images?.length||p.image));
   if(state.filter==="mine")return arr.filter(p=>p.user===me.name);
   return arr;
 }
@@ -11490,6 +11867,7 @@ function renderFeed(){
   const list=filteredPosts();
   if(!list.length){wrap.innerHTML='<div class="panel panel-body">NO POSTS FOUND.</div>';return}
   list.forEach(p=>{
+    const media=(p.images?.length?p.images:(p.image?[p.image]:[]));
     const el=document.createElement("article");
     el.className="panel post";
     el.id="post-"+p.id;
@@ -11503,7 +11881,13 @@ function renderFeed(){
       </div>
       ${p.text?`<div class="post-text">${linkifyTags(p.text)}</div>`:""}
       ${pollMarkup(p)}
-      ${p.image?`<img class="post-img" src="${p.image}" alt="post image">`:""}
+      ${media.length===1?`<img class="post-img" src="${media[0]}" alt="post image">`:media.length>1?`
+        <div class="post-media-carousel" tabindex="0" aria-label="${media.length} photos">
+          <div class="post-media-track">
+            ${media.map((src,i)=>`<figure><img src="${src}" alt="Post photo ${i+1}"><figcaption>${i+1} / ${media.length}</figcaption></figure>`).join("")}
+          </div>
+          <div class="post-media-hint">↔ SWIPE / SCROLL · ${media.length} PHOTOS</div>
+        </div>`:""}
       <div class="post-actions">
         <button class="btn ${state.likedPosts.includes(p.id)?"liked":""}" data-like="${p.id}">${state.likedPosts.includes(p.id)?"♥":"♡"} ${p.likes||0}</button>
         <button class="btn" data-cfocus="${p.id}">COMMENT ${(p.comments||[]).length}</button>
@@ -11632,32 +12016,81 @@ function renderFeed(){
     setTimeout(renderExplore,0);
   });
 }
-async function attachPostImageFile(f,inputEl){
-  if(!f)return;
-  if(!f.type.startsWith("image/")){
-    if(inputEl)inputEl.value="";
-    return toast("IMAGE FILES ONLY");
-  }
-  if(f.size>8*1024*1024){
-    if(inputEl)inputEl.value="";
-    return toast("IMAGE TOO LARGE (MAX 8MB)");
-  }
-  try{
-    state.postImage=await fileToData(f);
-    $("#postPreview").src=state.postImage;
-    $("#postPreview").style.display="block";
-    toast("IMAGE ATTACHED");
-  }catch{
-    toast("COULD NOT READ IMAGE");
-  }
+function renderPostPreviewGrid(){
+  const grid=$("#postPreviewGrid");
+  if(!grid)return;
+
+  const items=(state.postImages?.length?state.postImages:(state.postImage?[state.postImage]:[]));
+  state.postImages=[...items];
+  state.postImage=items[0]||null;
+
+  grid.innerHTML=items.map((src,i)=>`
+    <div class="post-preview-item">
+      <img src="${src}" alt="Selected photo ${i+1}">
+      <button type="button" data-remove-post-photo="${i}" aria-label="Remove photo">×</button>
+      <small>${i+1}/${items.length}</small>
+    </div>
+  `).join("");
+
+  grid.classList.toggle("show",items.length>0);
+
+  // Old preview remains only as a compatibility node for older code.
+  $("#postPreview").style.display="none";
+
+  $$("[data-remove-post-photo]").forEach(btn=>btn.onclick=()=>{
+    const idx=Number(btn.dataset.removePostPhoto);
+    state.postImages.splice(idx,1);
+    state.postImage=state.postImages[0]||null;
+    renderPostPreviewGrid();
+  });
 }
 
-$("#postImage").onchange=e=>attachPostImageFile(e.target.files[0],e.target);
+async function attachPostImageFiles(files,inputEl){
+  const list=[...(files||[])];
+  if(!list.length)return;
+
+  const room=Math.max(0,10-(state.postImages?.length||0));
+  if(room<=0){
+    if(inputEl)inputEl.value="";
+    return toast("MAX 10 PHOTOS PER POST");
+  }
+
+  const selected=list.slice(0,room);
+
+  for(const f of selected){
+    if(!f.type.startsWith("image/")){
+      continue;
+    }
+    if(f.size>8*1024*1024){
+      toast(`${f.name||"IMAGE"} TOO LARGE`);
+      continue;
+    }
+
+    try{
+      const data=await fileToData(f);
+      state.postImages.push(data);
+    }catch{
+      toast("COULD NOT READ ONE IMAGE");
+    }
+  }
+
+  state.postImage=state.postImages[0]||null;
+  renderPostPreviewGrid();
+
+  if(inputEl)inputEl.value="";
+  if(state.postImages.length)toast(`${state.postImages.length} PHOTO${state.postImages.length===1?"":"S"} ATTACHED`);
+}
+
+async function attachPostImageFile(f,inputEl){
+  return attachPostImageFiles(f?[f]:[],inputEl);
+}
+
+$("#postImage").onchange=e=>attachPostImageFiles(e.target.files,e.target);
 
 $("#postCamera").onchange=e=>{
   const f=e.target.files[0];
   if(!f)return;
-  attachPostImageFile(f,e.target);
+  attachPostImageFiles([f],e.target);
 };
 $("#publishPost").onclick=()=>{
   const text=$("#postText").value.trim();
@@ -11670,7 +12103,8 @@ $("#publishPost").onclick=()=>{
   if(!text&&!state.postImage&&!poll)return toast("ADD TEXT, IMAGE, DOODLE OR POLL");
 
   state.posts.push({
-    id:Date.now(),user:me.name,avatar:me.avatar,text,image:state.postImage,poll,
+    id:Date.now(),user:me.name,avatar:me.avatar,text,image:state.postImage,
+    images:state.postImages||[],poll,
     likes:0,comments:[],reactions:{},time:"now"
   });
 
@@ -11727,11 +12161,8 @@ function loadDraft(id){
   const d=state.drafts.find(x=>x.id===id);if(!d)return;
   go("feed");setComposer(true);
   $("#postText").value=d.text||"";
-  state.postImage=d.image||null;
-  if(d.image){
-    $("#postPreview").src=d.image;
-    $("#postPreview").style.display="block";
-  }else $("#postPreview").style.display="none";
+  state.postImages=Array.isArray(d.images)?[...d.images]:(d.image?[d.image]:[]);state.postImage=state.postImages[0]||d.image||null;
+  renderPostPreviewGrid();
 
   clearPollBuilder();
   if(d.poll){
@@ -12146,7 +12577,7 @@ $("#quickClear").onclick=()=>quickCtl.clear();
 $("#useDoodle").onclick=()=>{
   const data=quickCtl.data();
   if(state.quickMode==="post"){
-    state.postImage=data;$("#postPreview").src=data;$("#postPreview").style.display="block";toast("DOODLE ATTACHED TO POST");
+    state.postImages=state.postImages||[];state.postImages.push(data);state.postImage=state.postImages[0]||data;renderPostPreviewGrid();toast("DOODLE ATTACHED TO POST");
   }else{
     state.chatImage=data;
     if(typeof renderChatAttachmentPreview==="function")renderChatAttachmentPreview();
@@ -12402,19 +12833,228 @@ function renderHashtags(){
 }
 
 /* 1. NOTIFICATIONS */
-function renderNotifications(){
-  const wrap=$("#noticeList");if(!wrap)return;
-  wrap.innerHTML=state.notifications.length?state.notifications.map(n=>`
-    <div class="notice-row ${n.read?"read":"unread"}">
-      <span>${n.read?"○":"●"}</span>
-      <div>${esc(n.text)}<small>${esc(n.time||"")}</small></div>
-    </div>
-  `).join(""):'<div class="old-empty">NO NOTIFICATIONS.</div>';
+function missionAlertIcon(type){
+  return ({
+    like:"♥",
+    comment:"▤",
+    dm:"✉",
+    friend:"◎",
+    system:"⚠"
+  })[type]||"⚠";
 }
-$("#markReadBtn")?.addEventListener("click",()=>{
+
+function missionAlertMarkup(n){
+  return `
+    <article class="mission-alert-row ${n.read?"read":"unread"}">
+      <span class="mission-alert-type">${missionAlertIcon(n.type)}</span>
+      <div class="mission-alert-copy">
+        <b>${esc(n.title||"MISSION ALERT")}</b>
+        <span>${esc(n.text||"New signal received.")}</span>
+        <small>${esc(n.time||"")}</small>
+      </div>
+      <i class="mission-alert-state">${n.read?"LOGGED":"NEW"}</i>
+    </article>`;
+}
+
+function renderMissionAlerts(){
+  const wrap=$("#missionAlertList");
+  if(!wrap)return;
+  wrap.innerHTML=state.notifications.length
+    ?state.notifications.map(missionAlertMarkup).join("")
+    :'<div class="mission-alert-empty">NO ACTIVE SIGNALS.</div>';
+  updateNoticeBadge();
+  updatePushStatus();
+}
+
+function renderNotifications(){
+  const wrap=$("#noticeList");
+  if(wrap){
+    wrap.innerHTML=state.notifications.length
+      ?state.notifications.map(n=>`
+        <div class="notice-row ${n.read?"read":"unread"}">
+          <span>${missionAlertIcon(n.type)}</span>
+          <div><b>${esc(n.title||"MISSION ALERT")}</b><br>${esc(n.text)}<small>${esc(n.time||"")}</small></div>
+        </div>
+      `).join("")
+      :'<div class="old-empty">NO MISSION ALERTS.</div>';
+  }
+  renderMissionAlerts();
+}
+
+async function markAllMissionAlertsRead(){
   state.notifications.forEach(n=>n.read=true);
-  save();renderNotifications();updateNoticeBadge();toast("ALL MARKED READ");
+  save();
+  renderNotifications();
+
+  if(boomUser && !window.__boomMissionUpgradeMissing){
+    const r=await boomDB.from("mission_alerts")
+      .update({read_at:new Date().toISOString()})
+      .eq("user_id",boomUser.id)
+      .is("read_at",null);
+    if(r.error)console.warn("Could not mark cloud alerts read:",r.error.message);
+  }
+
+  toast("MISSION ALERTS LOGGED");
+}
+
+$("#markReadBtn")?.addEventListener("click",markAllMissionAlertsRead);
+$("#missionMarkRead")?.addEventListener("click",markAllMissionAlertsRead);
+
+
+/* =========================================================
+   MISSION ALERTS + WEB PUSH
+   ========================================================= */
+const BOOM_VAPID_PUBLIC_KEY="BBkbMOH8lvuKv_G0AVC8fEsYKkut53uxCXCgUcSkpA-5Cn-0HJ3BfpFT0QONbNTDfgcSZygBzi264z9RWaEhgZg";
+
+function openMissionAlerts(){
+  $("#missionAlertDrawer")?.classList.add("open");
+  $("#missionAlertDrawer")?.setAttribute("aria-hidden","false");
+  $("#missionAlertBackdrop")?.classList.remove("hidden");
+  renderMissionAlerts();
+}
+
+function closeMissionAlerts(){
+  $("#missionAlertDrawer")?.classList.remove("open");
+  $("#missionAlertDrawer")?.setAttribute("aria-hidden","true");
+  $("#missionAlertBackdrop")?.classList.add("hidden");
+}
+
+$("#missionAlertsBtn")?.addEventListener("click",openMissionAlerts);
+$("#missionAlertClose")?.addEventListener("click",closeMissionAlerts);
+$("#missionAlertBackdrop")?.addEventListener("click",closeMissionAlerts);
+
+function urlBase64ToUint8Array(base64String){
+  const padding="=".repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding).replace(/-/g,"+").replace(/_/g,"/");
+  const raw=atob(base64);
+  return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));
+}
+
+async function getBoomServiceWorker(){
+  if(!("serviceWorker" in navigator))throw new Error("SERVICE WORKERS NOT SUPPORTED");
+  const reg=await navigator.serviceWorker.register("./sw.js");
+  await navigator.serviceWorker.ready;
+  return reg;
+}
+
+async function hasPushSubscription(){
+  try{
+    const reg=await getBoomServiceWorker();
+    return !!(await reg.pushManager.getSubscription());
+  }catch{
+    return false;
+  }
+}
+
+async function updatePushStatus(){
+  const el=$("#pushStatusText");
+  const btn=$("#enablePushBtn");
+  if(!el||!btn)return;
+
+  if(!("Notification" in window)||!("serviceWorker" in navigator)||!("PushManager" in window)){
+    el.textContent="PUSH: UNSUPPORTED";
+    btn.disabled=true;
+    return;
+  }
+
+  if(Notification.permission==="denied"){
+    el.textContent="PUSH: BLOCKED";
+    btn.textContent="PUSH BLOCKED";
+    btn.disabled=true;
+    return;
+  }
+
+  const subscribed=await hasPushSubscription();
+  if(subscribed){
+    el.textContent="PUSH: ARMED";
+    btn.textContent="PUSH ENABLED ✓";
+  }else{
+    el.textContent="PUSH: STANDBY";
+    btn.textContent="ENABLE PUSH";
+  }
+}
+
+async function enableBoomPush(){
+  if(!boomUser)return toast("LOGIN REQUIRED");
+
+  try{
+    if(!("Notification" in window)||!("PushManager" in window)){
+      return toast("PUSH NOT SUPPORTED IN THIS BROWSER");
+    }
+
+    const permission=await Notification.requestPermission();
+    if(permission!=="granted"){
+      updatePushStatus();
+      return toast("NOTIFICATION PERMISSION NOT GRANTED");
+    }
+
+    const reg=await getBoomServiceWorker();
+    let sub=await reg.pushManager.getSubscription();
+
+    if(!sub){
+      sub=await reg.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(BOOM_VAPID_PUBLIC_KEY)
+      });
+    }
+
+    const json=sub.toJSON();
+    const r=await boomDB.from("push_subscriptions").upsert({
+      user_id:boomUser.id,
+      endpoint:sub.endpoint,
+      p256dh:json.keys?.p256dh,
+      auth:json.keys?.auth,
+      user_agent:navigator.userAgent
+    },{onConflict:"endpoint"});
+
+    if(r.error)throw r.error;
+
+    await updatePushStatus();
+    toast("PUSH NOTIFICATIONS ENABLED");
+  }catch(err){
+    console.error("Push setup error:",err);
+    const msg=String(err?.message||"PUSH SETUP FAILED");
+    if(msg.toLowerCase().includes("push_subscriptions")||msg.toLowerCase().includes("relation")){
+      toast("RUN V19 SUPABASE SQL FIRST");
+    }else{
+      toast(msg);
+    }
+  }
+}
+
+$("#enablePushBtn")?.addEventListener("click",enableBoomPush);
+
+async function sendBoomPush(type,payload={}){
+  if(!boomUser)return;
+  try{
+    const {error}=await boomDB.functions.invoke("push-notify",{
+      body:{type,...payload}
+    });
+    if(error)console.warn("Push function:",error.message);
+  }catch(err){
+    // Push delivery must never block likes/comments/messages.
+    console.warn("Push invoke unavailable:",err);
+  }
+}
+
+function handleIncomingMissionAlert(alert){
+  if(!alert)return;
+  const body=alert.body||"New mission signal received.";
+  toast("MISSION ALERT: "+body);
+}
+
+window.addEventListener("load",()=>{
+  updatePushStatus();
+  const q=new URLSearchParams(location.search);
+  if(q.get("open")==="alerts"){
+    setTimeout(openMissionAlerts,700);
+  }
 });
+
+navigator.serviceWorker?.addEventListener?.("message",e=>{
+  if(e.data?.type==="OPEN_MISSION_ALERTS")openMissionAlerts();
+});
+
 
 /* 2. DRAFT MANAGER */
 function renderDrafts(){
@@ -12952,11 +13592,12 @@ async function loadBoomCloud(){
     boomDB.from("friendships").select("*").or(`user_id.eq.${boomUser.id},friend_id.eq.${boomUser.id}`),
     boomDB.from("guestbook_entries").select("*").order("created_at",{ascending:true}).limit(100),
     boomDB.from("notes").select("*").eq("user_id",boomUser.id).maybeSingle(),
-    boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false})
+    boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false}),
+    boomDB.from("mission_alerts").select("*").eq("user_id",boomUser.id).order("created_at",{ascending:false}).limit(100)
   ]);
   /* Messaging V2 is optional during rollout: missing new chat tables
      must never prevent a valid account from logging in. */
-  const optionalIndexes=new Set([9,12,13]); // room_members + message reaction tables
+  const optionalIndexes=new Set([9,12,13,18]); // room_members + message reaction tables
   let messagingUpgradeMissing=false;
 
   results.forEach((result,index)=>{
@@ -12974,7 +13615,7 @@ async function loadBoomCloud(){
   const bad=results.find(r=>r?.error);
   if(bad)throw bad.error;
 
-  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR]=results;
+  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR,alertsR]=results;
 
   window.__boomMessagingUpgradeMissing=messagingUpgradeMissing;
   boomProfiles=profilesR.data||[];
@@ -13012,7 +13653,7 @@ async function loadBoomCloud(){
 
   state.posts=(postsR.data||[]).map(p=>{
     const u=personFor(p.user_id), opts=optionsByPost[p.id]||[];
-    return {id:p.id,user_id:p.user_id,user:u.username,avatar:u.avatar_url||(u.username?.[0]||"B").toUpperCase(),text:p.body||"",image:p.image_url||p.drawing_url||null,likes:likeCounts[p.id]||0,comments:commentsByPost[p.id]||[],reactions:reactionCounts[p.id]||{},poll:p.post_type==="poll"?{question:p.body||"POLL",options:opts}:null,time:fmtTime(p.created_at),created_at:p.created_at};
+    const images=(Array.isArray(p.media_urls)&&p.media_urls.length?p.media_urls:(p.image_url||p.drawing_url?[p.image_url||p.drawing_url]:[])); return {id:p.id,user_id:p.user_id,user:u.username,avatar:u.avatar_url||(u.username?.[0]||"B").toUpperCase(),text:p.body||"",image:images[0]||null,images,likes:likeCounts[p.id]||0,comments:commentsByPost[p.id]||[],reactions:reactionCounts[p.id]||{},poll:p.post_type==="poll"?{question:p.body||"POLL",options:opts}:null,time:fmtTime(p.created_at),created_at:p.created_at};
   });
 
   state.rooms=boomRooms.map(x=>x.name);
@@ -13043,8 +13684,23 @@ async function loadBoomCloud(){
   state.notes=notesR.data?.content||"";
   state.drafts=(draftsR.data||[]).map(d=>{try{const j=JSON.parse(d.body||"{}");return{id:d.id,...j,savedAt:new Date(d.updated_at).toLocaleString()}}catch{return{id:d.id,text:d.body||"",savedAt:new Date(d.updated_at).toLocaleString()}}});
 
+  if(!alertsR?.error && Array.isArray(alertsR?.data)){
+    state.notifications=alertsR.data.map(a=>({
+      id:a.id,
+      type:a.type||"system",
+      title:a.title||"MISSION ALERT",
+      text:a.body||"New signal received.",
+      time:fmtTime(a.created_at),
+      created_at:a.created_at,
+      read:!!a.read_at
+    }));
+    window.__boomMissionUpgradeMissing=false;
+  }else{
+    window.__boomMissionUpgradeMissing=true;
+  }
+
   save();
-  renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();renderDrafts();updateDeskStats();syncProfileUI();renderProfilePage();
+  renderFeed();renderTrending();renderChat();renderCommunity();renderExplore();renderSaved();renderGuestbook();renderHashtags();renderDrafts();renderNotifications();renderMissionAlerts();updateDeskStats();syncProfileUI();renderProfilePage();
   if($("#personalNotes"))$("#personalNotes").value=state.notes;
   if($("#onlineCount"))$("#onlineCount").textContent=String(boomProfiles.length);
 }
@@ -13066,6 +13722,7 @@ function startBoomRealtime(){
     .on("postgres_changes",{event:"*",schema:"public",table:"direct_message_reactions"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"friendships"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"guestbook_entries"},boomReloadSoon)
+    .on("postgres_changes",{event:"*",schema:"public",table:"mission_alerts",filter:`user_id=eq.${boomUser.id}`},payload=>{boomReloadSoon();handleIncomingMissionAlert(payload.new)})
     .subscribe();
 }
 
@@ -13198,8 +13855,26 @@ renderOnline=function(){
 const renderFeedLocal=renderFeed;
 renderFeed=function(){
   renderFeedLocal();if(!boomUser)return;
-  $$('[data-like]').forEach(b=>b.onclick=async()=>{const id=b.dataset.like,liked=state.likedPosts.includes(id);const r=liked?await boomDB.from('likes').delete().eq('post_id',id).eq('user_id',boomUser.id):await boomDB.from('likes').insert({post_id:id,user_id:boomUser.id});if(r.error)return toast(r.error.message);await loadBoomCloud()});
-  $$('[data-comment]').forEach(b=>b.onclick=async()=>{const id=b.dataset.comment,inp=$("#comment-"+id),body=inp?.value.trim();if(!body)return;const r=await boomDB.from('comments').insert({post_id:id,user_id:boomUser.id,body});if(r.error)return toast(r.error.message);await loadBoomCloud()});
+  $$('[data-like]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.like,liked=state.likedPosts.includes(id);
+    const r=liked
+      ?await boomDB.from('likes').delete().eq('post_id',id).eq('user_id',boomUser.id)
+      :await boomDB.from('likes').insert({post_id:id,user_id:boomUser.id});
+    if(r.error)return toast(r.error.message);
+    if(!liked)sendBoomPush("like",{post_id:id});
+    await loadBoomCloud();
+  });
+  $$('[data-comment]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.comment,inp=$("#comment-"+id),body=inp?.value.trim();
+    if(!body)return;
+    const r=await boomDB.from('comments')
+      .insert({post_id:id,user_id:boomUser.id,body})
+      .select()
+      .single();
+    if(r.error)return toast(r.error.message);
+    sendBoomPush("comment",{comment_id:r.data.id});
+    await loadBoomCloud();
+  });
   $$('.comment-form input').forEach(inp=>inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$("[data-comment='"+inp.id.replace('comment-','')+"']")?.click()}});
   $$('[data-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Delete this post?'))return;const r=await boomDB.from('posts').delete().eq('id',b.dataset.delete).eq('user_id',boomUser.id);if(r.error)return toast(r.error.message);await loadBoomCloud();toast('POST DELETED')});
   $$('[data-save]').forEach(b=>b.onclick=async()=>{const id=b.dataset.save,exists=state.saved.includes(id);const r=exists?await boomDB.from('saved_posts').delete().eq('post_id',id).eq('user_id',boomUser.id):await boomDB.from('saved_posts').insert({post_id:id,user_id:boomUser.id});if(r.error)return toast(r.error.message);await loadBoomCloud()});
@@ -13276,40 +13951,61 @@ $("#publishPost").onclick=async()=>{
     .filter(Boolean);
 
   const pollTouched=!!(q||opts.length);
+  const sources=(state.postImages?.length?state.postImages:(state.postImage?[state.postImage]:[]));
 
   if(pollTouched&&(!q||opts.length<2)){
     return toast("POLL NEEDS QUESTION + 2 OPTIONS");
   }
 
-  if(!text&&!state.postImage&&!pollTouched){
-    return toast("ADD TEXT, IMAGE, DOODLE OR POLL");
+  if(!text&&!sources.length&&!pollTouched){
+    return toast("ADD TEXT, PHOTOS, DOODLE OR POLL");
   }
+
+  if(sources.length>10)return toast("MAX 10 PHOTOS PER POST");
 
   btn.disabled=true;
   const oldLabel=btn.textContent;
-  btn.textContent=state.postImage?"UPLOADING...":"POSTING...";
+  btn.textContent=sources.length?`UPLOADING 0/${sources.length}`:"POSTING...";
 
-  let uploadedMediaUrl=null;
+  let uploadedMediaUrls=[];
   let insertedPostId=null;
 
   try{
-    if(state.postImage){
-      uploadedMediaUrl=await uploadPostMedia(state.postImage);
-      btn.textContent="POSTING...";
+    for(let i=0;i<sources.length;i++){
+      uploadedMediaUrls.push(await uploadPostMedia(sources[i]));
+      btn.textContent=`UPLOADING ${i+1}/${sources.length}`;
     }
 
+    btn.textContent="POSTING...";
     const body=pollTouched?q:text;
 
-    const ins=await boomDB
+    let ins=await boomDB
       .from("posts")
       .insert({
         user_id:boomUser.id,
         body,
-        image_url:uploadedMediaUrl,
+        image_url:uploadedMediaUrls[0]||null,
+        media_urls:uploadedMediaUrls,
         post_type:pollTouched?"poll":"normal"
       })
       .select()
       .single();
+
+    if(ins.error){
+      const em=String(ins.error.message||"").toLowerCase();
+      if(em.includes("media_urls")||em.includes("schema cache")){
+        if(uploadedMediaUrls.length>1){
+          throw new Error("RUN V19 SUPABASE SQL FOR MULTIPLE PHOTOS");
+        }
+        // Backward compatibility for a single photo.
+        ins=await boomDB.from("posts").insert({
+          user_id:boomUser.id,
+          body,
+          image_url:uploadedMediaUrls[0]||null,
+          post_type:pollTouched?"poll":"normal"
+        }).select().single();
+      }
+    }
 
     if(ins.error)throw ins.error;
     insertedPostId=ins.data.id;
@@ -13323,7 +14019,6 @@ $("#publishPost").onclick=async()=>{
         })));
 
       if(po.error){
-        // Keep database consistent if poll options fail.
         await boomDB.from("posts").delete().eq("id",insertedPostId).eq("user_id",boomUser.id);
         throw po.error;
       }
@@ -13334,8 +14029,10 @@ $("#publishPost").onclick=async()=>{
     if($("#postCamera"))$("#postCamera").value="";
 
     state.postImage=null;
+    state.postImages=[];
     $("#postPreview").removeAttribute("src");
     $("#postPreview").style.display="none";
+    renderPostPreviewGrid();
 
     clearPollBuilder();
     setComposer(false);
@@ -13348,7 +14045,9 @@ $("#publishPost").onclick=async()=>{
     const msg=String(err?.message||"POST FAILED");
     const lower=msg.toLowerCase();
 
-    if(lower.includes("bucket")||lower.includes("storage")||lower.includes("row-level security")){
+    if(lower.includes("v19 supabase sql")||lower.includes("media_urls")){
+      toast("RUN V19 SUPABASE SQL FOR MULTIPLE PHOTOS");
+    }else if(lower.includes("bucket")||lower.includes("storage")||lower.includes("row-level security")){
       toast("RUN POST MEDIA STORAGE SQL");
     }else if(lower.includes("payload")||lower.includes("too large")){
       toast("IMAGE TOO LARGE");
@@ -13853,15 +14552,18 @@ $("#sendChat").onclick=async()=>{
     if(!other)return toast("SELECT A CHAT FIRST");
     r=await boomDB.from("direct_messages").insert({
       sender_id:boomUser.id,receiver_id:other.id,body:text,image_url:image||null,reply_to
-    });
+    }).select().single();
     if(r.error && String(r.error.message||"").toLowerCase().includes("reply_to")){
       r=await boomDB.from("direct_messages").insert({
         sender_id:boomUser.id,receiver_id:other.id,body:text,image_url:image||null
-      });
+      }).select().single();
     }
   }
 
   if(r.error)return toast(r.error.message);
+  if(state.chatMode==="dm"&&r.data?.id){
+    sendBoomPush("dm",{message_id:r.data.id});
+  }
   $("#chatInput").value="";
   $("#chatImage").value="";
   if($("#chatCamera"))$("#chatCamera").value="";
@@ -14148,7 +14850,7 @@ $("#saveMood").onclick=async()=>{const mood=$("#moodSelect").value,r=await boomD
 
 /* notes and drafts are account-scoped in Supabase */
 $("#saveNotes").onclick=async()=>{const content=$("#personalNotes").value,r=await boomDB.from("notes").upsert({user_id:boomUser.id,content},{onConflict:"user_id"});if(r.error)return toast(r.error.message);state.notes=content;$("#notesStatus").textContent="SAVED TO CLOUD";toast("NOTES SAVED")};
-$("#saveDraftBtn").onclick=async()=>{const text=$("#postText").value.trim(),q=$("#pollQuestion")?.value.trim()||"",opts=[$("#pollOpt1")?.value,$("#pollOpt2")?.value,$("#pollOpt3")?.value].map(x=>(x||"").trim()).filter(Boolean);if(!text&&!state.postImage&&!q&&!opts.length)return toast("NOTHING TO SAVE");const body=JSON.stringify({text,image:state.postImage||null,poll:(q||opts.length)?{question:q,options:opts}:null});const r=await boomDB.from("drafts").insert({user_id:boomUser.id,body});if(r.error)return toast(r.error.message);await loadBoomCloud();toast("DRAFT SAVED TO CLOUD")};
+$("#saveDraftBtn").onclick=async()=>{const text=$("#postText").value.trim(),q=$("#pollQuestion")?.value.trim()||"",opts=[$("#pollOpt1")?.value,$("#pollOpt2")?.value,$("#pollOpt3")?.value].map(x=>(x||"").trim()).filter(Boolean);if(!text&&!(state.postImages?.length||state.postImage)&&!q&&!opts.length)return toast("NOTHING TO SAVE");const body=JSON.stringify({text,image:state.postImage||null,images:state.postImages||[],poll:(q||opts.length)?{question:q,options:opts}:null});const r=await boomDB.from("drafts").insert({user_id:boomUser.id,body});if(r.error)return toast(r.error.message);await loadBoomCloud();toast("DRAFT SAVED TO CLOUD")};
 const renderDraftsLocal=renderDrafts;
 renderDrafts=function(){renderDraftsLocal();if(!boomUser)return;$$('[data-load-draft]').forEach(b=>b.onclick=()=>loadDraft(b.dataset.loadDraft));$$('[data-delete-draft]').forEach(b=>b.onclick=async()=>{const r=await boomDB.from('drafts').delete().eq('id',b.dataset.deleteDraft).eq('user_id',boomUser.id);if(r.error)return toast(r.error.message);await loadBoomCloud();toast('DRAFT DELETED')})};
 
