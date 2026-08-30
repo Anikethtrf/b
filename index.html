@@ -8551,9 +8551,164 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
   }
 }
 
+
+/* =========================================================
+   DESKTOP CHAT ENLARGE + RESPONSIVE FIX V10
+   Makes the desktop/laptop chat page wide, roomy, and responsive.
+   Mobile behavior remains unchanged.
+   ========================================================= */
+
+@media (min-width: 901px){
+  #page-chat{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  #page-chat .page-title{
+    width:min(1760px, calc(100vw - 26px))!important;
+    max-width:none!important;
+    margin:10px auto 12px!important;
+  }
+
+  #page-chat .chat-layout{
+    width:min(1760px, calc(100vw - 26px))!important;
+    max-width:none!important;
+    margin:0 auto!important;
+    display:grid!important;
+    grid-template-columns:320px minmax(0, 1fr)!important;
+    gap:14px!important;
+    align-items:stretch!important;
+  }
+
+  #page-chat .chat-layout > .panel:first-child{
+    min-width:0!important;
+  }
+
+  #page-chat .chat-box{
+    width:100%!important;
+    height:clamp(660px, calc(100dvh - 150px), 980px)!important;
+    min-height:660px!important;
+    max-height:none!important;
+    border-radius:16px!important;
+  }
+
+  #page-chat .messages{
+    padding:20px 22px!important;
+  }
+
+  #page-chat .chat-compose{
+    padding:12px 14px!important;
+    gap:10px!important;
+  }
+
+  #page-chat .chat-compose input{
+    height:48px!important;
+    font-size:14px!important;
+  }
+
+  #page-chat .msg-line{
+    max-width:88%!important;
+  }
+
+  #page-chat .bubble,
+  #page-chat .msg.me .bubble{
+    max-width:min(74%, 740px)!important;
+    padding:12px 14px!important;
+  }
+
+  #page-chat .room-list button,
+  #page-chat .side-list button{
+    min-height:72px!important;
+    padding:10px 12px!important;
+    align-items:center!important;
+  }
+}
+
+/* Wide laptop / desktop */
+@media (min-width: 1200px){
+  #page-chat .chat-layout{
+    width:min(1860px, calc(100vw - 28px))!important;
+    grid-template-columns:360px minmax(0, 1fr)!important;
+    gap:16px!important;
+  }
+
+  #page-chat .page-title{
+    width:min(1860px, calc(100vw - 28px))!important;
+  }
+
+  #page-chat .chat-box{
+    height:clamp(700px, calc(100dvh - 145px), 1020px)!important;
+    min-height:700px!important;
+  }
+
+  #page-chat .bubble,
+  #page-chat .msg.me .bubble{
+    max-width:min(70%, 820px)!important;
+  }
+
+  #page-chat .messages{
+    padding:24px 26px!important;
+  }
+
+  #page-chat .chat-compose input{
+    height:50px!important;
+  }
+}
+
+/* 1366x768 type laptop tuning */
+@media (min-width: 1200px) and (max-width: 1440px){
+  #page-chat .chat-layout{
+    width:calc(100vw - 18px)!important;
+    grid-template-columns:340px minmax(0, 1fr)!important;
+    gap:14px!important;
+  }
+
+  #page-chat .page-title{
+    width:calc(100vw - 18px)!important;
+  }
+
+  #page-chat .chat-box{
+    height:calc(100dvh - 138px)!important;
+    min-height:620px!important;
+  }
+
+  #page-chat .bubble,
+  #page-chat .msg.me .bubble{
+    max-width:72%!important;
+  }
+}
+
+/* Tablet / small laptop */
+@media (min-width: 901px) and (max-width: 1199px){
+  #page-chat .chat-layout{
+    width:calc(100vw - 18px)!important;
+    grid-template-columns:280px minmax(0, 1fr)!important;
+    gap:12px!important;
+  }
+
+  #page-chat .page-title{
+    width:calc(100vw - 18px)!important;
+  }
+
+  #page-chat .chat-box{
+    height:calc(100dvh - 142px)!important;
+    min-height:600px!important;
+  }
+
+  #page-chat .bubble,
+  #page-chat .msg.me .bubble{
+    max-width:76%!important;
+  }
+
+  #page-chat .room-list button,
+  #page-chat .side-list button{
+    min-height:66px!important;
+  }
+}
+
 </style>
 </head>
-<body data-boom-build="V9-FULL-HEADER">
+<body data-boom-build="V10-DESKTOP-CHAT">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -8589,7 +8744,7 @@ html[data-theme="lavender"] #page-chat .msg-more-btn{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V9</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V10</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
