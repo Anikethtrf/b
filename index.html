@@ -10774,9 +10774,32 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
   }
 }
 
+
+/* =========================================================
+   V20 STABILITY HOTFIX
+   ========================================================= */
+.mission-alert-drawer:not(.open){
+  pointer-events:none!important;
+  visibility:hidden!important;
+}
+.mission-alert-backdrop.hidden{
+  display:none!important;
+  pointer-events:none!important;
+}
+body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
+  pointer-events:auto!important;
+}
+
+/* Core app always receives pointer input unless an actual alert drawer is open. */
+#appRoot,
+.main-shell,
+.top-nav{
+  pointer-events:auto;
+}
+
 </style>
 </head>
-<body data-boom-build="V19-MISSION-MEDIA">
+<body data-boom-build="V20-STABLE">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -10812,7 +10835,7 @@ input::placeholder,textarea::placeholder{font-size:13px!important}
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V19</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V20</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -12863,7 +12886,6 @@ function renderMissionAlerts(){
     ?state.notifications.map(missionAlertMarkup).join("")
     :'<div class="mission-alert-empty">NO ACTIVE SIGNALS.</div>';
   updateNoticeBadge();
-  updatePushStatus();
 }
 
 function renderNotifications(){
@@ -12911,6 +12933,7 @@ function openMissionAlerts(){
   $("#missionAlertDrawer")?.setAttribute("aria-hidden","false");
   $("#missionAlertBackdrop")?.classList.remove("hidden");
   renderMissionAlerts();
+  updatePushStatus().catch(err=>console.warn("Push status unavailable:",err));
 }
 
 function closeMissionAlerts(){
@@ -13024,17 +13047,15 @@ async function enableBoomPush(){
 
 $("#enablePushBtn")?.addEventListener("click",enableBoomPush);
 
-async function sendBoomPush(type,payload={}){
+function sendBoomPush(type,payload={}){
   if(!boomUser)return;
-  try{
-    const {error}=await boomDB.functions.invoke("push-notify",{
-      body:{type,...payload}
-    });
-    if(error)console.warn("Push function:",error.message);
-  }catch(err){
-    // Push delivery must never block likes/comments/messages.
-    console.warn("Push invoke unavailable:",err);
-  }
+
+  // Fire-and-forget. Push is strictly optional and is isolated from
+  // likes/comments/messages so a missing Edge Function cannot freeze UI.
+  Promise.resolve()
+    .then(()=>boomDB.functions.invoke("push-notify",{body:{type,...payload}}))
+    .then(({error})=>{if(error)console.warn("Push function unavailable:",error.message)})
+    .catch(err=>console.warn("Push invoke unavailable:",err));
 }
 
 function handleIncomingMissionAlert(alert){
@@ -13044,7 +13065,6 @@ function handleIncomingMissionAlert(alert){
 }
 
 window.addEventListener("load",()=>{
-  updatePushStatus();
   const q=new URLSearchParams(location.search);
   if(q.get("open")==="alerts"){
     setTimeout(openMissionAlerts,700);
@@ -13592,12 +13612,11 @@ async function loadBoomCloud(){
     boomDB.from("friendships").select("*").or(`user_id.eq.${boomUser.id},friend_id.eq.${boomUser.id}`),
     boomDB.from("guestbook_entries").select("*").order("created_at",{ascending:true}).limit(100),
     boomDB.from("notes").select("*").eq("user_id",boomUser.id).maybeSingle(),
-    boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false}),
-    boomDB.from("mission_alerts").select("*").eq("user_id",boomUser.id).order("created_at",{ascending:false}).limit(100)
+    boomDB.from("drafts").select("*").eq("user_id",boomUser.id).order("updated_at",{ascending:false})
   ]);
   /* Messaging V2 is optional during rollout: missing new chat tables
      must never prevent a valid account from logging in. */
-  const optionalIndexes=new Set([9,12,13,18]); // room_members + message reaction tables
+  const optionalIndexes=new Set([9,12,13]); // room_members + message reaction tables
   let messagingUpgradeMissing=false;
 
   results.forEach((result,index)=>{
@@ -13615,7 +13634,7 @@ async function loadBoomCloud(){
   const bad=results.find(r=>r?.error);
   if(bad)throw bad.error;
 
-  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR,alertsR]=results;
+  const [profilesR,postsR,commentsR,likesR,savedR,reactionsR,pollOptsR,pollVotesR,roomsR,roomMembersR,roomMsgsR,dmsR,roomMsgReactsR,dmMsgReactsR,friendsR,guestR,notesR,draftsR]=results;
 
   window.__boomMessagingUpgradeMissing=messagingUpgradeMissing;
   boomProfiles=profilesR.data||[];
@@ -13684,8 +13703,19 @@ async function loadBoomCloud(){
   state.notes=notesR.data?.content||"";
   state.drafts=(draftsR.data||[]).map(d=>{try{const j=JSON.parse(d.body||"{}");return{id:d.id,...j,savedAt:new Date(d.updated_at).toLocaleString()}}catch{return{id:d.id,text:d.body||"",savedAt:new Date(d.updated_at).toLocaleString()}}});
 
-  if(!alertsR?.error && Array.isArray(alertsR?.data)){
-    state.notifications=alertsR.data.map(a=>({
+  /* Mission Alerts are optional. A missing/broken alert table must never
+     stop feed, likes, comments, chat, profile or navigation from loading. */
+  try{
+    const alertsR=await boomDB
+      .from("mission_alerts")
+      .select("*")
+      .eq("user_id",boomUser.id)
+      .order("created_at",{ascending:false})
+      .limit(100);
+
+    if(alertsR.error)throw alertsR.error;
+
+    state.notifications=(alertsR.data||[]).map(a=>({
       id:a.id,
       type:a.type||"system",
       title:a.title||"MISSION ALERT",
@@ -13694,9 +13724,12 @@ async function loadBoomCloud(){
       created_at:a.created_at,
       read:!!a.read_at
     }));
+
     window.__boomMissionUpgradeMissing=false;
-  }else{
+  }catch(alertErr){
+    console.warn("Mission Alerts unavailable — core app continues:",alertErr?.message||alertErr);
     window.__boomMissionUpgradeMissing=true;
+    if(!Array.isArray(state.notifications))state.notifications=[];
   }
 
   save();
@@ -13705,10 +13738,21 @@ async function loadBoomCloud(){
   if($("#onlineCount"))$("#onlineCount").textContent=String(boomProfiles.length);
 }
 
-function boomReloadSoon(){clearTimeout(boomReloadTimer);boomReloadTimer=setTimeout(()=>loadBoomCloud().catch(e=>console.error(e)),350)}
+function boomReloadSoon(){
+  clearTimeout(boomReloadTimer);
+  boomReloadTimer=setTimeout(async()=>{
+    try{
+      await loadBoomCloud();
+    }catch(e){
+      console.error("Cloud refresh failed; keeping current UI active:",e);
+      toast("SYNC DELAY — APP STILL ACTIVE");
+    }
+  },350);
+}
 function startBoomRealtime(){
   if(boomRealtime)boomDB.removeChannel(boomRealtime);
-  boomRealtime=boomDB.channel("boom-live")
+
+  let channel=boomDB.channel("boom-live")
     .on("postgres_changes",{event:"*",schema:"public",table:"posts"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"comments"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"likes"},boomReloadSoon)
@@ -13721,9 +13765,24 @@ function startBoomRealtime(){
     .on("postgres_changes",{event:"*",schema:"public",table:"room_message_reactions"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"direct_message_reactions"},boomReloadSoon)
     .on("postgres_changes",{event:"*",schema:"public",table:"friendships"},boomReloadSoon)
-    .on("postgres_changes",{event:"*",schema:"public",table:"guestbook_entries"},boomReloadSoon)
-    .on("postgres_changes",{event:"*",schema:"public",table:"mission_alerts",filter:`user_id=eq.${boomUser.id}`},payload=>{boomReloadSoon();handleIncomingMissionAlert(payload.new)})
-    .subscribe();
+    .on("postgres_changes",{event:"*",schema:"public",table:"guestbook_entries"},boomReloadSoon);
+
+  if(!window.__boomMissionUpgradeMissing){
+    channel=channel.on(
+      "postgres_changes",
+      {event:"*",schema:"public",table:"mission_alerts",filter:`user_id=eq.${boomUser.id}`},
+      payload=>{
+        boomReloadSoon();
+        handleIncomingMissionAlert(payload.new);
+      }
+    );
+  }
+
+  boomRealtime=channel.subscribe(status=>{
+    if(status==="CHANNEL_ERROR"){
+      console.warn("Realtime channel error — app remains usable.");
+    }
+  });
 }
 
 async function enterBoom(session){
@@ -13856,24 +13915,46 @@ const renderFeedLocal=renderFeed;
 renderFeed=function(){
   renderFeedLocal();if(!boomUser)return;
   $$('[data-like]').forEach(b=>b.onclick=async()=>{
-    const id=b.dataset.like,liked=state.likedPosts.includes(id);
-    const r=liked
-      ?await boomDB.from('likes').delete().eq('post_id',id).eq('user_id',boomUser.id)
-      :await boomDB.from('likes').insert({post_id:id,user_id:boomUser.id});
-    if(r.error)return toast(r.error.message);
-    if(!liked)sendBoomPush("like",{post_id:id});
-    await loadBoomCloud();
+    try{
+      const id=b.dataset.like,liked=state.likedPosts.includes(id);
+      const r=liked
+        ?await boomDB.from('likes').delete().eq('post_id',id).eq('user_id',boomUser.id)
+        :await boomDB.from('likes').insert({post_id:id,user_id:boomUser.id});
+
+      if(r.error)throw r.error;
+      if(!liked)sendBoomPush("like",{post_id:id});
+
+      try{await loadBoomCloud()}catch(syncErr){
+        console.warn("Like saved; refresh delayed:",syncErr);
+        toast(liked?"LIKE REMOVED":"POST LIKED");
+      }
+    }catch(err){
+      console.error("Like failed:",err);
+      toast(err?.message||"LIKE FAILED");
+    }
   });
   $$('[data-comment]').forEach(b=>b.onclick=async()=>{
-    const id=b.dataset.comment,inp=$("#comment-"+id),body=inp?.value.trim();
-    if(!body)return;
-    const r=await boomDB.from('comments')
-      .insert({post_id:id,user_id:boomUser.id,body})
-      .select()
-      .single();
-    if(r.error)return toast(r.error.message);
-    sendBoomPush("comment",{comment_id:r.data.id});
-    await loadBoomCloud();
+    try{
+      const id=b.dataset.comment,inp=$("#comment-"+id),body=inp?.value.trim();
+      if(!body)return;
+
+      const r=await boomDB.from('comments')
+        .insert({post_id:id,user_id:boomUser.id,body})
+        .select()
+        .single();
+
+      if(r.error)throw r.error;
+      if(inp)inp.value="";
+      sendBoomPush("comment",{comment_id:r.data.id});
+
+      try{await loadBoomCloud()}catch(syncErr){
+        console.warn("Comment saved; refresh delayed:",syncErr);
+        toast("COMMENT ADDED");
+      }
+    }catch(err){
+      console.error("Comment failed:",err);
+      toast(err?.message||"COMMENT FAILED");
+    }
   });
   $$('.comment-form input').forEach(inp=>inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$("[data-comment='"+inp.id.replace('comment-','')+"']")?.click()}});
   $$('[data-delete]').forEach(b=>b.onclick=async()=>{if(!confirm('Delete this post?'))return;const r=await boomDB.from('posts').delete().eq('id',b.dataset.delete).eq('user_id',boomUser.id);if(r.error)return toast(r.error.message);await loadBoomCloud();toast('POST DELETED')});
