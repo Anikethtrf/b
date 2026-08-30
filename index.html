@@ -8132,6 +8132,140 @@ html[data-theme="lavender"] .auth-status.error{
 }
 
 
+
+/* =========================================================
+   V22 PERMANENT CHAT NAVIGATION CONTROLLER
+   Individual conversation-row listeners can disappear after realtime
+   re-renders. This capture-phase delegated controller never disappears.
+   ========================================================= */
+function selectDmImmediateByProfile(profile){
+  if(!profile||!boomUser)return false;
+  if(profile.id===boomUser.id){
+    toast("YOU CAN'T DM YOURSELF");
+    return false;
+  }
+
+  state.chatMode="dm";
+  state.activeDMId=profile.id;
+  state.activeDM=profile.username||profile.display_name||"user";
+  state.dms[state.activeDM]=state.dms[state.activeDM]||[];
+  boomReplyTarget=null;
+
+  save();
+
+  // UI selection happens NOW. Network/seen updates happen afterwards.
+  try{
+    renderChat();
+    showMobileConversation();
+  }catch(err){
+    console.error("Immediate DM render failed:",err);
+  }
+
+  Promise.resolve()
+    .then(()=>markActiveDmSeen())
+    .catch(err=>console.warn("Seen update skipped:",err));
+
+  return true;
+}
+
+async function recoverAndSelectDm(id,name){
+  const cleanId=String(id||"").trim();
+
+  if(cleanId){
+    const cached=boomProfileById[cleanId]||boomProfiles.find(p=>p.id===cleanId);
+    if(cached)return selectDmImmediateByProfile(cached);
+
+    try{
+      const r=await boomDB.from("profiles").select("*").eq("id",cleanId).maybeSingle();
+      if(!r.error&&r.data){
+        boomProfileById[r.data.id]=r.data;
+        const i=boomProfiles.findIndex(p=>p.id===r.data.id);
+        if(i>=0)boomProfiles[i]=r.data;
+        else boomProfiles.push(r.data);
+        return selectDmImmediateByProfile(r.data);
+      }
+    }catch(err){
+      console.warn("DM id recovery failed:",err);
+    }
+  }
+
+  const cleanName=String(name||"").trim().replace(/^@/,"");
+  if(cleanName){
+    const profile=await findProfileByUsername(cleanName);
+    if(profile)return selectDmImmediateByProfile(profile);
+  }
+
+  toast("CHAT ACCOUNT NOT AVAILABLE");
+  return false;
+}
+
+function selectRoomImmediate(roomName){
+  const clean=String(roomName||"").trim();
+  if(!clean)return false;
+
+  state.chatMode="room";
+  state.room=clean;
+  boomReplyTarget=null;
+  save();
+
+  try{
+    renderChat();
+    showMobileConversation();
+  }catch(err){
+    console.error("Immediate channel render failed:",err);
+  }
+
+  return true;
+}
+
+/* Capture phase is intentional:
+   even if an old row handler is missing/broken, this still catches the click. */
+document.addEventListener("click",event=>{
+  const dmButton=event.target.closest("#dmList button");
+  if(dmButton){
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    dmButton.classList.add("chat-row-pressed");
+
+    const id=dmButton.dataset.dmId||"";
+    const name=dmButton.dataset.dm||"";
+
+    recoverAndSelectDm(id,name).finally(()=>{
+      setTimeout(()=>dmButton.classList.remove("chat-row-pressed"),120);
+    });
+    return;
+  }
+
+  const roomButton=event.target.closest("#roomList button[data-room]");
+  if(roomButton){
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    selectRoomImmediate(roomButton.dataset.room);
+  }
+},true);
+
+/* Also support keyboard activation robustly. */
+document.addEventListener("keydown",event=>{
+  if(event.key!=="Enter"&&event.key!==" ")return;
+
+  const dmButton=event.target.closest?.("#dmList button");
+  if(dmButton){
+    event.preventDefault();
+    recoverAndSelectDm(dmButton.dataset.dmId||"",dmButton.dataset.dm||"");
+    return;
+  }
+
+  const roomButton=event.target.closest?.("#roomList button[data-room]");
+  if(roomButton){
+    event.preventDefault();
+    selectRoomImmediate(roomButton.dataset.room);
+  }
+},true);
+
+
 /* =========================================================
    MESSAGE 3-DOT MENU V7
    ========================================================= */
@@ -10816,9 +10950,54 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   outline-offset:-1px!important;
 }
 
+
+/* =========================================================
+   V22 CHAT CLICK FIX
+   ========================================================= */
+.chat-live-build{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:30px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  margin-right:5px!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  background:rgba(0,0,0,.20)!important;
+  color:#fff!important;
+  font:800 8px "Courier New",monospace!important;
+  letter-spacing:.05em!important;
+}
+
+#page-chat #dmList button,
+#page-chat #roomList button[data-room]{
+  position:relative!important;
+  z-index:1!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  user-select:none!important;
+}
+
+#page-chat #dmList button > *,
+#page-chat #roomList button[data-room] > *{
+  pointer-events:none!important;
+}
+
+#page-chat #dmList button.chat-row-pressed,
+#page-chat #roomList button[data-room]:active{
+  outline:2px solid var(--m-accent)!important;
+  outline-offset:-2px!important;
+  filter:brightness(.94)!important;
+}
+
+#page-chat #dmList button.active{
+  box-shadow:inset 4px 0 0 var(--m-accent)!important;
+}
+
 </style>
 </head>
-<body data-boom-build="V21-CHAT-ID">
+<body data-boom-build="V22-CHAT-CLICK">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -10854,7 +11033,7 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat" data-go="profile" title="Open profile">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V21</span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V22</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -11168,7 +11347,7 @@ body:not(.mission-alerts-open) .mission-alert-backdrop:not(.hidden){
           </div>
 
           <div class="chat-head-actions">
-            <span id="roomStatus">ONLINE</span>
+            <span class="chat-live-build">V22</span><span id="roomStatus">ONLINE</span>
             <button class="igdm-icon-btn" id="chatInfoBtn" type="button" title="Conversation details">ⓘ</button>
             <button class="btn room-manage-btn hidden" id="manageRoomBtn" type="button">MEMBERS</button>
           </div>
@@ -13614,6 +13793,9 @@ function fmtTime(ts){
 function personFor(id){return boomProfileById[id]||{username:"unknown",avatar_url:"?",bio:""}}
 
 async function loadBoomCloud(){
+  const preserveChatMode=state.chatMode;
+  const preserveDmId=state.activeDMId||"";
+  const preserveRoom=state.room||"";
   if(!boomUser)return;
   setAuthStatus("LOADING YOUR BOOM CHAT...","ok");
   const results=await Promise.all([
@@ -13781,6 +13963,17 @@ async function loadBoomCloud(){
   }
 
   save();
+  // A realtime/cloud refresh must never undo the conversation the user
+  // just selected. IDs are immutable, so restore selection before rendering.
+  if(preserveChatMode==="dm"&&preserveDmId&&boomProfileById[preserveDmId]){
+    state.chatMode="dm";
+    state.activeDMId=preserveDmId;
+    state.activeDM=boomProfileById[preserveDmId].username||boomProfileById[preserveDmId].display_name||state.activeDM;
+  }else if(preserveChatMode==="room"&&preserveRoom){
+    state.chatMode="room";
+    state.room=preserveRoom;
+  }
+
   [
     ["feed",renderFeed],
     ["trending",renderTrending],
@@ -14463,7 +14656,7 @@ async function markActiveDmSeen(){
   if(!r.error){
     const now=new Date().toISOString();
     boomRawDirectMessages.forEach(m=>{if(m.sender_id===p.id&&m.receiver_id===boomUser.id&&!m.read_at)m.read_at=now});
-    renderDMs();
+    updateNoticeBadge();
   }
 }
 
