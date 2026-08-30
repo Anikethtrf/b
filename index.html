@@ -8051,6 +8051,35 @@ html[data-theme="lavender"] .auth-status.error{
   }
 }
 
+
+/* =========================================================
+   MOBILE LONG-PRESS MESSAGE MENU
+   ========================================================= */
+.msg-hold-backdrop,.msg-hold-sheet{display:none}
+@media(min-width:721px){.igdm-message-actions{display:flex!important}}
+@media(max-width:720px){
+  #page-chat .igdm-message-actions{display:none!important}
+  #page-chat .msg{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+  #page-chat .bubble{cursor:default!important;touch-action:pan-y!important}
+  .msg-hold-backdrop{position:fixed!important;inset:0!important;z-index:5998!important;display:block!important;background:rgba(0,0,0,.38)!important;opacity:1!important;animation:boomHoldFadeIn .16s ease-out both!important;transition:opacity .16s ease!important}
+  .msg-hold-backdrop.hidden{display:none!important}.msg-hold-backdrop.closing{opacity:0!important}
+  .msg-hold-sheet{position:fixed!important;left:10px!important;right:10px!important;bottom:76px!important;z-index:5999!important;display:block!important;width:auto!important;max-width:480px!important;margin:0 auto!important;padding:8px!important;border:1px solid var(--m-line-strong)!important;border-radius:16px!important;background:color-mix(in srgb,var(--m-surface) 96%,#fff 4%)!important;color:var(--m-text)!important;box-shadow:0 18px 55px rgba(0,0,0,.28)!important;opacity:1!important;transform:translateY(0) scale(1)!important;transform-origin:center bottom!important;animation:boomHoldSheetIn .20s cubic-bezier(.2,.8,.2,1) both!important;transition:opacity .16s ease,transform .18s cubic-bezier(.2,.8,.2,1)!important}
+  .msg-hold-sheet.hidden{display:none!important}.msg-hold-sheet.closing{opacity:0!important;transform:translateY(12px) scale(.98)!important}
+  .msg-hold-preview{min-width:0!important;padding:10px 11px!important;border-bottom:1px solid var(--m-line)!important}
+  .msg-hold-preview small{display:block!important;margin-bottom:5px!important;color:var(--m-muted)!important;font:700 7px Verdana,Arial,sans-serif!important;letter-spacing:.09em!important}
+  .msg-hold-preview span{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;color:var(--m-text)!important;font-size:11px!important}
+  .msg-hold-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:8px 0!important}
+  .msg-hold-actions button{min-width:0!important;min-height:64px!important;padding:7px 4px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;border:1px solid var(--m-line)!important;border-radius:11px!important;background:var(--m-soft)!important;color:var(--m-text)!important;cursor:pointer!important}
+  .msg-hold-actions button span{color:inherit!important;font-size:18px!important;line-height:1!important}.msg-hold-actions button b{color:inherit!important;font-size:8px!important;letter-spacing:.03em!important}
+  .msg-hold-actions button.danger{color:#d63838!important;background:color-mix(in srgb,#d63838 9%,var(--m-surface) 91%)!important;border-color:color-mix(in srgb,#d63838 36%,var(--m-line) 64%)!important}.msg-hold-actions button.hidden{display:none!important}
+  .msg-hold-cancel{width:100%!important;min-height:43px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:var(--m-text)!important;font:700 9px Verdana,Arial,sans-serif!important;cursor:pointer!important}
+  .msg-hold-cancel:active,.msg-hold-actions button:active{transform:scale(.97)!important}
+  @keyframes boomHoldFadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes boomHoldSheetIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @media(prefers-reduced-motion:reduce){.msg-hold-backdrop,.msg-hold-sheet{animation:none!important;transition:none!important}}
+}
+@media(max-width:390px){.msg-hold-sheet{left:6px!important;right:6px!important;bottom:67px!important}.msg-hold-actions button{min-height:58px!important}}
+
 </style>
 </head>
 <body>
@@ -8432,6 +8461,22 @@ html[data-theme="lavender"] .auth-status.error{
 
     </div>
   </section>
+
+
+  <!-- MOBILE MESSAGE LONG-PRESS MENU -->
+  <div class="msg-hold-backdrop hidden" id="msgHoldBackdrop" aria-hidden="true"></div>
+  <div class="msg-hold-sheet hidden" id="msgHoldSheet" role="dialog" aria-modal="true" aria-label="Message options">
+    <div class="msg-hold-preview" id="msgHoldPreview">
+      <small id="msgHoldUser">MESSAGE</small>
+      <span id="msgHoldText">Message preview</span>
+    </div>
+    <div class="msg-hold-actions">
+      <button type="button" id="msgHoldReply"><span>↩</span><b>Reply</b></button>
+      <button type="button" id="msgHoldReact"><span>♡</span><b>React</b></button>
+      <button type="button" class="danger hidden" id="msgHoldDelete"><span>⌫</span><b>Delete</b></button>
+    </div>
+    <button class="msg-hold-cancel" type="button" id="msgHoldCancel">Cancel</button>
+  </div>
 
   <!-- NEW MESSAGE MODAL -->
   <div class="new-dm-overlay hidden" id="newDmModal" role="dialog" aria-modal="true">
@@ -10115,6 +10160,7 @@ document.addEventListener("keydown",e=>{
   $("#drawModal")?.classList.remove("open");
   $("#roomManagerModal")?.classList.add("hidden");
   $("#newDmModal")?.classList.add("hidden");
+  if(typeof closeMessageHoldMenu==="function")closeMessageHoldMenu(false);
   $("#igdmShell")?.classList.remove("details-open");
   if($("#composerShell")?.classList.contains("open"))setComposer(false);
 });
@@ -10912,8 +10958,54 @@ renderChat=function(){
     await loadBoomCloud();
   });
 
-  requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight});
+  requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight;wireMessageLongPress();});
 };
+
+
+/* MOBILE MESSAGE LONG-PRESS CONTROLLER */
+let boomHoldMessage=null, boomHoldTimer=null, boomHoldStartX=0, boomHoldStartY=0;
+function mobileMessageHoldEnabled(){return window.matchMedia('(max-width:720px)').matches}
+function cancelMessageHoldTimer(){if(boomHoldTimer){clearTimeout(boomHoldTimer);boomHoldTimer=null}}
+function closeMessageHoldMenu(animated=true){
+  const sheet=$('#msgHoldSheet'),back=$('#msgHoldBackdrop'); if(!sheet||!back)return;
+  if(animated){sheet.classList.add('closing');back.classList.add('closing');setTimeout(()=>{sheet.classList.add('hidden');back.classList.add('hidden');sheet.classList.remove('closing');back.classList.remove('closing');boomHoldMessage=null},180)}
+  else{sheet.classList.add('hidden');back.classList.add('hidden');sheet.classList.remove('closing');back.classList.remove('closing');boomHoldMessage=null}
+}
+function openMessageHoldMenu(message){
+  if(!message||!mobileMessageHoldEnabled())return; boomHoldMessage=message;
+  const mine=message.user_id===boomUser?.id, preview=message.text||(message.image?'Photo':'Message');
+  $('#msgHoldUser').textContent=mine?'YOUR MESSAGE':'@'+(message.user||'USER');
+  $('#msgHoldText').textContent=truncateChatText(preview,90);
+  $('#msgHoldDelete').classList.toggle('hidden',!mine);
+  $('#msgHoldBackdrop').classList.remove('hidden','closing'); $('#msgHoldSheet').classList.remove('hidden','closing');
+  if(navigator.vibrate){try{navigator.vibrate(25)}catch{}}
+}
+function wireMessageLongPress(){
+  if(!mobileMessageHoldEnabled())return;
+  $$('[data-message-row]').forEach(row=>{
+    if(row.dataset.holdWired==='1')return; row.dataset.holdWired='1';
+    row.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='mouse'||e.target.closest('button,a,input,label'))return;
+      const message=findCurrentMessage(row.dataset.messageRow); if(!message)return;
+      boomHoldStartX=e.clientX; boomHoldStartY=e.clientY; cancelMessageHoldTimer();
+      boomHoldTimer=setTimeout(()=>openMessageHoldMenu(message),520);
+    },{passive:true});
+    row.addEventListener('pointermove',e=>{if(!boomHoldTimer)return; if(Math.abs(e.clientX-boomHoldStartX)>12||Math.abs(e.clientY-boomHoldStartY)>12)cancelMessageHoldTimer()},{passive:true});
+    row.addEventListener('pointerup',cancelMessageHoldTimer,{passive:true});
+    row.addEventListener('pointercancel',cancelMessageHoldTimer,{passive:true});
+    row.addEventListener('contextmenu',e=>{if(mobileMessageHoldEnabled()){e.preventDefault();const message=findCurrentMessage(row.dataset.messageRow);if(message)openMessageHoldMenu(message)}});
+  });
+}
+$('#msgHoldBackdrop')?.addEventListener('click',()=>closeMessageHoldMenu());
+$('#msgHoldCancel')?.addEventListener('click',()=>closeMessageHoldMenu());
+$('#msgHoldReply')?.addEventListener('click',()=>{if(!boomHoldMessage)return;boomReplyTarget=boomHoldMessage;updateReplyBanner();closeMessageHoldMenu();setTimeout(()=>$('#chatInput')?.focus(),190)});
+$('#msgHoldReact')?.addEventListener('click',async()=>{if(!boomHoldMessage)return;const id=boomHoldMessage.id,kind=state.chatMode==='dm'?'dm':'room';closeMessageHoldMenu();await reactToMessage(id,kind)});
+$('#msgHoldDelete')?.addEventListener('click',async()=>{
+  if(!boomHoldMessage||boomHoldMessage.user_id!==boomUser?.id)return;
+  const message=boomHoldMessage; if(!confirm('Delete this message for everyone?'))return;
+  const table=state.chatMode==='dm'?'direct_messages':'room_messages'; const r=await boomDB.from(table).delete().eq('id',message.id);
+  if(r.error)return toast(r.error.message); if(boomReplyTarget?.id===message.id)boomReplyTarget=null; closeMessageHoldMenu(); await loadBoomCloud(); toast('MESSAGE DELETED');
+});
 
 $("#sendChat").onclick=async()=>{
   const text=$("#chatInput").value.trim(),image=state.chatImage;
