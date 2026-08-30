@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BOOM CHAT — Social Network</title>
+<title>V6 · BOOM CHAT — Social Network</title>
 <style>
 
 :root{
@@ -8080,9 +8080,60 @@ html[data-theme="lavender"] .auth-status.error{
 }
 @media(max-width:390px){.msg-hold-sheet{left:6px!important;right:6px!important;bottom:67px!important}.msg-hold-actions button{min-height:58px!important}}
 
+
+/* =========================================================
+   V6 LONG-PRESS — ANDROID/BRAVE RELIABILITY
+   ========================================================= */
+.boom-build-badge{
+  align-self:flex-start!important;
+  margin:5px 0 0 -4px!important;
+  padding:1px 3px!important;
+  border:1px solid rgba(255,255,255,.35)!important;
+  color:rgba(255,255,255,.82)!important;
+  font:700 6px Verdana,Arial,sans-serif!important;
+  line-height:1.2!important;
+}
+@media(max-width:700px){
+  .boom-build-badge{
+    position:absolute!important;
+    right:2px!important;
+    bottom:2px!important;
+    margin:0!important;
+    font-size:5px!important;
+  }
+
+  #page-chat #messages,
+  #page-chat [data-message-row],
+  #page-chat [data-message-row] .bubble,
+  #page-chat [data-message-row] .msg-text,
+  #page-chat [data-message-row] .meta{
+    -webkit-user-select:none!important;
+    user-select:none!important;
+    -webkit-touch-callout:none!important;
+  }
+
+  #page-chat [data-message-row]{
+    -webkit-tap-highlight-color:transparent!important;
+    transition:transform .12s ease,opacity .12s ease!important;
+  }
+
+  #page-chat [data-message-row].hold-active{
+    transform:scale(.985)!important;
+    opacity:.78!important;
+  }
+
+  .msg-hold-sheet{
+    will-change:transform,opacity!important;
+  }
+
+  .msg-hold-backdrop{
+    will-change:opacity!important;
+  }
+}
+
 </style>
 </head>
-<body>
+<body data-boom-build="V6-HOLD">
 <section class="boom-auth" id="authScreen">
   <div class="auth-window">
     <div class="auth-topline"><span>BOOM CHAT NETWORK</span><span>SECURE LOGIN</span></div>
@@ -8118,7 +8169,7 @@ html[data-theme="lavender"] .auth-status.error{
   <div class="top-nav" id="sideNav">
     <div class="boom-brand" aria-label="Boom Chat">
       <span class="boom-mark">B!</span>
-      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span>
+      <span class="boom-name"><b>BOOM</b><small>CHAT</small></span><span class="boom-build-badge">V6</span>
     </div>
     <button class="nav-btn active" data-page="feed" data-tip="FEED"><span class="nav-ico">◌</span><span class="nav-copy"><b>FEED</b><small>public timeline</small></span></button>
     <button class="nav-btn" data-page="chat" data-tip="CHAT"><span class="nav-ico">✉</span><span class="nav-copy"><b>CHAT</b><small>rooms + direct</small></span></button>
@@ -10958,53 +11009,184 @@ renderChat=function(){
     await loadBoomCloud();
   });
 
-  requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight;wireMessageLongPress();});
+  requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight;});
 };
 
 
-/* MOBILE MESSAGE LONG-PRESS CONTROLLER */
-let boomHoldMessage=null, boomHoldTimer=null, boomHoldStartX=0, boomHoldStartY=0;
-function mobileMessageHoldEnabled(){return window.matchMedia('(max-width:720px)').matches}
-function cancelMessageHoldTimer(){if(boomHoldTimer){clearTimeout(boomHoldTimer);boomHoldTimer=null}}
+/* =========================================================
+   MOBILE MESSAGE LONG-PRESS CONTROLLER V6
+   Delegated touch events: survives every chat re-render and
+   works more reliably on Android / Brave.
+   ========================================================= */
+let boomHoldMessage=null;
+let boomHoldTimer=null;
+let boomHoldStartX=0;
+let boomHoldStartY=0;
+let boomHoldRow=null;
+let boomHoldOpened=false;
+
+function mobileMessageHoldEnabled(){
+  return window.matchMedia("(max-width:720px)").matches;
+}
+
+function clearMessageHoldTimer(){
+  if(boomHoldTimer){
+    clearTimeout(boomHoldTimer);
+    boomHoldTimer=null;
+  }
+}
+
+function setHeldRow(row){
+  if(boomHoldRow&&boomHoldRow!==row)boomHoldRow.classList.remove("hold-active");
+  boomHoldRow=row||null;
+  if(boomHoldRow)boomHoldRow.classList.add("hold-active");
+}
+
 function closeMessageHoldMenu(animated=true){
-  const sheet=$('#msgHoldSheet'),back=$('#msgHoldBackdrop'); if(!sheet||!back)return;
-  if(animated){sheet.classList.add('closing');back.classList.add('closing');setTimeout(()=>{sheet.classList.add('hidden');back.classList.add('hidden');sheet.classList.remove('closing');back.classList.remove('closing');boomHoldMessage=null},180)}
-  else{sheet.classList.add('hidden');back.classList.add('hidden');sheet.classList.remove('closing');back.classList.remove('closing');boomHoldMessage=null}
+  clearMessageHoldTimer();
+
+  const sheet=$("#msgHoldSheet");
+  const back=$("#msgHoldBackdrop");
+  if(!sheet||!back)return;
+
+  setHeldRow(null);
+  boomHoldOpened=false;
+
+  const finish=()=>{
+    sheet.classList.add("hidden");
+    back.classList.add("hidden");
+    sheet.classList.remove("closing");
+    back.classList.remove("closing");
+    boomHoldMessage=null;
+  };
+
+  if(animated&&!sheet.classList.contains("hidden")){
+    sheet.classList.add("closing");
+    back.classList.add("closing");
+    setTimeout(finish,170);
+  }else{
+    finish();
+  }
 }
-function openMessageHoldMenu(message){
-  if(!message||!mobileMessageHoldEnabled())return; boomHoldMessage=message;
-  const mine=message.user_id===boomUser?.id, preview=message.text||(message.image?'Photo':'Message');
-  $('#msgHoldUser').textContent=mine?'YOUR MESSAGE':'@'+(message.user||'USER');
-  $('#msgHoldText').textContent=truncateChatText(preview,90);
-  $('#msgHoldDelete').classList.toggle('hidden',!mine);
-  $('#msgHoldBackdrop').classList.remove('hidden','closing'); $('#msgHoldSheet').classList.remove('hidden','closing');
-  if(navigator.vibrate){try{navigator.vibrate(25)}catch{}}
+
+function openMessageHoldMenu(message,row=null){
+  if(!message||!mobileMessageHoldEnabled())return;
+
+  boomHoldMessage=message;
+  boomHoldOpened=true;
+  setHeldRow(row);
+
+  const mine=message.user_id===boomUser?.id;
+  const preview=message.text||(message.image?"Photo":"Message");
+
+  $("#msgHoldUser").textContent=mine?"YOUR MESSAGE":"@"+(message.user||"USER");
+  $("#msgHoldText").textContent=truncateChatText(preview,90);
+  $("#msgHoldDelete").classList.toggle("hidden",!mine);
+
+  $("#msgHoldBackdrop").classList.remove("hidden","closing");
+  $("#msgHoldSheet").classList.remove("hidden","closing");
+
+  if(navigator.vibrate){
+    try{navigator.vibrate(35)}catch{}
+  }
 }
-function wireMessageLongPress(){
-  if(!mobileMessageHoldEnabled())return;
-  $$('[data-message-row]').forEach(row=>{
-    if(row.dataset.holdWired==='1')return; row.dataset.holdWired='1';
-    row.addEventListener('pointerdown',e=>{
-      if(e.pointerType==='mouse'||e.target.closest('button,a,input,label'))return;
-      const message=findCurrentMessage(row.dataset.messageRow); if(!message)return;
-      boomHoldStartX=e.clientX; boomHoldStartY=e.clientY; cancelMessageHoldTimer();
-      boomHoldTimer=setTimeout(()=>openMessageHoldMenu(message),520);
-    },{passive:true});
-    row.addEventListener('pointermove',e=>{if(!boomHoldTimer)return; if(Math.abs(e.clientX-boomHoldStartX)>12||Math.abs(e.clientY-boomHoldStartY)>12)cancelMessageHoldTimer()},{passive:true});
-    row.addEventListener('pointerup',cancelMessageHoldTimer,{passive:true});
-    row.addEventListener('pointercancel',cancelMessageHoldTimer,{passive:true});
-    row.addEventListener('contextmenu',e=>{if(mobileMessageHoldEnabled()){e.preventDefault();const message=findCurrentMessage(row.dataset.messageRow);if(message)openMessageHoldMenu(message)}});
+
+/* Event delegation means new messages do not need listeners re-wired. */
+const boomMessagesEl=$("#messages");
+
+if(boomMessagesEl){
+  boomMessagesEl.addEventListener("touchstart",e=>{
+    if(!mobileMessageHoldEnabled())return;
+    if(e.touches.length!==1)return;
+    if(e.target.closest("button,a,input,label"))return;
+
+    const row=e.target.closest("[data-message-row]");
+    if(!row)return;
+
+    const message=findCurrentMessage(row.dataset.messageRow);
+    if(!message)return;
+
+    const touch=e.touches[0];
+    boomHoldStartX=touch.clientX;
+    boomHoldStartY=touch.clientY;
+    clearMessageHoldTimer();
+
+    boomHoldTimer=setTimeout(()=>{
+      boomHoldTimer=null;
+      openMessageHoldMenu(message,row);
+    },460);
+  },{passive:true});
+
+  boomMessagesEl.addEventListener("touchmove",e=>{
+    if(!boomHoldTimer||!e.touches.length)return;
+    const touch=e.touches[0];
+    const dx=Math.abs(touch.clientX-boomHoldStartX);
+    const dy=Math.abs(touch.clientY-boomHoldStartY);
+    if(dx>10||dy>10)clearMessageHoldTimer();
+  },{passive:true});
+
+  boomMessagesEl.addEventListener("touchend",()=>{
+    clearMessageHoldTimer();
+  },{passive:true});
+
+  boomMessagesEl.addEventListener("touchcancel",()=>{
+    clearMessageHoldTimer();
+  },{passive:true});
+
+  /* Block Android/Brave native text-selection/context menu. */
+  boomMessagesEl.addEventListener("contextmenu",e=>{
+    if(!mobileMessageHoldEnabled())return;
+    const row=e.target.closest("[data-message-row]");
+    if(!row)return;
+    e.preventDefault();
+    const message=findCurrentMessage(row.dataset.messageRow);
+    if(message&&!boomHoldOpened)openMessageHoldMenu(message,row);
   });
 }
-$('#msgHoldBackdrop')?.addEventListener('click',()=>closeMessageHoldMenu());
-$('#msgHoldCancel')?.addEventListener('click',()=>closeMessageHoldMenu());
-$('#msgHoldReply')?.addEventListener('click',()=>{if(!boomHoldMessage)return;boomReplyTarget=boomHoldMessage;updateReplyBanner();closeMessageHoldMenu();setTimeout(()=>$('#chatInput')?.focus(),190)});
-$('#msgHoldReact')?.addEventListener('click',async()=>{if(!boomHoldMessage)return;const id=boomHoldMessage.id,kind=state.chatMode==='dm'?'dm':'room';closeMessageHoldMenu();await reactToMessage(id,kind)});
-$('#msgHoldDelete')?.addEventListener('click',async()=>{
-  if(!boomHoldMessage||boomHoldMessage.user_id!==boomUser?.id)return;
-  const message=boomHoldMessage; if(!confirm('Delete this message for everyone?'))return;
-  const table=state.chatMode==='dm'?'direct_messages':'room_messages'; const r=await boomDB.from(table).delete().eq('id',message.id);
-  if(r.error)return toast(r.error.message); if(boomReplyTarget?.id===message.id)boomReplyTarget=null; closeMessageHoldMenu(); await loadBoomCloud(); toast('MESSAGE DELETED');
+
+$("#msgHoldBackdrop")?.addEventListener("click",()=>closeMessageHoldMenu());
+$("#msgHoldCancel")?.addEventListener("click",()=>closeMessageHoldMenu());
+
+$("#msgHoldReply")?.addEventListener("click",()=>{
+  if(!boomHoldMessage)return;
+  boomReplyTarget=boomHoldMessage;
+  updateReplyBanner();
+  closeMessageHoldMenu();
+  setTimeout(()=>$("#chatInput")?.focus(),180);
+});
+
+$("#msgHoldReact")?.addEventListener("click",async()=>{
+  if(!boomHoldMessage)return;
+  const id=boomHoldMessage.id;
+  const kind=state.chatMode==="dm"?"dm":"room";
+  closeMessageHoldMenu();
+  await reactToMessage(id,kind);
+});
+
+$("#msgHoldDelete")?.addEventListener("click",async()=>{
+  if(!boomHoldMessage)return;
+
+  const message=boomHoldMessage;
+  if(message.user_id!==boomUser?.id){
+    closeMessageHoldMenu();
+    return;
+  }
+
+  /* No browser confirm: the long-press + explicit Delete action
+     is already a deliberate two-step interaction. */
+  const table=state.chatMode==="dm"?"direct_messages":"room_messages";
+  const r=await boomDB.from(table).delete().eq("id",message.id);
+
+  if(r.error){
+    toast(r.error.message);
+    return;
+  }
+
+  if(boomReplyTarget?.id===message.id)boomReplyTarget=null;
+
+  closeMessageHoldMenu();
+  await loadBoomCloud();
+  toast("MESSAGE DELETED");
 });
 
 $("#sendChat").onclick=async()=>{
