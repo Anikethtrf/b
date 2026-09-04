@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>BOOM CHAT · V25 Clean Rebuild</title>
+<title>BOOM CHAT · V27 Stable Core</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Verdana,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}img{max-width:100%}.hidden{display:none!important}
 :root,
@@ -46,12 +46,293 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
 @media(max-width:1250px){.feed-layout{grid-template-columns:220px minmax(0,1fr)}.feed-right{display:none}.chat-shell{grid-template-columns:285px minmax(0,1fr)}.chat-details{position:fixed;z-index:8500;top:88px;right:10px;bottom:10px;width:300px;border:1px solid var(--line2);box-shadow:0 18px 40px rgba(0,0,0,.25);transform:translateX(calc(100% + 24px));transition:.16s}.chat-shell.details-open .chat-details{transform:none}.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:850px){body{font-size:15px}.app{padding-top:12px;padding-bottom:78px}.topbar{top:auto;bottom:8px;height:62px;left:8px;right:8px;padding:5px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.brand{display:none}.nav{display:contents}.nav-btn{min-width:0;padding:0 3px;flex-direction:column;gap:1px;font-size:9px}.nav-btn .ico{font-size:16px}.settings-wrap{margin:0;min-width:0;height:100%}.settings-btn{min-width:0;width:100%;height:100%;font-size:9px;flex-direction:column}.settings-menu{right:0;bottom:66px;top:auto;width:min(290px,calc(100vw - 16px))}.main{width:calc(100% - 16px)}.page-head{min-height:68px}.page-head h2{font-size:23px}.feed-layout{grid-template-columns:1fr}.feed-left{display:none}.sticky{position:static}.global-search{grid-template-columns:auto minmax(0,1fr)}.global-search .btn{grid-column:1/-1}.preview-grid{grid-template-columns:repeat(3,1fr)}.post-text{font-size:16px}.chat-shell{height:calc(100dvh - 175px);min-height:520px;display:block;position:relative}.chat-side,.chat-main{position:absolute;inset:0;width:100%;height:100%}.chat-side{border:0;z-index:1}.chat-main{z-index:2;transform:translateX(100%);transition:.16s}.chat-shell.mobile-open .chat-main{transform:none}.mobile-back{display:grid}.chat-status .room-status{display:none}.msg-line{max-width:95%}.message-log{padding:12px 9px}.msg-text{font-size:14px}.transmitter{grid-template-columns:auto minmax(0,1fr) auto auto auto;gap:4px;padding:6px}.transmitter label[title="Camera"]{display:none}.transmit{min-width:58px;padding:0 5px;font-size:8px}.chat-details{position:absolute;z-index:4;inset:0 0 0 14%;width:auto;transform:translateX(110%)}.chat-shell.details-open .chat-details{transform:none}.sketch-layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.profile-main{grid-template-columns:1fr;padding:0 12px 16px}.profile-photo-wrap{justify-items:start}.profile-form{grid-template-columns:1fr}.profile-form .wide{grid-column:auto}.post-grid{grid-template-columns:repeat(2,1fr)}.saved-grid,.desk-layout{grid-template-columns:1fr}}
 @media(max-width:480px){.page-actions{display:none}.post-head,.post-body,.post-actions,.reaction-row,.comments{padding-left:10px;padding-right:10px}.preview-grid{grid-template-columns:repeat(2,1fr)}.post-grid{gap:5px}.theme-grid{grid-template-columns:1fr 1fr}}
+
+/* =========================================================
+   BOOM CHAT V27 — STABLE CORE FIXES
+   ========================================================= */
+
+/* CHAT: robust 3-column / 2-column / mobile structure */
+#page-chat,
+#page-chat .chat-shell,
+#page-chat .chat-side,
+#page-chat .chat-main,
+#page-chat .chat-details{
+  min-width:0!important;
+  min-height:0!important;
+}
+
+#page-chat .chat-shell{
+  width:100%!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+}
+
+#page-chat .chat-side{
+  overflow:hidden!important;
+}
+
+#page-chat .chat-main{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+
+#page-chat .chat-head,
+#page-chat .reply-banner,
+#page-chat .attachment-bar,
+#page-chat .emoji-panel,
+#page-chat .transmitter{
+  flex:0 0 auto!important;
+}
+
+#page-chat .message-log{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+
+/* Textbox must never disappear when a conversation is selected */
+#page-chat .transmitter{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+  max-width:100%!important;
+  flex-shrink:0!important;
+  position:relative!important;
+  z-index:8!important;
+}
+
+#page-chat .transmitter.disabled{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:.52!important;
+  pointer-events:none!important;
+}
+
+#page-chat .transmitter:not(.disabled){
+  pointer-events:auto!important;
+}
+
+#page-chat #chatInput{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+  min-width:0!important;
+}
+
+#page-chat .chat-row{
+  cursor:pointer!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  user-select:none!important;
+}
+
+#page-chat .chat-row > *{
+  pointer-events:none!important;
+}
+
+#page-chat .chat-row.active{
+  border-left-color:var(--accent)!important;
+  background:color-mix(in srgb,var(--accent) 13%,var(--surface) 87%)!important;
+}
+
+#page-chat .chat-row.chat-clicked{
+  outline:2px solid var(--accent)!important;
+  outline-offset:-2px!important;
+}
+
+/* POST COMPOSER */
+#composer,
+#composer .composer-body,
+#composer .composer-tools{
+  min-width:0!important;
+}
+
+#publishPost[disabled]{
+  cursor:wait!important;
+}
+
+.composer-status{
+  min-height:18px;
+  margin:7px 0 0;
+  color:var(--muted);
+  font:10px "Courier New",monospace;
+}
+.composer-status.error{color:var(--danger)}
+.composer-status.ok{color:var(--accent)}
+
+/* SKETCH: responsive viewport; the internal drawing buffer stays 1200x700 */
+#page-sketch{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+}
+
+#page-sketch .sketch-layout{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  align-items:start!important;
+}
+
+#page-sketch .canvas-panel,
+#page-sketch .toolbox{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+
+#page-sketch .canvas-panel{
+  overflow:hidden!important;
+}
+
+#page-sketch .canvas-wrap{
+  width:100%!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  aspect-ratio:12/7!important;
+  overscroll-behavior:contain!important;
+}
+
+#page-sketch .canvas-wrap canvas{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  touch-action:none!important;
+}
+
+#page-sketch .toolbox{
+  position:sticky!important;
+  top:90px!important;
+}
+
+#page-sketch .toolbox input[type="range"]{
+  width:100%!important;
+  max-width:100%!important;
+}
+
+@media(max-width:850px){
+  #page-chat .chat-shell{
+    height:calc(100dvh - 158px)!important;
+    min-height:500px!important;
+  }
+
+  #page-chat .chat-side,
+  #page-chat .chat-main{
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  #page-chat .chat-main{
+    background:var(--chat)!important;
+  }
+
+  #page-chat .message-log{
+    min-height:0!important;
+    padding-bottom:12px!important;
+  }
+
+  #page-chat .transmitter{
+    min-height:62px!important;
+    padding:6px 6px max(6px,env(safe-area-inset-bottom))!important;
+    background:var(--surface2)!important;
+    border-top:3px double var(--line2)!important;
+  }
+
+  #page-chat #chatInput{
+    height:40px!important;
+    font-size:16px!important;
+  }
+
+  #page-sketch .sketch-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:8px!important;
+  }
+
+  #page-sketch .canvas-panel{
+    padding:6px!important;
+  }
+
+  #page-sketch .toolbox{
+    position:static!important;
+    padding:10px!important;
+    gap:9px!important;
+  }
+
+  #page-sketch .color-grid{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+
+  #page-sketch .tool-row{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  #page-sketch .toolbox>.btn{
+    width:100%!important;
+  }
+}
+
+@media(max-width:480px){
+  #page-chat .chat-shell{
+    height:calc(100dvh - 150px)!important;
+    min-height:470px!important;
+  }
+
+  #page-chat .chat-head{
+    min-height:60px!important;
+    padding:7px!important;
+  }
+
+  #page-chat .transmitter{
+    grid-template-columns:34px minmax(0,1fr) 34px 34px 58px!important;
+    gap:4px!important;
+  }
+
+  #page-chat .transmitter label[title="Camera"]{
+    display:none!important;
+  }
+
+  #page-chat .transmitter .icon-btn{
+    width:34px!important;
+    height:36px!important;
+  }
+
+  #page-chat .transmit{
+    min-width:58px!important;
+    height:38px!important;
+    padding:0 5px!important;
+    font-size:8px!important;
+  }
+
+  #page-sketch .canvas-panel{
+    padding:4px!important;
+  }
+
+  #page-sketch .color-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+
+  #page-sketch .color-btn{
+    min-height:42px!important;
+  }
+
+  #page-sketch .tool-row{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
-    <div class="auth-head"><h1>BOOM CHAT</h1><p>SECURE SOCIAL NETWORK // V25 CLEAN REBUILD</p></div>
+    <div class="auth-head"><h1>BOOM CHAT</h1><p>SECURE SOCIAL NETWORK // V27 STABLE CORE</p></div>
     <div class="auth-tabs"><button id="loginTab" class="active" type="button">LOGIN</button><button id="registerTab" type="button">REGISTER</button></div>
     <form class="auth-form" id="loginForm">
       <label>EMAIL<input class="input" id="loginEmail" type="email" autocomplete="email" required></label>
@@ -68,7 +349,7 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
 </div>
 <div class="app" id="app">
   <header class="topbar">
-    <div class="brand" data-go="profile"><div class="brand-mark">B!</div><div class="brand-copy"><b>BOOM</b><small>CHAT NETWORK</small></div><span class="build">V25</span></div>
+    <div class="brand" data-go="profile"><div class="brand-mark">B!</div><div class="brand-copy"><b>BOOM</b><small>CHAT NETWORK</small></div><span class="build">V27</span></div>
     <nav class="nav">
       <button class="nav-btn active" data-go="feed"><span class="ico">◉</span><span>FEED</span></button>
       <button class="nav-btn" data-go="chat"><span class="ico">✉</span><span>CHAT</span></button>
@@ -93,7 +374,7 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
         <aside class="feed-left sticky"><div class="panel mini-profile"><div class="mini-cover"></div><div class="mini-profile-body"><div class="mini-avatar" id="miniAvatar">B</div><h3 id="miniName">@user</h3><p id="miniBio">Boom Chat user</p><div class="mini-stats"><div><b id="miniPosts">0</b><span>POSTS</span></div><div><b id="miniFriends">0</b><span>FRIENDS</span></div><div><b id="miniSaved">0</b><span>SAVED</span></div></div><button class="btn" data-go="profile" style="width:100%;margin-top:9px">VIEW PROFILE</button></div></div></aside>
         <section>
           <div class="panel global-search"><span>⌕</span><input class="input" id="feedSearch" placeholder="SEARCH POSTS / USERS / #TAGS"><button class="btn" id="clearFeedSearch">CLEAR</button></div>
-          <div class="panel composer hidden" id="composer"><div class="composer-head">NEW TRANSMISSION</div><div class="composer-body"><textarea class="textarea" id="postText" placeholder="What is happening?"></textarea><div class="preview-grid" id="postPreviewGrid"></div><div class="poll-builder hidden" id="pollBuilder"><label>QUESTION<input class="input" id="pollQuestion"></label><label>OPTION 1<input class="input" id="pollOpt1"></label><label>OPTION 2<input class="input" id="pollOpt2"></label><label>OPTION 3<input class="input" id="pollOpt3"></label></div><div class="composer-tools"><label class="btn">PHOTOS<input id="postImages" type="file" accept="image/*" multiple hidden></label><label class="btn">CAMERA<input id="postCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="btn" id="pollToggle">POLL</button><button class="btn" data-go="sketch" id="postSketchBtn">SKETCH</button><button class="btn" id="saveDraftBtn">SAVE DRAFT</button><button class="btn" id="closeComposer">CANCEL</button><button class="btn primary" id="publishPost">POST</button></div></div></div>
+          <div class="panel composer hidden" id="composer"><div class="composer-head">NEW TRANSMISSION</div><div class="composer-body"><textarea class="textarea" id="postText" placeholder="What is happening?"></textarea><div class="preview-grid" id="postPreviewGrid"></div><div class="poll-builder hidden" id="pollBuilder"><label>QUESTION<input class="input" id="pollQuestion"></label><label>OPTION 1<input class="input" id="pollOpt1"></label><label>OPTION 2<input class="input" id="pollOpt2"></label><label>OPTION 3<input class="input" id="pollOpt3"></label></div><div class="composer-status" id="composerStatus"></div><div class="composer-tools"><label class="btn">PHOTOS<input id="postImages" type="file" accept="image/*" multiple hidden></label><label class="btn">CAMERA<input id="postCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="btn" id="pollToggle" type="button">POLL</button><button class="btn" data-go="sketch" id="postSketchBtn" type="button">SKETCH</button><button class="btn" id="saveDraftBtn" type="button">SAVE DRAFT</button><button class="btn" id="closeComposer" type="button">CANCEL</button><button class="btn primary" id="publishPost" type="button">POST</button></div></div></div>
           <div id="feed"></div>
         </section>
         <aside class="feed-right sticky"><div class="panel side-section"><h3>TRENDING TAGS</h3><div id="trendingTags"></div></div><div class="panel side-section" style="margin-top:10px"><h3>NETWORK STATUS</h3><div class="meta" id="networkStatus">CLOUD: CONNECTING</div></div></aside>
@@ -102,12 +383,12 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
     <section class="page" id="page-chat">
       <div class="page-head"><div><div class="eyebrow">02 / MISSION NETWORK</div><h2>Communications</h2><p>Direct links and mission channels. UUID-based, realtime, no cached username routing.</p></div><div class="page-actions"><span class="meta">V25 FRESH CHAT CORE</span></div></div>
       <div class="chat-shell" id="chatShell">
-        <aside class="chat-side"><div class="mission-head"><div><b id="chatMe">COMMUNICATIONS NET</b><small>BOOM CHAT // DIRECTORY</small></div><button class="icon-btn" id="newDmBtn">＋</button></div><input class="input chat-search" id="chatSearch" placeholder="SEARCH USER / CHANNEL"><div class="chat-tabs"><button id="dmTab" class="active">DIRECT LINKS</button><button id="roomTab">CHANNELS</button></div><div class="chat-list" id="chatList"></div><div class="quick-dm" id="quickDm"><span>DIRECT LINK BY USERNAME</span><div><input class="input" id="quickDmInput" placeholder="@USERNAME"><button class="btn primary" id="quickDmBtn">OPEN</button></div></div><div class="channel-bar hidden" id="channelBar"><span>MISSION CHANNELS</span><button class="btn" id="newRoomBtn">+ NEW</button></div></aside>
-        <main class="chat-main"><div class="chat-head"><button class="icon-btn mobile-back" id="chatBack">←</button><div class="avatar" id="chatAvatar">B</div><div class="chat-title"><b id="chatTitle">SELECT A DIRECT LINK</b><span id="chatSubtitle">Choose a user from the directory</span></div><div class="chat-status"><span class="chat-build">V25</span><span class="room-status" id="chatStatus">STANDBY</span><button class="icon-btn" id="chatInfoBtn">ⓘ</button><button class="btn hidden" id="manageRoomBtn">CREW</button></div></div><div class="reply-banner hidden" id="replyBanner"><div><b id="replyUser">REPLY</b><span id="replyText">Message</span></div><button class="icon-btn" id="cancelReply">×</button></div><div class="message-log" id="messageLog"><div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div></div><div class="attachment-bar hidden" id="chatAttachment"><img id="chatAttachmentImg"><div><b>MEDIA BUFFER READY</b><small>Will upload to Supabase Storage before sending.</small></div><button class="icon-btn" id="removeChatAttachment">×</button></div><div class="emoji-panel hidden" id="emojiPanel"></div><div class="transmitter disabled" id="transmitter"><button class="icon-btn" id="emojiBtn">☺</button><input class="input" id="chatInput" placeholder="TRANSMIT MESSAGE..."><label class="icon-btn" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label><label class="icon-btn" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="icon-btn" id="chatSketchBtn">✎</button><button class="transmit" id="sendChat">TRANSMIT</button></div></main>
+        <aside class="chat-side"><div class="mission-head"><div><b id="chatMe">COMMUNICATIONS NET</b><small>BOOM CHAT // DIRECTORY</small></div><button class="icon-btn" id="newDmBtn" type="button">＋</button></div><input class="input chat-search" id="chatSearch" placeholder="SEARCH USER / CHANNEL"><div class="chat-tabs"><button id="dmTab" class="active" type="button">DIRECT LINKS</button><button id="roomTab" type="button">CHANNELS</button></div><div class="chat-list" id="chatList"></div><div class="quick-dm" id="quickDm"><span>DIRECT LINK BY USERNAME</span><div><input class="input" id="quickDmInput" placeholder="@USERNAME"><button class="btn primary" id="quickDmBtn" type="button">OPEN</button></div></div><div class="channel-bar hidden" id="channelBar"><span>MISSION CHANNELS</span><button class="btn" id="newRoomBtn" type="button">+ NEW</button></div></aside>
+        <main class="chat-main"><div class="chat-head"><button class="icon-btn mobile-back" id="chatBack" type="button">←</button><div class="avatar" id="chatAvatar">B</div><div class="chat-title"><b id="chatTitle">SELECT A DIRECT LINK</b><span id="chatSubtitle">Choose a user from the directory</span></div><div class="chat-status"><span class="chat-build">V27</span><span class="room-status" id="chatStatus">STANDBY</span><button class="icon-btn" id="chatInfoBtn" type="button">ⓘ</button><button class="btn hidden" id="manageRoomBtn" type="button">CREW</button></div></div><div class="reply-banner hidden" id="replyBanner"><div><b id="replyUser">REPLY</b><span id="replyText">Message</span></div><button class="icon-btn" id="cancelReply" type="button">×</button></div><div class="message-log" id="messageLog"><div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div></div><div class="attachment-bar hidden" id="chatAttachment"><img id="chatAttachmentImg"><div><b>MEDIA BUFFER READY</b><small>Will upload to Supabase Storage before sending.</small></div><button class="icon-btn" id="removeChatAttachment" type="button">×</button></div><div class="emoji-panel hidden" id="emojiPanel"></div><div class="transmitter disabled" id="transmitter"><button class="icon-btn" id="emojiBtn" type="button">☺</button><input class="input" id="chatInput" placeholder="TRANSMIT MESSAGE..."><label class="icon-btn" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label><label class="icon-btn" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="icon-btn" id="chatSketchBtn" type="button">✎</button><button class="transmit" id="sendChat" type="button">TRANSMIT</button></div></main>
         <aside class="chat-details"><div class="mission-head"><div><b>LINK STATUS</b><small>MISSION CONTROL</small></div><button class="icon-btn" id="closeDetails">×</button></div><div class="details-profile"><div class="avatar" id="detailsAvatar">B</div><b id="detailsName">NO LINK SELECTED</b><span id="detailsStatus">Awaiting target.</span></div><div class="crew-head"><span id="crewTitle">LINK PROFILE</span><b id="crewCount">0</b></div><div class="crew-list" id="crewList"></div></aside>
       </div>
     </section>
-    <section class="page" id="page-sketch"><div class="page-head"><div><div class="eyebrow">03 / VISUAL LAB</div><h2>Sketch</h2><p>Draw, attach to a post, or transmit in chat.</p></div></div><div class="sketch-layout"><div class="panel canvas-panel"><div class="canvas-wrap"><canvas id="sketchCanvas" width="1200" height="700"></canvas></div></div><aside class="panel toolbox"><h3>DRAWING TOOLS</h3><label>BRUSH SIZE <input id="brushSize" type="range" min="2" max="40" value="7"></label><div class="color-grid" id="colorGrid"></div><div class="tool-row"><button class="btn" id="undoSketch">UNDO</button><button class="btn" id="clearSketch">CLEAR</button></div><button class="btn primary" id="sketchToPost">ATTACH TO POST</button><button class="btn primary" id="sketchToChat">ATTACH TO CHAT</button></aside></div></section>
+    <section class="page" id="page-sketch"><div class="page-head"><div><div class="eyebrow">03 / VISUAL LAB</div><h2>Sketch</h2><p>Draw, attach to a post, or transmit in chat.</p></div></div><div class="sketch-layout"><div class="panel canvas-panel"><div class="canvas-wrap"><canvas id="sketchCanvas" width="1200" height="700"></canvas></div></div><aside class="panel toolbox"><h3>DRAWING TOOLS</h3><label>BRUSH SIZE <input id="brushSize" type="range" min="2" max="40" value="7"></label><div class="color-grid" id="colorGrid"></div><div class="tool-row"><button class="btn" id="undoSketch" type="button">UNDO</button><button class="btn" id="clearSketch" type="button">CLEAR</button></div><button class="btn primary" id="sketchToPost" type="button">ATTACH TO POST</button><button class="btn primary" id="sketchToChat" type="button">ATTACH TO CHAT</button></aside></div></section>
     <section class="page" id="page-discover"><div class="page-head"><div><div class="eyebrow">04 / PEOPLE</div><h2>Discover+</h2><p>Find Boom Chat users and open direct links.</p></div></div><div class="panel discover-search"><input class="input" id="discoverSearch" placeholder="SEARCH USERNAME / BIO"></div><div class="grid" id="peopleGrid"></div><div class="panel guestbook"><div class="section-title"><h3>Guestbook</h3></div><div class="comment-form"><input class="input" id="guestInput" placeholder="LEAVE A MESSAGE"><button class="btn primary" id="guestSend">SIGN</button></div><div class="guest-list" id="guestList"></div></div></section>
     <section class="page" id="page-profile"><div class="page-head"><div><div class="eyebrow">05 / ACCOUNT</div><h2>Profile</h2><p>Your photo, name, bio, status, and posts.</p></div></div><div class="profile-shell"><div class="panel profile-card"><div class="profile-cover"></div><div class="profile-main"><div class="profile-photo-wrap"><div class="profile-photo" id="profilePhoto">B</div><label class="btn">CHANGE DP<input id="profileDp" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><span class="meta" id="profileDpHint">MAX 5 MB</span></div><form class="profile-form" id="profileForm"><label>USERNAME<input class="input" id="profileUsername" maxlength="24" required></label><label>STATUS<select class="select" id="profileMood"><option>ONLINE</option><option>BUSY</option><option>STUDYING</option><option>CHILLING</option><option>AWAY</option><option>DO NOT DISTURB</option></select></label><label class="wide">BIO<textarea class="textarea" id="profileBio" maxlength="120"></textarea></label><button class="btn primary" type="submit">SAVE PROFILE</button></form></div><div class="profile-stats"><div><b id="profilePosts">0</b><span>POSTS</span></div><div><b id="profileFriends">0</b><span>FRIENDS</span></div><div><b id="profileSaved">0</b><span>SAVED</span></div></div></div><div class="section-title"><h3>My Posts</h3><button class="btn primary" id="profileNewPost">+ NEW POST</button></div><div class="post-grid" id="profilePostGrid"></div></div></section>
     <section class="page" id="page-saved"><div class="page-head"><div><div class="eyebrow">06 / ARCHIVE</div><h2>Saved Posts</h2><p>Your cloud-saved posts.</p></div><button class="btn danger" id="clearSaved">CLEAR SAVED</button></div><div class="saved-grid" id="savedGrid"></div></section>
@@ -143,7 +424,7 @@ async function loadScript(src){return new Promise((res,rej)=>{const s=document.c
 async function loadSupabase(){if(window.supabase)return;try{await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js')}catch{await loadScript('https://unpkg.com/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js')}if(!window.supabase)throw new Error('Supabase library failed to load')}
 function applyTheme(name){if(!THEMES.includes(name))name='sepia';state.theme=name;document.documentElement.dataset.theme=name;localStorage.setItem('boom_theme',name);renderThemeGrid()}
 function renderThemeGrid(){const g=$('#themeGrid');if(!g)return;g.innerHTML=THEMES.map(t=>`<button class="theme-btn ${state.theme===t?'active':''}" data-theme="${t}">${t.toUpperCase()}</button>`).join('')}
-function go(page){if(!$('#page-'+page))page='feed';state.page=page;$$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));$$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===page&&b.classList.contains('nav-btn')));$('#settingsMenu').classList.add('hidden');if(page==='feed')renderFeed();if(page==='chat')renderChat();if(page==='discover')renderDiscover();if(page==='profile')renderProfile();if(page==='saved')renderSaved();if(page==='desk')renderDesk();window.scrollTo({top:0,behavior:'auto'})}
+function go(page){if(!$('#page-'+page))page='feed';state.page=page;$$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));$$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===page&&b.classList.contains('nav-btn')));$('#settingsMenu').classList.add('hidden');if(page==='feed')renderFeed();if(page==='chat')renderChat();if(page==='discover')renderDiscover();if(page==='profile')renderProfile();if(page==='saved')renderSaved();if(page==='desk')renderDesk();if(page==='sketch')requestAnimationFrame(fitSketchViewport);window.scrollTo({top:0,behavior:'auto'})}
 async function safe(label,query,fallback=[]){try{const {data:d,error}=await query;if(error)throw error;return d??fallback}catch(e){console.warn(label,e?.message||e);return fallback}}
 async function ensureProfile(){const {data:p,error}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();if(error)throw error;if(p){profile=p;return}const meta=user.user_metadata||{};let name=String(meta.username||meta.display_name||user.email?.split('@')[0]||'user').replace(/[^A-Za-z0-9_.-]/g,'').slice(0,24)||('user_'+user.id.slice(0,5));const ins=await db.from('profiles').insert({id:user.id,username:name,display_name:name,avatar_url:(name[0]||'B').toUpperCase(),bio:'',mood:'ONLINE'}).select().single();if(ins.error)throw ins.error;profile=ins.data}
 async function loadAll({silent=false}={}){if(!user)return;const q=[safe('profiles',db.from('profiles').select('*').order('username')),safe('posts',db.from('posts').select('*').order('created_at',{ascending:false})),safe('comments',db.from('comments').select('*').order('created_at')),safe('likes',db.from('likes').select('*')),safe('saved',db.from('saved_posts').select('*').eq('user_id',user.id)),safe('reactions',db.from('post_reactions').select('*')),safe('poll options',db.from('poll_options').select('*').order('created_at')),safe('poll votes',db.from('poll_votes').select('*')),safe('rooms',db.from('chat_rooms').select('*').order('created_at')),safe('room members',db.from('room_members').select('*').order('joined_at')),safe('room messages',db.from('room_messages').select('*').order('created_at')),safe('direct messages',db.from('direct_messages').select('*').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`).order('created_at')),safe('room reactions',db.from('room_message_reactions').select('*')),safe('dm reactions',db.from('direct_message_reactions').select('*')),safe('friendships',db.from('friendships').select('*').or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)),safe('guestbook',db.from('guestbook_entries').select('*').order('created_at').limit(100)),safe('notes',db.from('notes').select('*').eq('user_id',user.id).maybeSingle(),null),safe('drafts',db.from('drafts').select('*').eq('user_id',user.id).order('updated_at',{ascending:false}))];const r=await Promise.all(q);[data.profiles,data.posts,data.comments,data.likes,data.saved,data.reactions,data.pollOptions,data.pollVotes,data.rooms,data.roomMembers,data.roomMessages,data.directMessages,data.roomMsgReactions,data.dmMsgReactions,data.friendships,data.guestbook,data.notes,data.drafts]=r;const me=profileById(user.id);if(me)profile=me;if(state.activeDmId&&!profileById(state.activeDmId))state.activeDmId='';if(state.activeRoomId&&!data.rooms.some(x=>String(x.id)===String(state.activeRoomId)))state.activeRoomId='';localStorage.setItem('boom_active_dm_id',state.activeDmId);localStorage.setItem('boom_active_room_id',state.activeRoomId);if(!silent)$('#networkStatus').textContent='CLOUD: ONLINE';renderCurrent()}
@@ -157,6 +438,12 @@ function renderMiniProfile(){if(!profile)return;setAvatar($('#miniAvatar'),profi
 function renderTrending(){const counts={};data.posts.forEach(p=>{(String(p.body||'').match(/#[A-Za-z0-9_]+/g)||[]).forEach(t=>counts[t.toLowerCase()]=(counts[t.toLowerCase()]||0)+1)});const arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);$('#trendingTags').innerHTML=arr.length?arr.map(([t,n])=>`<div class="trend-row" data-tag="${esc(t)}"><b>${esc(t)}</b><span>${n} post${n===1?'':'s'}</span></div>`).join(''):'<div class="meta">NO TAGS YET</div>'}
 function renderPoll(m){if(m.post_type!=='poll')return'';const total=m.options.reduce((s,o)=>s+o.votes,0);return`<div class="poll"><h4>${esc(m.body||'POLL')}</h4>${m.options.map(o=>{const voted=m.myVote&&String(m.myVote.option_id)===String(o.id);const pct=total?Math.round(o.votes*100/total):0;return`<button class="poll-option ${voted?'voted':''}" data-vote="${m.id}" data-option="${o.id}" ${m.myVote?'disabled':''}><span>${esc(o.option_text)}</span><b>${o.votes} · ${pct}%</b></button>`}).join('')}<div class="meta" style="margin-top:6px">${total} TOTAL VOTES</div></div>`}
 function renderFeed(){renderTrending();renderMiniProfile();const q=state.feedSearch.toLowerCase().trim();let posts=[...data.posts].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));if(q)posts=posts.filter(p=>{const a=profileById(p.user_id);return String(p.body||'').toLowerCase().includes(q)||String(a?.username||'').toLowerCase().includes(q)});$('#feed').innerHTML=posts.length?posts.map(p=>{const m=postModel(p);return`<article class="panel post" id="post-${m.id}"><div class="post-head"><div class="userline"><div class="avatar">${m.author.avatar_url&&/^https?:/.test(m.author.avatar_url)?`<img src="${esc(m.author.avatar_url)}">`:esc((m.author.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(m.author.username)}</b><div class="meta">${esc(fmtAgo(m.created_at))}</div></div></div>${m.user_id===user.id?`<button class="btn danger" data-delete-post="${m.id}">DELETE</button>`:''}</div><div class="post-body">${m.post_type!=='poll'&&m.body?`<div class="post-text">${linkifyText(m.body)}</div>`:''}${renderPoll(m)}${m.images.length?`<div class="post-media"><div class="media-track">${m.images.map((src,i)=>`<div class="media-slide"><img src="${esc(src)}" alt="Post media"><span class="media-count">${i+1}/${m.images.length}</span></div>`).join('')}</div>${m.images.length>1?`<div class="media-hint">↔ SWIPE / SCROLL · ${m.images.length} PHOTOS</div>`:''}</div>`:''}</div><div class="post-actions"><button class="btn ${m.liked?'active':''}" data-like="${m.id}">${m.liked?'♥':'♡'} ${m.likeCount}</button><button class="btn" data-focus-comment="${m.id}">COMMENT ${m.comments.length}</button><button class="btn ${m.saved?'active':''}" data-save="${m.id}">${m.saved?'◆ SAVED':'◇ SAVE'}</button><button class="btn" data-share="${m.id}">SHARE</button></div><div class="reaction-row">${[['smile','☺'],['lol','LOL'],['wow','WOW'],['star','★']].map(([k,l])=>`<button class="${m.myReaction===k?'active':''}" data-react="${m.id}" data-reaction="${k}">${l} <b>${m.reactionCounts[k]||0}</b></button>`).join('')}</div><div class="comments">${m.comments.map(c=>{const cp=profileById(c.user_id);return`<div class="comment"><b>@${esc(cp?.username||'user')}:</b> ${esc(c.body)}</div>`}).join('')}<div class="comment-form"><input class="input" id="comment-${m.id}" placeholder="WRITE COMMENT..."><button class="btn" data-comment="${m.id}">ADD</button></div></div></article>`}).join(''):'<div class="panel empty"><div><b>NO POSTS FOUND</b><span>Try another search or create a post.</span></div></div>'}
+function setComposerStatus(msg='',kind=''){
+  const el=$('#composerStatus');
+  if(!el)return;
+  el.textContent=String(msg||'');
+  el.className='composer-status '+(kind||'');
+}
 function openComposer(open=true){$('#composer').classList.toggle('hidden',!open);if(open)setTimeout(()=>$('#postText').focus(),0)}
 function revokeMediaItem(item){if(item?.preview&&item.preview.startsWith('blob:'))URL.revokeObjectURL(item.preview)}
 function renderPostPreviews(){const g=$('#postPreviewGrid');g.innerHTML=state.postMedia.map((m,i)=>`<div class="preview-item"><img src="${esc(m.preview||m.url||'')}"><button data-remove-media="${i}">×</button></div>`).join('');g.classList.toggle('show',state.postMedia.length>0)}
@@ -164,8 +451,142 @@ function addPostFiles(files){for(const f of [...files].slice(0,10-state.postMedi
 function resetComposer(){state.postMedia.forEach(revokeMediaItem);state.postMedia=[];state.pollOpen=false;$('#postText').value='';$('#postImages').value='';$('#postCamera').value='';$('#pollQuestion').value='';$('#pollOpt1').value='';$('#pollOpt2').value='';$('#pollOpt3').value='';$('#pollBuilder').classList.add('hidden');renderPostPreviews()}
 function extFor(type='image/png'){return type.includes('jpeg')?'jpg':type.includes('webp')?'webp':type.includes('gif')?'gif':'png'}
 async function dataUrlBlob(url){const r=await fetch(url);return r.blob()}
-async function uploadMedia(source,folder='posts'){if(!source)return null;if(typeof source==='string'&&/^https?:\/\//i.test(source))return source;let blob=source instanceof Blob?source:await dataUrlBlob(source);const path=`${user.id}/${folder}/${uid()}.${extFor(blob.type)}`;const up=await db.storage.from('post-media').upload(path,blob,{contentType:blob.type,cacheControl:'31536000'});if(up.error)throw up.error;return db.storage.from('post-media').getPublicUrl(path).data.publicUrl}
-async function publishPost(){const btn=$('#publishPost'),text=$('#postText').value.trim(),q=$('#pollQuestion').value.trim(),opts=[$('#pollOpt1').value,$('#pollOpt2').value,$('#pollOpt3').value].map(x=>x.trim()).filter(Boolean);if(state.pollOpen&&(!q||opts.length<2))return toast('POLL NEEDS A QUESTION + 2 OPTIONS');if(!text&&!state.postMedia.length&&!state.pollOpen)return toast('ADD TEXT, PHOTO, DOODLE OR POLL');btn.disabled=true;const old=btn.textContent;try{const urls=[];for(let i=0;i<state.postMedia.length;i++){btn.textContent=`UPLOADING ${i+1}/${state.postMedia.length}`;const m=state.postMedia[i];urls.push(await uploadMedia(m.file||m.url||m.data,'posts'))}btn.textContent='POSTING';let payload={user_id:user.id,body:state.pollOpen?q:text,image_url:urls[0]||null,media_urls:urls,post_type:state.pollOpen?'poll':'normal'};let ins=await db.from('posts').insert(payload).select().single();if(ins.error&&String(ins.error.message).toLowerCase().includes('media_urls')){if(urls.length>1)throw new Error('MULTI-PHOTO COLUMN MISSING. RUN V25 BACKEND REPAIR SQL.');delete payload.media_urls;ins=await db.from('posts').insert(payload).select().single()}if(ins.error)throw ins.error;if(state.pollOpen){const po=await db.from('poll_options').insert(opts.map(option_text=>({post_id:ins.data.id,option_text})));if(po.error)throw po.error}resetComposer();openComposer(false);await loadAll({silent:true});toast('POST PUBLISHED')}catch(e){console.error(e);toast(e.message||'POST FAILED')}finally{btn.disabled=false;btn.textContent=old}}
+async function uploadMedia(source,folder='posts'){
+  if(!source)return null;
+  if(typeof source==='string'&&/^https?:\/\//i.test(source))return source;
+
+  let blob=source instanceof Blob?source:await dataUrlBlob(source);
+  if(!blob?.size)throw new Error('EMPTY MEDIA FILE');
+
+  const path=`${user.id}/${folder}/${uid()}.${extFor(blob.type)}`;
+  const up=await db.storage.from('post-media').upload(path,blob,{
+    contentType:blob.type||'image/png',
+    cacheControl:'31536000',
+    upsert:false
+  });
+
+  if(up.error){
+    const msg=String(up.error.message||up.error);
+    if(/row-level security|policy|bucket|not found|unauthorized/i.test(msg)){
+      throw new Error('MEDIA STORAGE NOT READY — RUN V27 BACKEND SQL');
+    }
+    throw up.error;
+  }
+
+  const pub=db.storage.from('post-media').getPublicUrl(path);
+  const url=pub?.data?.publicUrl;
+  if(!url)throw new Error('MEDIA URL COULD NOT BE CREATED');
+  return url;
+}
+
+async function insertPostCompat(payload){
+  let current={...payload};
+  const optional=['media_urls','post_type','drawing_url'];
+
+  for(let tries=0;tries<4;tries++){
+    const result=await db.from('posts').insert(current).select().single();
+    if(!result.error)return result;
+
+    const msg=String(result.error.message||'');
+    const missing=optional.find(col=>msg.toLowerCase().includes(col.toLowerCase()));
+
+    if(missing && Object.prototype.hasOwnProperty.call(current,missing)){
+      delete current[missing];
+      continue;
+    }
+
+    if(/row-level security|violates row-level|permission denied/i.test(msg)){
+      throw new Error('POST PERMISSION BLOCKED — RUN V27 BACKEND SQL');
+    }
+
+    throw result.error;
+  }
+
+  throw new Error('POST SCHEMA NOT COMPATIBLE — RUN V27 BACKEND SQL');
+}
+
+async function publishPost(){
+  const btn=$('#publishPost');
+  const text=$('#postText').value.trim();
+  const q=$('#pollQuestion').value.trim();
+  const opts=[$('#pollOpt1').value,$('#pollOpt2').value,$('#pollOpt3').value]
+    .map(x=>x.trim()).filter(Boolean);
+
+  if(!user||!db)return toast('LOGIN REQUIRED');
+
+  if(state.pollOpen&&(!q||opts.length<2)){
+    setComposerStatus('POLL NEEDS A QUESTION + 2 OPTIONS','error');
+    return toast('POLL NEEDS A QUESTION + 2 OPTIONS');
+  }
+
+  if(!text&&!state.postMedia.length&&!state.pollOpen){
+    setComposerStatus('ADD TEXT, PHOTO, DOODLE OR POLL','error');
+    return toast('ADD TEXT, PHOTO, DOODLE OR POLL');
+  }
+
+  btn.disabled=true;
+  const old=btn.textContent;
+
+  try{
+    setComposerStatus('PREPARING TRANSMISSION...','');
+
+    const urls=[];
+    for(let i=0;i<state.postMedia.length;i++){
+      btn.textContent=`UPLOAD ${i+1}/${state.postMedia.length}`;
+      setComposerStatus(`UPLOADING MEDIA ${i+1}/${state.postMedia.length}...`,'');
+      const m=state.postMedia[i];
+      urls.push(await uploadMedia(m.file||m.url||m.data,'posts'));
+    }
+
+    btn.textContent='POSTING';
+    setComposerStatus('SAVING POST TO CLOUD...','');
+
+    const payload={
+      user_id:user.id,
+      body:state.pollOpen?q:text,
+      image_url:urls[0]||null,
+      media_urls:urls,
+      post_type:state.pollOpen?'poll':'normal'
+    };
+
+    const ins=await insertPostCompat(payload);
+
+    if(state.pollOpen){
+      const po=await db.from('poll_options')
+        .insert(opts.map(option_text=>({post_id:ins.data.id,option_text})));
+
+      if(po.error){
+        // Do not leave a broken half-poll visible.
+        await db.from('posts').delete().eq('id',ins.data.id).eq('user_id',user.id);
+        if(/row-level security|permission denied/i.test(String(po.error.message||''))){
+          throw new Error('POLL PERMISSION BLOCKED — RUN V27 BACKEND SQL');
+        }
+        throw po.error;
+      }
+    }
+
+    // Add immediately so the user sees success even if a later refresh is slow.
+    data.posts=data.posts.filter(p=>String(p.id)!==String(ins.data.id));
+    data.posts.unshift(ins.data);
+
+    resetComposer();
+    openComposer(false);
+    setComposerStatus('');
+    renderFeed();
+
+    // Cloud refresh is secondary; posting success must not depend on it.
+    loadAll({silent:true}).catch(e=>console.warn('post refresh delayed',e));
+    toast('POST PUBLISHED');
+  }catch(e){
+    console.error('Publish post failed:',e);
+    const msg=e?.message||'POST FAILED';
+    setComposerStatus(msg,'error');
+    toast(msg);
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+  }
+}
 async function toggleLike(id){const mine=data.likes.find(l=>String(l.post_id)===String(id)&&l.user_id===user.id);const r=mine?await db.from('likes').delete().eq('post_id',id).eq('user_id',user.id):await db.from('likes').insert({post_id:id,user_id:user.id});if(r.error)return toast(r.error.message);await loadAll({silent:true})}
 async function addComment(id){const inp=$('#comment-'+CSS.escape(String(id))),body=inp?.value.trim();if(!body)return;const r=await db.from('comments').insert({post_id:id,user_id:user.id,body});if(r.error)return toast(r.error.message);inp.value='';await loadAll({silent:true})}
 async function toggleSave(id){const mine=data.saved.find(s=>String(s.post_id)===String(id));const r=mine?await db.from('saved_posts').delete().eq('post_id',id).eq('user_id',user.id):await db.from('saved_posts').insert({post_id:id,user_id:user.id});if(r.error)return toast(r.error.message);await loadAll({silent:true})}
@@ -175,7 +596,7 @@ async function saveDraft(){const text=$('#postText').value.trim(),poll=state.pol
 function parseDraft(d){try{return{...d,...JSON.parse(d.body||'{}')}}catch{return{...d,text:d.body||''}}}
 function loadDraft(id){const d=parseDraft(data.drafts.find(x=>String(x.id)===String(id))||{});resetComposer();$('#postText').value=d.text||'';state.postMedia=(d.images||[]).map(url=>({url,preview:url}));if(d.poll){state.pollOpen=true;$('#pollBuilder').classList.remove('hidden');$('#pollQuestion').value=d.poll.question||'';[...Array(3)].forEach((_,i)=>$('#pollOpt'+(i+1)).value=d.poll.options?.[i]||'')}renderPostPreviews();go('feed');openComposer(true)}
 /* chat */
-function activeDm(){return profileById(state.activeDmId)}function activeRoom(){return data.rooms.find(r=>String(r.id)===String(state.activeRoomId))||null}
+function activeDm(){return state.activeDmId?profileById(String(state.activeDmId)):null}function activeRoom(){return data.rooms.find(r=>String(r.id)===String(state.activeRoomId))||null}
 function dmRows(pid){return data.directMessages.filter(m=>(m.sender_id===user.id&&m.receiver_id===pid)||(m.sender_id===pid&&m.receiver_id===user.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))}
 function roomRows(room){return room?data.roomMessages.filter(m=>String(m.room_id)===String(room.id)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)):[]}
 function roomMemberIds(room){if(!room)return[];if(room.name==='general')return data.profiles.map(p=>p.id);return data.roomMembers.filter(m=>String(m.room_id)===String(room.id)).map(m=>m.user_id)}
@@ -183,27 +604,130 @@ function canManageRoom(room){return !!room&&room.name!=='general'&&room.created_
 function currentRawMessages(){return state.chatMode==='dm'?(activeDm()?dmRows(activeDm().id):[]):roomRows(activeRoom())}
 function currentMessageModels(){const raw=currentRawMessages();return raw.map(m=>{const sender=profileById(state.chatMode==='dm'?m.sender_id:m.user_id)||{username:'user'};const rr=(state.chatMode==='dm'?data.dmMsgReactions:data.roomMsgReactions).filter(r=>String(r.message_id)===String(m.id));return{...m,sender,reactions:rr,ownerId:state.chatMode==='dm'?m.sender_id:m.user_id}})}
 function reactionSummary(rows){const c={};rows.forEach(r=>c[r.reaction]=(c[r.reaction]||0)+1);return Object.entries(c).map(([e,n])=>e+(n>1?' '+n:'')).join(' ')}
-function renderChatList(){const q=$('#chatSearch').value.trim().toLowerCase();$('#dmTab').classList.toggle('active',state.chatMode==='dm');$('#roomTab').classList.toggle('active',state.chatMode==='room');$('#quickDm').classList.toggle('hidden',state.chatMode!=='dm');$('#channelBar').classList.toggle('hidden',state.chatMode!=='room');if(state.chatMode==='dm'){let users=data.profiles.filter(p=>p.id!==user.id);if(q)users=users.filter(p=>String(p.username||'').toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q));users.sort((a,b)=>new Date(dmRows(b.id).at(-1)?.created_at||0)-new Date(dmRows(a.id).at(-1)?.created_at||0));$('#chatList').innerHTML=users.length?users.map(p=>{const rows=dmRows(p.id),last=rows.at(-1),unread=rows.filter(m=>m.sender_id===p.id&&m.receiver_id===user.id&&!m.read_at).length,preview=last?(last.body||((last.image_url||last.drawing_url)?'MEDIA':'MESSAGE')):'Open direct link';return`<button class="chat-row ${state.activeDmId===p.id?'active':''}" data-open-dm="${p.id}"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div class="copy"><b>@${esc(p.username)}</b><span>${last?.sender_id===user.id?'You: ':''}${esc(shorten(preview))}</span></div><div class="tail"><span>${fmtAgo(last?.created_at)}</span>${unread?`<i class="unread">${unread>99?'99+':unread}</i>`:''}</div></button>`}).join(''):'<div class="empty"><div><b>NO USERS FOUND</b></div></div>'}else{let rooms=[...data.rooms];if(q)rooms=rooms.filter(r=>String(r.name||'').toLowerCase().includes(q));rooms.sort((a,b)=>new Date(roomRows(b).at(-1)?.created_at||b.created_at||0)-new Date(roomRows(a).at(-1)?.created_at||a.created_at||0));$('#chatList').innerHTML=rooms.length?rooms.map(r=>{const rows=roomRows(r),last=rows.at(-1),sender=last?profileById(last.user_id):null;return`<button class="chat-row ${state.activeRoomId===r.id?'active':''}" data-open-room="${r.id}"><div class="avatar">${esc((r.name?.[0]||'#').toUpperCase())}</div><div class="copy"><b>#${esc(r.name)}</b><span>${last&&sender?'@'+esc(sender.username)+': ':''}${esc(shorten(last?.body||((last?.image_url||last?.drawing_url)?'MEDIA':'No transmissions yet')))}</span></div><div class="tail"><span>${fmtAgo(last?.created_at)}</span><span>${roomMemberIds(r).length}</span></div></button>`}).join(''):'<div class="empty"><div><b>NO CHANNELS</b></div></div>'}}
+function renderChatList(){const q=$('#chatSearch').value.trim().toLowerCase();$('#dmTab').classList.toggle('active',state.chatMode==='dm');$('#roomTab').classList.toggle('active',state.chatMode==='room');$('#quickDm').classList.toggle('hidden',state.chatMode!=='dm');$('#channelBar').classList.toggle('hidden',state.chatMode!=='room');if(state.chatMode==='dm'){let users=data.profiles.filter(p=>p.id!==user.id);if(q)users=users.filter(p=>String(p.username||'').toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q));users.sort((a,b)=>new Date(dmRows(b.id).at(-1)?.created_at||0)-new Date(dmRows(a.id).at(-1)?.created_at||0));$('#chatList').innerHTML=users.length?users.map(p=>{const rows=dmRows(p.id),last=rows.at(-1),unread=rows.filter(m=>m.sender_id===p.id&&m.receiver_id===user.id&&!m.read_at).length,preview=last?(last.body||((last.image_url||last.drawing_url)?'MEDIA':'MESSAGE')):'Open direct link';return`<button class="chat-row ${String(state.activeDmId)===String(p.id)?'active':''}" data-open-dm="${p.id}" type="button"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div class="copy"><b>@${esc(p.username)}</b><span>${last?.sender_id===user.id?'You: ':''}${esc(shorten(preview))}</span></div><div class="tail"><span>${fmtAgo(last?.created_at)}</span>${unread?`<i class="unread">${unread>99?'99+':unread}</i>`:''}</div></button>`}).join(''):'<div class="empty"><div><b>NO USERS FOUND</b></div></div>'}else{let rooms=[...data.rooms];if(q)rooms=rooms.filter(r=>String(r.name||'').toLowerCase().includes(q));rooms.sort((a,b)=>new Date(roomRows(b).at(-1)?.created_at||b.created_at||0)-new Date(roomRows(a).at(-1)?.created_at||a.created_at||0));$('#chatList').innerHTML=rooms.length?rooms.map(r=>{const rows=roomRows(r),last=rows.at(-1),sender=last?profileById(last.user_id):null;return`<button class="chat-row ${String(state.activeRoomId)===String(r.id)?'active':''}" data-open-room="${r.id}" type="button"><div class="avatar">${esc((r.name?.[0]||'#').toUpperCase())}</div><div class="copy"><b>#${esc(r.name)}</b><span>${last&&sender?'@'+esc(sender.username)+': ':''}${esc(shorten(last?.body||((last?.image_url||last?.drawing_url)?'MEDIA':'No transmissions yet')))}</span></div><div class="tail"><span>${fmtAgo(last?.created_at)}</span><span>${roomMemberIds(r).length}</span></div></button>`}).join(''):'<div class="empty"><div><b>NO CHANNELS</b></div></div>'}}
 function renderChatHeader(){const p=activeDm(),room=activeRoom();if(state.chatMode==='dm'){setAvatar($('#chatAvatar'),p);setAvatar($('#detailsAvatar'),p);$('#chatTitle').textContent=p?'@'+p.username:'SELECT A DIRECT LINK';$('#chatSubtitle').textContent=p?(p.bio||p.mood||'Private direct link'):'Choose a user from the directory';$('#chatStatus').textContent=p?(p.mood||'PRIVATE'):'STANDBY';$('#detailsName').textContent=p?'@'+p.username:'NO LINK SELECTED';$('#detailsStatus').textContent=p?(p.bio||p.mood||'Boom Chat user'):'Awaiting target.';$('#crewTitle').textContent='LINK PROFILE';$('#manageRoomBtn').classList.add('hidden')}else{setAvatar($('#chatAvatar'),null,(room?.name?.[0]||'#').toUpperCase());setAvatar($('#detailsAvatar'),null,(room?.name?.[0]||'#').toUpperCase());$('#chatTitle').textContent=room?'#'+room.name:'SELECT A CHANNEL';$('#chatSubtitle').textContent=room?(room.name==='general'?'Public mission channel':'Private mission channel'):'Choose a channel';$('#chatStatus').textContent=room?(room.name==='general'?'PUBLIC':roomMemberIds(room).length+' CREW'):'STANDBY';$('#detailsName').textContent=room?'#'+room.name:'NO CHANNEL SELECTED';$('#detailsStatus').textContent=room?(canManageRoom(room)?'You are channel commander.':'Mission channel member.'):'Awaiting target.';$('#crewTitle').textContent='CREW';$('#manageRoomBtn').classList.toggle('hidden',!canManageRoom(room))}}
 function renderCrew(){const p=activeDm(),room=activeRoom();if(state.chatMode==='dm'){const arr=p?[p]:[];$('#crewCount').textContent=arr.length;$('#crewList').innerHTML=arr.map(x=>`<div class="crew-row"><div class="avatar">${x.avatar_url&&/^https?:/.test(x.avatar_url)?`<img src="${esc(x.avatar_url)}">`:esc((x.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(x.username)}</b><span>${esc(x.mood||'PRIVATE LINK')}</span></div></div>`).join('')}else{const people=roomMemberIds(room).map(profileById).filter(Boolean);$('#crewCount').textContent=people.length;$('#crewList').innerHTML=people.map(x=>`<div class="crew-row"><div class="avatar">${x.avatar_url&&/^https?:/.test(x.avatar_url)?`<img src="${esc(x.avatar_url)}">`:esc((x.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(x.username)}</b><span>${x.id===user.id?'YOU':esc(x.mood||'MEMBER')}</span></div></div>`).join('')}}
 function renderReply(){const b=$('#replyBanner');if(!state.replyTo){b.classList.add('hidden');return}b.classList.remove('hidden');$('#replyUser').textContent='REPLY TO @'+(state.replyTo.sender?.username||'user');$('#replyText').textContent=shorten(state.replyTo.body||((state.replyTo.image_url||state.replyTo.drawing_url)?'MEDIA':'MESSAGE'),90)}
 function renderChatAttachment(){const b=$('#chatAttachment');if(!state.chatMedia){b.classList.add('hidden');return}b.classList.remove('hidden');$('#chatAttachmentImg').src=state.chatMedia.preview||state.chatMedia.url||state.chatMedia.data||''}
-function renderMessages(){const log=$('#messageLog'),selected=state.chatMode==='dm'?!!activeDm():!!activeRoom();$('#transmitter').classList.toggle('disabled',!selected);if(!selected){log.innerHTML='<div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div>';return}const rows=currentMessageModels(),byId=Object.fromEntries(rows.map(m=>[String(m.id),m])),lastOwn=[...rows].reverse().find(m=>m.ownerId===user.id);if(!rows.length){log.innerHTML='<div class="empty"><div><b>NO TRANSMISSIONS YET</b><span>Send the first message.</span></div></div>';return}log.innerHTML=rows.map(m=>{const mine=m.ownerId===user.id,reply=m.reply_to?byId[String(m.reply_to)]:null,react=reactionSummary(m.reactions);return`<article class="msg ${mine?'mine':''}"><div class="msg-line"><div class="bubble">${state.chatMode==='room'&&!mine?`<div class="sender">@${esc(m.sender.username)}</div>`:''}${reply?`<div class="quote"><b>@${esc(reply.sender.username)}</b><br>${esc(shorten(reply.body||((reply.image_url||reply.drawing_url)?'MEDIA':'MESSAGE'),72))}</div>`:''}${m.body?`<div class="msg-text">${esc(m.body)}</div>`:''}${m.image_url||m.drawing_url?`<img class="msg-img" src="${esc(m.image_url||m.drawing_url)}">`:''}<div class="msg-time">${esc(fmtClock(m.created_at))}</div></div><button class="msg-more" data-msg-more="${m.id}">⋮</button></div>${react?`<div class="reaction-pill">${esc(react)}</div>`:''}${state.chatMode==='dm'&&mine&&lastOwn?.id===m.id&&m.read_at?'<div class="seen">SEEN</div>':''}</article>`}).join('');requestAnimationFrame(()=>log.scrollTop=log.scrollHeight)}
-function renderChat(){if(!user)return;$('#chatMe').textContent='@'+profile.username;renderChatList();renderChatHeader();renderCrew();renderReply();renderChatAttachment();renderMessages()}
-async function selectDm(id){const p=profileById(id);if(!p)return toast('ACCOUNT NOT AVAILABLE');state.chatMode='dm';state.activeDmId=p.id;state.replyTo=null;localStorage.setItem('boom_chat_mode','dm');localStorage.setItem('boom_active_dm_id',p.id);renderChat();$('#chatShell').classList.add('mobile-open');markSeen(p.id).catch(()=>{})}
-function selectRoom(id){const r=data.rooms.find(x=>String(x.id)===String(id));if(!r)return;state.chatMode='room';state.activeRoomId=r.id;state.replyTo=null;localStorage.setItem('boom_chat_mode','room');localStorage.setItem('boom_active_room_id',r.id);renderChat();$('#chatShell').classList.add('mobile-open')}
+function renderMessages(){
+  const log=$('#messageLog');
+  const selected=state.chatMode==='dm'?!!activeDm():!!activeRoom();
+  $('#transmitter').classList.toggle('disabled',!selected);
+  $('#chatInput').disabled=!selected;
+  $('#sendChat').disabled=!selected;
+if(!selected){log.innerHTML='<div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div>';return}const rows=currentMessageModels(),byId=Object.fromEntries(rows.map(m=>[String(m.id),m])),lastOwn=[...rows].reverse().find(m=>m.ownerId===user.id);if(!rows.length){log.innerHTML='<div class="empty"><div><b>NO TRANSMISSIONS YET</b><span>Send the first message.</span></div></div>';return}log.innerHTML=rows.map(m=>{const mine=m.ownerId===user.id,reply=m.reply_to?byId[String(m.reply_to)]:null,react=reactionSummary(m.reactions);return`<article class="msg ${mine?'mine':''}"><div class="msg-line"><div class="bubble">${state.chatMode==='room'&&!mine?`<div class="sender">@${esc(m.sender.username)}</div>`:''}${reply?`<div class="quote"><b>@${esc(reply.sender.username)}</b><br>${esc(shorten(reply.body||((reply.image_url||reply.drawing_url)?'MEDIA':'MESSAGE'),72))}</div>`:''}${m.body?`<div class="msg-text">${esc(m.body)}</div>`:''}${m.image_url||m.drawing_url?`<img class="msg-img" src="${esc(m.image_url||m.drawing_url)}">`:''}<div class="msg-time">${esc(fmtClock(m.created_at))}</div></div><button class="msg-more" data-msg-more="${m.id}">⋮</button></div>${react?`<div class="reaction-pill">${esc(react)}</div>`:''}${state.chatMode==='dm'&&mine&&lastOwn?.id===m.id&&m.read_at?'<div class="seen">SEEN</div>':''}</article>`}).join('');requestAnimationFrame(()=>log.scrollTop=log.scrollHeight)}
+function renderChat(){
+  if(!user)return;
+  $('#chatMe').textContent='@'+(profile?.username||'user');
+  for(const fn of [renderChatList,renderChatHeader,renderCrew,renderReply,renderChatAttachment,renderMessages]){
+    try{fn()}catch(e){console.error('Chat part failed:',fn.name,e)}
+  }
+}
+async function openDmById(id){
+  const clean=String(id||'').trim();
+  if(!clean)return;
+
+  let p=profileById(clean);
+
+  if(!p&&db){
+    try{
+      const r=await db.from('profiles').select('*').eq('id',clean).maybeSingle();
+      if(!r.error&&r.data){
+        p=r.data;
+        const i=data.profiles.findIndex(x=>String(x.id)===String(p.id));
+        if(i>=0)data.profiles[i]=p;
+        else data.profiles.push(p);
+      }
+    }catch(e){
+      console.warn('DM profile recovery failed',e);
+    }
+  }
+
+  if(!p)return toast('ACCOUNT NOT AVAILABLE');
+
+  state.chatMode='dm';
+  state.activeDmId=String(p.id);
+  state.replyTo=null;
+  localStorage.setItem('boom_chat_mode','dm');
+  localStorage.setItem('boom_active_dm_id',String(p.id));
+
+  // Mobile panel opens before any optional network work.
+  $('#chatShell').classList.add('mobile-open');
+
+  try{
+    renderChat();
+  }catch(e){
+    console.error('Chat renderer recovered from error',e);
+    try{renderChatHeader()}catch{}
+    try{renderReply()}catch{}
+    try{renderChatAttachment()}catch{}
+    try{renderMessages()}catch{}
+  }
+
+  requestAnimationFrame(()=>{
+    const input=$('#chatInput');
+    if(input){
+      input.disabled=false;
+      try{input.focus({preventScroll:true})}catch{input.focus()}
+    }
+  });
+
+  markSeen(String(p.id)).catch(e=>console.warn('Seen update skipped',e));
+}
+function selectDm(id){return openDmById(id)}
+
+function selectRoom(id){
+  const r=data.rooms.find(x=>String(x.id)===String(id));
+  if(!r)return toast('CHANNEL NOT AVAILABLE');
+
+  state.chatMode='room';
+  state.activeRoomId=String(r.id);
+  state.replyTo=null;
+  localStorage.setItem('boom_chat_mode','room');
+  localStorage.setItem('boom_active_room_id',String(r.id));
+
+  $('#chatShell').classList.add('mobile-open');
+
+  try{renderChat()}catch(e){
+    console.error('Channel renderer recovered from error',e);
+    try{renderChatHeader()}catch{}
+    try{renderReply()}catch{}
+    try{renderChatAttachment()}catch{}
+    try{renderMessages()}catch{}
+  }
+
+  requestAnimationFrame(()=>{
+    const input=$('#chatInput');
+    if(input){
+      input.disabled=false;
+      try{input.focus({preventScroll:true})}catch{input.focus()}
+    }
+  });
+}
+
 async function markSeen(pid){const unread=dmRows(pid).filter(m=>m.sender_id===pid&&m.receiver_id===user.id&&!m.read_at);if(!unread.length)return;const now=new Date().toISOString();const r=await db.from('direct_messages').update({read_at:now}).eq('sender_id',pid).eq('receiver_id',user.id).is('read_at',null);if(!r.error){unread.forEach(m=>m.read_at=now);renderChatList()}}
 async function chatFile(file){if(!file)return;if(!file.type.startsWith('image/'))return toast('SELECT AN IMAGE');if(file.size>10*1024*1024)return toast('IMAGE TOO LARGE');if(state.chatMedia?.preview?.startsWith('blob:'))URL.revokeObjectURL(state.chatMedia.preview);state.chatMedia={file,preview:URL.createObjectURL(file)};renderChatAttachment()}
 async function sendChat(){const selected=state.chatMode==='dm'?activeDm():activeRoom(),text=$('#chatInput').value.trim();if(!selected)return toast('SELECT A LINK FIRST');if(!text&&!state.chatMedia)return;const btn=$('#sendChat'),old=btn.textContent;btn.disabled=true;try{let url=null;if(state.chatMedia){btn.textContent='UPLOADING';url=await uploadMedia(state.chatMedia.file||state.chatMedia.data||state.chatMedia.url,'chat')}btn.textContent='SENDING';let payload,result;if(state.chatMode==='dm'){payload={sender_id:user.id,receiver_id:activeDm().id,body:text,image_url:url,reply_to:state.replyTo?.id||null};result=await db.from('direct_messages').insert(payload).select().single();if(result.error&&String(result.error.message).toLowerCase().includes('reply_to')){delete payload.reply_to;result=await db.from('direct_messages').insert(payload).select().single()}}else{payload={room_id:activeRoom().id,user_id:user.id,body:text,image_url:url,reply_to:state.replyTo?.id||null};result=await db.from('room_messages').insert(payload).select().single();if(result.error&&String(result.error.message).toLowerCase().includes('reply_to')){delete payload.reply_to;result=await db.from('room_messages').insert(payload).select().single()}}if(result.error)throw result.error;$('#chatInput').value='';if(state.chatMedia?.preview?.startsWith('blob:'))URL.revokeObjectURL(state.chatMedia.preview);state.chatMedia=null;state.replyTo=null;await loadAll({silent:true});renderChat()}catch(e){toast(e.message||'MESSAGE FAILED')}finally{btn.disabled=false;btn.textContent=old}}
 function openMsgMenu(id,btn){const m=currentMessageModels().find(x=>String(x.id)===String(id));if(!m)return;state.menuMessage=m;$('#msgDelete').classList.toggle('hidden',m.ownerId!==user.id);const menu=$('#msgMenu'),r=btn.getBoundingClientRect();menu.classList.remove('hidden');let left=Math.min(window.innerWidth-183,Math.max(8,r.right-175)),top=r.bottom+5;if(top+125>window.innerHeight)top=Math.max(8,r.top-125);menu.style.left=left+'px';menu.style.top=top+'px'}function closeMsgMenu(){$('#msgMenu').classList.add('hidden');state.menuMessage=null}
 async function reactMessage(m){if(!m)return;const table=state.chatMode==='dm'?'direct_message_reactions':'room_message_reactions',rows=state.chatMode==='dm'?data.dmMsgReactions:data.roomMsgReactions,old=rows.find(r=>String(r.message_id)===String(m.id)&&r.user_id===user.id);let r;if(old)r=await db.from(table).delete().eq('message_id',m.id).eq('user_id',user.id);else r=await db.from(table).upsert({message_id:m.id,user_id:user.id,reaction:'❤️'},{onConflict:'message_id,user_id'});if(r.error)return toast('REACTIONS NEED MESSAGING V2 SQL');await loadAll({silent:true});renderChat()}
 async function deleteMessage(m){if(!m||m.ownerId!==user.id)return;const table=state.chatMode==='dm'?'direct_messages':'room_messages';let q=db.from(table).delete().eq('id',m.id);q=state.chatMode==='dm'?q.eq('sender_id',user.id):q.eq('user_id',user.id);const r=await q;if(r.error)return toast(r.error.message);closeMsgMenu();await loadAll({silent:true});renderChat()}
-function renderUserPicker(){const q=$('#userModalSearch').value.trim().toLowerCase(),users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#userPicker').innerHTML=users.map(p=>`<button class="picker-row" data-picker-dm="${p.id}"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(p.username)}</b><span>${esc(p.bio||p.mood||'Boom Chat user')}</span></div><b>OPEN</b></button>`).join('')}
+function renderUserPicker(){const q=$('#userModalSearch').value.trim().toLowerCase(),users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#userPicker').innerHTML=users.map(p=>`<button class="picker-row" type="button" data-picker-dm="${p.id}"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(p.username)}</b><span>${esc(p.bio||p.mood||'Boom Chat user')}</span></div><b>OPEN</b></button>`).join('')}
 function roomSelected(){return new Set(state.roomSelectedIds)}function renderRoomMembers(){const q=$('#roomMemberSearch').value.trim().toLowerCase();const users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#roomMemberPicker').innerHTML=users.map(p=>`<label class="picker-row"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(p.username)}</b><span>${esc(p.bio||p.mood||'Boom Chat user')}</span></div><input type="checkbox" data-room-member value="${p.id}" ${state.roomSelectedIds.has(p.id)?'checked':''}></label>`).join('');$('#roomMemberCount').textContent=state.roomSelectedIds.size+' selected'}
 function openRoomModal(mode='create'){state.roomMode=mode;const room=activeRoom();state.roomEditId=mode==='manage'?room?.id:null;if(mode==='manage'&&!canManageRoom(room))return toast('ONLY CHANNEL CREATOR CAN MANAGE CREW');state.roomSelectedIds=new Set(mode==='manage'&&room?roomMemberIds(room).filter(id=>id!==user.id):[]);$('#roomModalTitle').textContent=mode==='manage'?'MANAGE CHANNEL':'CREATE CHANNEL';$('#roomName').disabled=mode==='manage';$('#roomName').value=mode==='manage'?(room?.name||''):'';$('#saveRoom').textContent=mode==='manage'?'SAVE CREW':'CREATE CHANNEL';$('#roomMemberSearch').value='';$('#roomMemberPicker').innerHTML='';$('#roomModal').classList.remove('hidden');renderRoomMembers()}
 async function saveRoom(){const ids=[...roomSelected()];if(state.roomMode==='create'){const name=$('#roomName').value.trim().replace(/^#/,'').replace(/\s+/g,'-').slice(0,30);if(!name)return toast('CHANNEL NAME REQUIRED');const cr=await db.from('chat_rooms').insert({name,created_by:user.id}).select().single();if(cr.error)return toast(cr.error.message);const members=[...new Set([user.id,...ids])];const mr=await db.from('room_members').insert(members.map(user_id=>({room_id:cr.data.id,user_id,added_by:user.id})));if(mr.error){await db.from('chat_rooms').delete().eq('id',cr.data.id);return toast('MESSAGING V2 SQL REQUIRED')}$('#roomModal').classList.add('hidden');state.chatMode='room';state.activeRoomId=cr.data.id;await loadAll({silent:true});renderChat();$('#chatShell').classList.add('mobile-open')}else{const room=activeRoom();if(!canManageRoom(room))return;const wanted=new Set([user.id,...ids]),current=data.roomMembers.filter(m=>String(m.room_id)===String(room.id)),cur=new Set(current.map(m=>m.user_id)),add=[...wanted].filter(id=>!cur.has(id)),remove=current.filter(m=>m.user_id!==user.id&&!wanted.has(m.user_id));if(add.length){const r=await db.from('room_members').insert(add.map(user_id=>({room_id:room.id,user_id,added_by:user.id})));if(r.error)return toast(r.error.message)}for(const m of remove){const r=await db.from('room_members').delete().eq('room_id',room.id).eq('user_id',m.user_id);if(r.error)return toast(r.error.message)}$('#roomModal').classList.add('hidden');await loadAll({silent:true});renderChat();toast('CREW UPDATED')}}
 /* sketch */
 let ctx=null,drawing=false,last=null,sketchColor='#111111',undo=[];function initSketch(){const c=$('#sketchCanvas');ctx=c.getContext('2d',{willReadFrequently:true});ctx.lineCap='round';ctx.lineJoin='round';ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);const colors=['#111111','#ffffff','#d62828','#f77f00','#fcbf49','#2a9d8f','#0077b6','#6a4c93','#ff4d9d','#6c757d','#2b9348','#8b5e34'];$('#colorGrid').innerHTML=colors.map((c,i)=>`<button class="color-btn ${i===0?'active':''}" data-color="${c}" style="background:${c}"></button>`).join('');function pos(e){const r=c.getBoundingClientRect(),p=e.touches?.[0]||e;return{x:(p.clientX-r.left)*c.width/r.width,y:(p.clientY-r.top)*c.height/r.height}}function down(e){e.preventDefault();undo.push(ctx.getImageData(0,0,c.width,c.height));if(undo.length>20)undo.shift();drawing=true;last=pos(e)}function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);ctx.strokeStyle=sketchColor;ctx.lineWidth=+$('#brushSize').value;ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p}function up(){drawing=false}c.addEventListener('pointerdown',down);c.addEventListener('pointermove',move);window.addEventListener('pointerup',up)}function canvasBlob(){return new Promise(res=>$('#sketchCanvas').toBlob(res,'image/png'))}
+function fitSketchViewport(){
+  const wrap=$('#page-sketch .canvas-wrap');
+  const canvas=$('#sketchCanvas');
+  if(!wrap||!canvas)return;
+  wrap.style.maxWidth='100%';
+  canvas.style.width='100%';
+  canvas.style.height='100%';
+  canvas.style.maxWidth='100%';
+}
+window.addEventListener('resize',()=>requestAnimationFrame(fitSketchViewport));
+
 /* discover/profile/saved/desk */
 function renderDiscover(){const q=$('#discoverSearch').value.trim().toLowerCase(),friends=new Set(friendIds()),users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#peopleGrid').innerHTML=users.length?users.map(p=>`<div class="panel person-card"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><h3>@${esc(p.username)}</h3><p>${esc(p.bio||'Boom Chat user')}</p><span class="meta">● ${esc(p.mood||'ONLINE')}</span></div><div class="person-actions"><button class="btn ${friends.has(p.id)?'primary':''}" data-friend="${p.id}">${friends.has(p.id)?'FRIEND ✓':'ADD FRIEND'}</button><button class="btn primary" data-discover-dm="${p.id}">MESSAGE</button><button class="btn" data-poke="${p.id}">POKE</button></div></div>`).join(''):'<div class="panel empty"><div><b>NO USERS FOUND</b></div></div>';$('#guestList').innerHTML=data.guestbook.map(g=>{const p=profileById(g.user_id);return`<div class="guest-row"><b>@${esc(p?.username||'user')}:</b> ${esc(g.message)} <span class="meta">${fmtAgo(g.created_at)}</span></div>`}).join('')||'<div class="meta">NO GUESTBOOK ENTRIES</div>'}
 async function toggleFriend(id){const rel=data.friendships.find(f=>(f.user_id===user.id&&f.friend_id===id)||(f.friend_id===user.id&&f.user_id===id));const r=rel?await db.from('friendships').delete().eq('id',rel.id):await db.from('friendships').insert({user_id:user.id,friend_id:id,status:'accepted'});if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDiscover()}
@@ -215,10 +739,76 @@ function renderDesk(){$('#notesText').value=data.notes?.content||'';$('#notesSta
 async function startSession(u){user=u;$('#authScreen').classList.add('hidden');$('#app').classList.add('ready');try{await ensureProfile();await loadAll();startRealtime();go(state.page)}catch(e){console.error(e);toast('CLOUD LOAD ERROR: '+(e.message||e));$('#networkStatus').textContent='CLOUD: DEGRADED'}}
 async function init(){try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs)await r.unregister()}}catch{}applyTheme(state.theme);renderThemeGrid();EMOJIS.forEach(e=>$('#emojiPanel').insertAdjacentHTML('beforeend',`<button data-emoji="${e}">${e}</button>`));initSketch();try{await loadSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'boom-chat-auth-v3'}});const {data:{session}}=await db.auth.getSession();if(session?.user)await startSession(session.user);else $('#authScreen').classList.remove('hidden');db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;if(realtime)db.removeChannel(realtime);$('#app').classList.remove('ready');$('#authScreen').classList.remove('hidden')}else if(session?.user&&session.user.id!==user?.id){setTimeout(()=>startSession(session.user),0)}})}catch(e){status($('#loginStatus'),'SUPABASE COULD NOT LOAD: '+e.message,'error')}}
 /* events */
-document.addEventListener('click',async e=>{const goBtn=e.target.closest('[data-go]');if(goBtn){e.preventDefault();go(goBtn.dataset.go);return}const th=e.target.closest('[data-theme]');if(th){applyTheme(th.dataset.theme);return}if(!e.target.closest('#settingsMenu')&&!e.target.closest('#settingsBtn'))$('#settingsMenu').classList.add('hidden');const tag=e.target.closest('[data-tag]');if(tag){state.feedSearch=tag.dataset.tag.toLowerCase();$('#feedSearch').value=tag.dataset.tag;go('feed');renderFeed();return}const rm=e.target.closest('[data-remove-media]');if(rm){const i=+rm.dataset.removeMedia,re=state.postMedia.splice(i,1)[0];revokeMediaItem(re);renderPostPreviews();return}const like=e.target.closest('[data-like]');if(like)return toggleLike(like.dataset.like);const c=e.target.closest('[data-comment]');if(c)return addComment(c.dataset.comment);const fc=e.target.closest('[data-focus-comment]');if(fc)return $('#comment-'+CSS.escape(fc.dataset.focusComment))?.focus();const sv=e.target.closest('[data-save]');if(sv)return toggleSave(sv.dataset.save);const re=e.target.closest('[data-react]');if(re)return reactPost(re.dataset.react,re.dataset.reaction);const vo=e.target.closest('[data-vote]');if(vo)return vote(vo.dataset.vote,vo.dataset.option);const del=e.target.closest('[data-delete-post]');if(del){if(!confirm('Delete this post?'))return;const r=await db.from('posts').delete().eq('id',del.dataset.deletePost).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderCurrent();return}const share=e.target.closest('[data-share]');if(share){const url=location.href.split('#')[0]+'#post-'+share.dataset.share;navigator.clipboard?.writeText(url);toast('POST LINK COPIED');return}const dm=e.target.closest('[data-open-dm]');if(dm)return selectDm(dm.dataset.openDm);const room=e.target.closest('[data-open-room]');if(room)return selectRoom(room.dataset.openRoom);const more=e.target.closest('[data-msg-more]');if(more)return openMsgMenu(more.dataset.msgMore,more);const pdm=e.target.closest('[data-picker-dm]');if(pdm){$('#userModal').classList.add('hidden');return selectDm(pdm.dataset.pickerDm)}const ddm=e.target.closest('[data-discover-dm]');if(ddm){go('chat');return selectDm(ddm.dataset.discoverDm)}const fr=e.target.closest('[data-friend]');if(fr)return toggleFriend(fr.dataset.friend);const pk=e.target.closest('[data-poke]');if(pk){const r=await db.from('pokes').insert({sender_id:user.id,receiver_id:pk.dataset.poke});return toast(r.error?r.error.message:'POKE SENT')}const op=e.target.closest('[data-open-post]');if(op){go('feed');setTimeout(()=>$('#post-'+CSS.escape(op.dataset.openPost))?.scrollIntoView({behavior:'smooth',block:'center'}),50);return}const un=e.target.closest('[data-unsave]');if(un)return toggleSave(un.dataset.unsave);const ld=e.target.closest('[data-load-draft]');if(ld)return loadDraft(ld.dataset.loadDraft);const dd=e.target.closest('[data-delete-draft]');if(dd){const r=await db.from('drafts').delete().eq('id',dd.dataset.deleteDraft).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDesk();return}if(!e.target.closest('#msgMenu')&&!more)closeMsgMenu()});
-$('#settingsBtn').onclick=()=>$('#settingsMenu').classList.toggle('hidden');$('#newPostBtn').onclick=()=>openComposer(true);$('#profileNewPost').onclick=()=>{go('feed');openComposer(true)};$('#closeComposer').onclick=()=>openComposer(false);$('#publishPost').onclick=publishPost;$('#postImages').onchange=e=>{addPostFiles(e.target.files);e.target.value=''};$('#postCamera').onchange=e=>{addPostFiles(e.target.files);e.target.value=''};$('#pollToggle').onclick=()=>{state.pollOpen=!state.pollOpen;$('#pollBuilder').classList.toggle('hidden',!state.pollOpen)};$('#saveDraftBtn').onclick=saveDraft;$('#feedSearch').oninput=e=>{state.feedSearch=e.target.value;renderFeed()};$('#clearFeedSearch').onclick=()=>{state.feedSearch='';$('#feedSearch').value='';renderFeed()};
-$('#dmTab').onclick=()=>{state.chatMode='dm';localStorage.setItem('boom_chat_mode','dm');renderChat()};$('#roomTab').onclick=()=>{state.chatMode='room';localStorage.setItem('boom_chat_mode','room');renderChat()};$('#chatSearch').oninput=renderChatList;$('#newDmBtn').onclick=()=>{$('#userModalSearch').value='';renderUserPicker();$('#userModal').classList.remove('hidden')};$('#closeUserModal').onclick=()=>$('#userModal').classList.add('hidden');$('#userModalSearch').oninput=renderUserPicker;$('#quickDmBtn').onclick=async()=>{const name=$('#quickDmInput').value.trim().replace(/^@/,'');const p=data.profiles.find(x=>String(x.username).toLowerCase()===name.toLowerCase());if(!p)return toast('USER NOT FOUND');$('#quickDmInput').value='';selectDm(p.id)};$('#quickDmInput').onkeydown=e=>{if(e.key==='Enter'){$('#quickDmBtn').click()}};$('#newRoomBtn').onclick=()=>openRoomModal('create');$('#manageRoomBtn').onclick=()=>openRoomModal('manage');$('#closeRoomModal').onclick=$('#cancelRoom').onclick=()=>$('#roomModal').classList.add('hidden');$('#roomMemberSearch').oninput=renderRoomMembers;$('#roomMemberPicker').onchange=e=>{const c=e.target.closest('[data-room-member]');if(!c)return;if(c.checked)state.roomSelectedIds.add(c.value);else state.roomSelectedIds.delete(c.value);$('#roomMemberCount').textContent=state.roomSelectedIds.size+' selected'};$('#saveRoom').onclick=saveRoom;$('#chatBack').onclick=()=>$('#chatShell').classList.remove('mobile-open','details-open');$('#chatInfoBtn').onclick=()=>$('#chatShell').classList.toggle('details-open');$('#closeDetails').onclick=()=>$('#chatShell').classList.remove('details-open');$('#sendChat').onclick=sendChat;$('#chatInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}};$('#chatImage').onchange=e=>{chatFile(e.target.files[0]);e.target.value=''};$('#chatCamera').onchange=e=>{chatFile(e.target.files[0]);e.target.value=''};$('#removeChatAttachment').onclick=()=>{if(state.chatMedia?.preview?.startsWith('blob:'))URL.revokeObjectURL(state.chatMedia.preview);state.chatMedia=null;renderChatAttachment()};$('#emojiBtn').onclick=()=>$('#emojiPanel').classList.toggle('hidden');$('#emojiPanel').onclick=e=>{const b=e.target.closest('[data-emoji]');if(!b)return;$('#chatInput').value+=b.dataset.emoji;$('#chatInput').focus()};$('#cancelReply').onclick=()=>{state.replyTo=null;renderReply()};$('#msgReply').onclick=()=>{state.replyTo=state.menuMessage;closeMsgMenu();renderReply();$('#chatInput').focus()};$('#msgReact').onclick=()=>{const m=state.menuMessage;closeMsgMenu();reactMessage(m)};$('#msgDelete').onclick=()=>{const m=state.menuMessage;closeMsgMenu();deleteMessage(m)};$('#chatSketchBtn').onclick=()=>go('sketch');
-$('#colorGrid').onclick=e=>{const b=e.target.closest('[data-color]');if(!b)return;sketchColor=b.dataset.color;$$('[data-color]').forEach(x=>x.classList.toggle('active',x===b))};$('#undoSketch').onclick=()=>{if(undo.length)ctx.putImageData(undo.pop(),0,0)};$('#clearSketch').onclick=()=>{undo.push(ctx.getImageData(0,0,$('#sketchCanvas').width,$('#sketchCanvas').height));ctx.fillStyle='#fff';ctx.fillRect(0,0,$('#sketchCanvas').width,$('#sketchCanvas').height)};$('#sketchToPost').onclick=async()=>{const blob=await canvasBlob();state.postMedia.push({file:blob,preview:URL.createObjectURL(blob)});renderPostPreviews();go('feed');openComposer(true);toast('SKETCH ATTACHED')};$('#sketchToChat').onclick=async()=>{const blob=await canvasBlob();state.chatMedia={file:blob,preview:URL.createObjectURL(blob)};go('chat');renderChatAttachment();toast('SKETCH READY FOR CHAT')};
+document.addEventListener('click',async e=>{const goBtn=e.target.closest('[data-go]');if(goBtn){e.preventDefault();go(goBtn.dataset.go);return}const th=e.target.closest('[data-theme]');if(th){applyTheme(th.dataset.theme);return}if(!e.target.closest('#settingsMenu')&&!e.target.closest('#settingsBtn'))$('#settingsMenu').classList.add('hidden');const tag=e.target.closest('[data-tag]');if(tag){state.feedSearch=tag.dataset.tag.toLowerCase();$('#feedSearch').value=tag.dataset.tag;go('feed');renderFeed();return}const rm=e.target.closest('[data-remove-media]');if(rm){const i=+rm.dataset.removeMedia,re=state.postMedia.splice(i,1)[0];revokeMediaItem(re);renderPostPreviews();return}const like=e.target.closest('[data-like]');if(like)return toggleLike(like.dataset.like);const c=e.target.closest('[data-comment]');if(c)return addComment(c.dataset.comment);const fc=e.target.closest('[data-focus-comment]');if(fc)return $('#comment-'+CSS.escape(fc.dataset.focusComment))?.focus();const sv=e.target.closest('[data-save]');if(sv)return toggleSave(sv.dataset.save);const re=e.target.closest('[data-react]');if(re)return reactPost(re.dataset.react,re.dataset.reaction);const vo=e.target.closest('[data-vote]');if(vo)return vote(vo.dataset.vote,vo.dataset.option);const del=e.target.closest('[data-delete-post]');if(del){if(!confirm('Delete this post?'))return;const r=await db.from('posts').delete().eq('id',del.dataset.deletePost).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderCurrent();return}const share=e.target.closest('[data-share]');if(share){const url=location.href.split('#')[0]+'#post-'+share.dataset.share;navigator.clipboard?.writeText(url);toast('POST LINK COPIED');return}const more=e.target.closest('[data-msg-more]');if(more)return openMsgMenu(more.dataset.msgMore,more);const pdm=e.target.closest('[data-picker-dm]');if(pdm){$('#userModal').classList.add('hidden');return openDmById(pdm.dataset.pickerDm)}const ddm=e.target.closest('[data-discover-dm]');if(ddm){go('chat');return openDmById(ddm.dataset.discoverDm)}const fr=e.target.closest('[data-friend]');if(fr)return toggleFriend(fr.dataset.friend);const pk=e.target.closest('[data-poke]');if(pk){const r=await db.from('pokes').insert({sender_id:user.id,receiver_id:pk.dataset.poke});return toast(r.error?r.error.message:'POKE SENT')}const op=e.target.closest('[data-open-post]');if(op){go('feed');setTimeout(()=>$('#post-'+CSS.escape(op.dataset.openPost))?.scrollIntoView({behavior:'smooth',block:'center'}),50);return}const un=e.target.closest('[data-unsave]');if(un)return toggleSave(un.dataset.unsave);const ld=e.target.closest('[data-load-draft]');if(ld)return loadDraft(ld.dataset.loadDraft);const dd=e.target.closest('[data-delete-draft]');if(dd){const r=await db.from('drafts').delete().eq('id',dd.dataset.deleteDraft).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDesk();return}if(!e.target.closest('#msgMenu')&&!more)closeMsgMenu()});
+$('#settingsBtn').onclick=()=>$('#settingsMenu').classList.toggle('hidden');$('#newPostBtn').onclick=()=>openComposer(true);$('#profileNewPost').onclick=()=>{go('feed');openComposer(true)};$('#closeComposer').onclick=()=>openComposer(false);$('#publishPost').onclick=()=>{
+  publishPost().catch(e=>{
+    console.error('Unhandled post error',e);
+    setComposerStatus(e?.message||'POST FAILED','error');
+    toast(e?.message||'POST FAILED');
+  });
+};$('#postImages').onchange=e=>{addPostFiles(e.target.files);e.target.value=''};$('#postCamera').onchange=e=>{addPostFiles(e.target.files);e.target.value=''};$('#pollToggle').onclick=()=>{state.pollOpen=!state.pollOpen;$('#pollBuilder').classList.toggle('hidden',!state.pollOpen)};$('#saveDraftBtn').onclick=saveDraft;$('#feedSearch').oninput=e=>{state.feedSearch=e.target.value;renderFeed()};$('#clearFeedSearch').onclick=()=>{state.feedSearch='';$('#feedSearch').value='';renderFeed()};
+
+/* V27 dedicated chat directory router.
+   Re-renders can replace rows, but this parent listener remains alive. */
+$('#chatList').addEventListener('click',e=>{
+  const dm=e.target.closest('[data-open-dm]');
+  if(dm){
+    e.preventDefault();
+    e.stopPropagation();
+    dm.classList.add('chat-clicked');
+    Promise.resolve(openDmById(dm.dataset.openDm))
+      .finally(()=>setTimeout(()=>dm.classList.remove('chat-clicked'),120));
+    return;
+  }
+
+  const room=e.target.closest('[data-open-room]');
+  if(room){
+    e.preventDefault();
+    e.stopPropagation();
+    room.classList.add('chat-clicked');
+    try{selectRoom(room.dataset.openRoom)}
+    finally{setTimeout(()=>room.classList.remove('chat-clicked'),120)}
+  }
+});
+
+$('#chatList').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const dm=e.target.closest('[data-open-dm]');
+  const room=e.target.closest('[data-open-room]');
+  if(!dm&&!room)return;
+  e.preventDefault();
+  if(dm)openDmById(dm.dataset.openDm);
+  else selectRoom(room.dataset.openRoom);
+});
+
+$('#dmTab').onclick=()=>{state.chatMode='dm';localStorage.setItem('boom_chat_mode','dm');renderChat()};$('#roomTab').onclick=()=>{state.chatMode='room';localStorage.setItem('boom_chat_mode','room');renderChat()};$('#chatSearch').oninput=renderChatList;$('#newDmBtn').onclick=()=>{$('#userModalSearch').value='';renderUserPicker();$('#userModal').classList.remove('hidden')};$('#closeUserModal').onclick=()=>$('#userModal').classList.add('hidden');$('#userModalSearch').oninput=renderUserPicker;$('#quickDmBtn').onclick=async()=>{
+  const name=$('#quickDmInput').value.trim().replace(/^@/,'');
+  if(!name)return;
+
+  let p=data.profiles.find(x=>String(x.username||'').toLowerCase()===name.toLowerCase());
+
+  if(!p&&db){
+    const r=await db.from('profiles').select('*').ilike('username',name).limit(1).maybeSingle();
+    if(!r.error&&r.data){
+      p=r.data;
+      const i=data.profiles.findIndex(x=>String(x.id)===String(p.id));
+      if(i>=0)data.profiles[i]=p;
+      else data.profiles.push(p);
+    }
+  }
+
+  if(!p)return toast('USER NOT FOUND');
+  $('#quickDmInput').value='';
+  openDmById(p.id);
+};$('#quickDmInput').onkeydown=e=>{if(e.key==='Enter'){$('#quickDmBtn').click()}};$('#newRoomBtn').onclick=()=>openRoomModal('create');$('#manageRoomBtn').onclick=()=>openRoomModal('manage');$('#closeRoomModal').onclick=$('#cancelRoom').onclick=()=>$('#roomModal').classList.add('hidden');$('#roomMemberSearch').oninput=renderRoomMembers;$('#roomMemberPicker').onchange=e=>{const c=e.target.closest('[data-room-member]');if(!c)return;if(c.checked)state.roomSelectedIds.add(c.value);else state.roomSelectedIds.delete(c.value);$('#roomMemberCount').textContent=state.roomSelectedIds.size+' selected'};$('#saveRoom').onclick=saveRoom;$('#chatBack').onclick=()=>$('#chatShell').classList.remove('mobile-open','details-open');$('#chatInfoBtn').onclick=()=>$('#chatShell').classList.toggle('details-open');$('#closeDetails').onclick=()=>$('#chatShell').classList.remove('details-open');$('#sendChat').onclick=sendChat;$('#chatInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}};$('#chatImage').onchange=e=>{chatFile(e.target.files[0]);e.target.value=''};$('#chatCamera').onchange=e=>{chatFile(e.target.files[0]);e.target.value=''};$('#removeChatAttachment').onclick=()=>{if(state.chatMedia?.preview?.startsWith('blob:'))URL.revokeObjectURL(state.chatMedia.preview);state.chatMedia=null;renderChatAttachment()};$('#emojiBtn').onclick=()=>$('#emojiPanel').classList.toggle('hidden');$('#emojiPanel').onclick=e=>{const b=e.target.closest('[data-emoji]');if(!b)return;$('#chatInput').value+=b.dataset.emoji;$('#chatInput').focus()};$('#cancelReply').onclick=()=>{state.replyTo=null;renderReply()};$('#msgReply').onclick=()=>{state.replyTo=state.menuMessage;closeMsgMenu();renderReply();$('#chatInput').focus()};$('#msgReact').onclick=()=>{const m=state.menuMessage;closeMsgMenu();reactMessage(m)};$('#msgDelete').onclick=()=>{const m=state.menuMessage;closeMsgMenu();deleteMessage(m)};$('#chatSketchBtn').onclick=()=>go('sketch');
+$('#colorGrid').onclick=e=>{const b=e.target.closest('[data-color]');if(!b)return;sketchColor=b.dataset.color;$$('[data-color]').forEach(x=>x.classList.toggle('active',x===b))};$('#undoSketch').onclick=()=>{if(undo.length)ctx.putImageData(undo.pop(),0,0)};$('#clearSketch').onclick=()=>{undo.push(ctx.getImageData(0,0,$('#sketchCanvas').width,$('#sketchCanvas').height));ctx.fillStyle='#fff';ctx.fillRect(0,0,$('#sketchCanvas').width,$('#sketchCanvas').height)};$('#sketchToPost').onclick=async()=>{const blob=await canvasBlob();state.postMedia.push({file:blob,preview:URL.createObjectURL(blob)});renderPostPreviews();go('feed');openComposer(true);toast('SKETCH ATTACHED')};$('#sketchToChat').onclick=async()=>{
+  const blob=await canvasBlob();
+  state.chatMedia={file:blob,preview:URL.createObjectURL(blob)};
+  go('chat');
+  renderChat();
+  if(activeDm()||activeRoom())$('#chatShell').classList.add('mobile-open');
+  toast((activeDm()||activeRoom())?'SKETCH READY FOR CHAT':'SKETCH READY — SELECT A CHAT');
+};
 $('#discoverSearch').oninput=renderDiscover;$('#guestSend').onclick=async()=>{const message=$('#guestInput').value.trim();if(!message)return;const r=await db.from('guestbook_entries').insert({user_id:user.id,message});if(r.error)return toast(r.error.message);$('#guestInput').value='';await loadAll({silent:true});renderDiscover()};$('#profileDp').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>5*1024*1024)return toast('DP MAX 5 MB');state.profileDp=f;$('#profilePhoto').innerHTML=`<img src="${URL.createObjectURL(f)}">`;$('#profileDpHint').textContent='NEW PHOTO READY'};$('#profileForm').onsubmit=e=>{e.preventDefault();saveProfile()};$('#clearSaved').onclick=async()=>{if(!confirm('Clear all saved posts?'))return;const r=await db.from('saved_posts').delete().eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderSaved()};$('#saveNotes').onclick=async()=>{const content=$('#notesText').value;const r=await db.from('notes').upsert({user_id:user.id,content},{onConflict:'user_id'});if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDesk();toast('NOTES SAVED')};
 $('#loginTab').onclick=()=>{$('#loginTab').classList.add('active');$('#registerTab').classList.remove('active');$('#loginForm').classList.remove('hidden');$('#registerForm').classList.add('hidden')};$('#registerTab').onclick=()=>{$('#registerTab').classList.add('active');$('#loginTab').classList.remove('active');$('#registerForm').classList.remove('hidden');$('#loginForm').classList.add('hidden')};$('#loginForm').onsubmit=async e=>{e.preventDefault();if(!db)return;status($('#loginStatus'),'SIGNING IN...','ok');const {error}=await db.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value});if(error)status($('#loginStatus'),error.message,'error')};$('#registerForm').onsubmit=async e=>{e.preventDefault();if(!db)return;const username=$('#registerUsername').value.trim();if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username))return status($('#registerStatus'),'USERNAME FORMAT INVALID','error');status($('#registerStatus'),'CREATING ACCOUNT...','ok');const {data:d,error}=await db.auth.signUp({email:$('#registerEmail').value.trim(),password:$('#registerPassword').value,options:{data:{username,display_name:username}}});if(error)return status($('#registerStatus'),error.message,'error');status($('#registerStatus'),d.session?'ACCOUNT CREATED':'CHECK YOUR EMAIL TO CONFIRM','ok')};$('#logoutBtn').onclick=()=>db?.auth.signOut();
 init();
