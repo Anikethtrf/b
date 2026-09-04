@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>BOOM CHAT · V28 Post Fix</title>
+<title>BOOM CHAT · V29 Delete Fix</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Verdana,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}img{max-width:100%}.hidden{display:none!important}
 :root,
@@ -332,7 +332,7 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
 <body>
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
-    <div class="auth-head"><h1>BOOM CHAT</h1><p>SECURE SOCIAL NETWORK // V28 POST FIX</p></div>
+    <div class="auth-head"><h1>BOOM CHAT</h1><p>SECURE SOCIAL NETWORK // V29 DELETE FIX</p></div>
     <div class="auth-tabs"><button id="loginTab" class="active" type="button">LOGIN</button><button id="registerTab" type="button">REGISTER</button></div>
     <form class="auth-form" id="loginForm">
       <label>EMAIL<input class="input" id="loginEmail" type="email" autocomplete="email" required></label>
@@ -349,7 +349,7 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
 </div>
 <div class="app" id="app">
   <header class="topbar">
-    <div class="brand" data-go="profile"><div class="brand-mark">B!</div><div class="brand-copy"><b>BOOM</b><small>CHAT NETWORK</small></div><span class="build">V28</span></div>
+    <div class="brand" data-go="profile"><div class="brand-mark">B!</div><div class="brand-copy"><b>BOOM</b><small>CHAT NETWORK</small></div><span class="build">V29</span></div>
     <nav class="nav">
       <button class="nav-btn active" data-go="feed"><span class="ico">◉</span><span>FEED</span></button>
       <button class="nav-btn" data-go="chat"><span class="ico">✉</span><span>CHAT</span></button>
@@ -384,7 +384,7 @@ body{background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overf
       <div class="page-head"><div><div class="eyebrow">02 / MISSION NETWORK</div><h2>Communications</h2><p>Direct links and mission channels. UUID-based, realtime, no cached username routing.</p></div><div class="page-actions"><span class="meta">V25 FRESH CHAT CORE</span></div></div>
       <div class="chat-shell" id="chatShell">
         <aside class="chat-side"><div class="mission-head"><div><b id="chatMe">COMMUNICATIONS NET</b><small>BOOM CHAT // DIRECTORY</small></div><button class="icon-btn" id="newDmBtn" type="button">＋</button></div><input class="input chat-search" id="chatSearch" placeholder="SEARCH USER / CHANNEL"><div class="chat-tabs"><button id="dmTab" class="active" type="button">DIRECT LINKS</button><button id="roomTab" type="button">CHANNELS</button></div><div class="chat-list" id="chatList"></div><div class="quick-dm" id="quickDm"><span>DIRECT LINK BY USERNAME</span><div><input class="input" id="quickDmInput" placeholder="@USERNAME"><button class="btn primary" id="quickDmBtn" type="button">OPEN</button></div></div><div class="channel-bar hidden" id="channelBar"><span>MISSION CHANNELS</span><button class="btn" id="newRoomBtn" type="button">+ NEW</button></div></aside>
-        <main class="chat-main"><div class="chat-head"><button class="icon-btn mobile-back" id="chatBack" type="button">←</button><div class="avatar" id="chatAvatar">B</div><div class="chat-title"><b id="chatTitle">SELECT A DIRECT LINK</b><span id="chatSubtitle">Choose a user from the directory</span></div><div class="chat-status"><span class="chat-build">V28</span><span class="room-status" id="chatStatus">STANDBY</span><button class="icon-btn" id="chatInfoBtn" type="button">ⓘ</button><button class="btn hidden" id="manageRoomBtn" type="button">CREW</button></div></div><div class="reply-banner hidden" id="replyBanner"><div><b id="replyUser">REPLY</b><span id="replyText">Message</span></div><button class="icon-btn" id="cancelReply" type="button">×</button></div><div class="message-log" id="messageLog"><div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div></div><div class="attachment-bar hidden" id="chatAttachment"><img id="chatAttachmentImg"><div><b>MEDIA BUFFER READY</b><small>Will upload to Supabase Storage before sending.</small></div><button class="icon-btn" id="removeChatAttachment" type="button">×</button></div><div class="emoji-panel hidden" id="emojiPanel"></div><div class="transmitter disabled" id="transmitter"><button class="icon-btn" id="emojiBtn" type="button">☺</button><input class="input" id="chatInput" placeholder="TRANSMIT MESSAGE..."><label class="icon-btn" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label><label class="icon-btn" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="icon-btn" id="chatSketchBtn" type="button">✎</button><button class="transmit" id="sendChat" type="button">TRANSMIT</button></div></main>
+        <main class="chat-main"><div class="chat-head"><button class="icon-btn mobile-back" id="chatBack" type="button">←</button><div class="avatar" id="chatAvatar">B</div><div class="chat-title"><b id="chatTitle">SELECT A DIRECT LINK</b><span id="chatSubtitle">Choose a user from the directory</span></div><div class="chat-status"><span class="chat-build">V29</span><span class="room-status" id="chatStatus">STANDBY</span><button class="icon-btn" id="chatInfoBtn" type="button">ⓘ</button><button class="btn hidden" id="manageRoomBtn" type="button">CREW</button></div></div><div class="reply-banner hidden" id="replyBanner"><div><b id="replyUser">REPLY</b><span id="replyText">Message</span></div><button class="icon-btn" id="cancelReply" type="button">×</button></div><div class="message-log" id="messageLog"><div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div></div><div class="attachment-bar hidden" id="chatAttachment"><img id="chatAttachmentImg"><div><b>MEDIA BUFFER READY</b><small>Will upload to Supabase Storage before sending.</small></div><button class="icon-btn" id="removeChatAttachment" type="button">×</button></div><div class="emoji-panel hidden" id="emojiPanel"></div><div class="transmitter disabled" id="transmitter"><button class="icon-btn" id="emojiBtn" type="button">☺</button><input class="input" id="chatInput" placeholder="TRANSMIT MESSAGE..."><label class="icon-btn" title="Photo">▧<input id="chatImage" type="file" accept="image/*" hidden></label><label class="icon-btn" title="Camera">◉<input id="chatCamera" type="file" accept="image/*" capture="environment" hidden></label><button class="icon-btn" id="chatSketchBtn" type="button">✎</button><button class="transmit" id="sendChat" type="button">TRANSMIT</button></div></main>
         <aside class="chat-details"><div class="mission-head"><div><b>LINK STATUS</b><small>MISSION CONTROL</small></div><button class="icon-btn" id="closeDetails">×</button></div><div class="details-profile"><div class="avatar" id="detailsAvatar">B</div><b id="detailsName">NO LINK SELECTED</b><span id="detailsStatus">Awaiting target.</span></div><div class="crew-head"><span id="crewTitle">LINK PROFILE</span><b id="crewCount">0</b></div><div class="crew-list" id="crewList"></div></aside>
       </div>
     </section>
@@ -437,7 +437,7 @@ function postModel(p){const author=profileById(p.user_id)||{username:'unknown',a
 function renderMiniProfile(){if(!profile)return;setAvatar($('#miniAvatar'),profile);$('#miniName').textContent='@'+profile.username;$('#miniBio').textContent=profile.bio||profile.mood||'Boom Chat user';$('#miniPosts').textContent=data.posts.filter(p=>p.user_id===user.id).length;$('#miniFriends').textContent=friendIds().length;$('#miniSaved').textContent=data.saved.length}
 function renderTrending(){const counts={};data.posts.forEach(p=>{(String(p.body||'').match(/#[A-Za-z0-9_]+/g)||[]).forEach(t=>counts[t.toLowerCase()]=(counts[t.toLowerCase()]||0)+1)});const arr=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);$('#trendingTags').innerHTML=arr.length?arr.map(([t,n])=>`<div class="trend-row" data-tag="${esc(t)}"><b>${esc(t)}</b><span>${n} post${n===1?'':'s'}</span></div>`).join(''):'<div class="meta">NO TAGS YET</div>'}
 function renderPoll(m){if(m.post_type!=='poll')return'';const options=Array.isArray(m.options)?m.options:[];const total=options.reduce((s,o)=>s+(Number(o.votes)||0),0);return`<div class="poll"><h4>${esc(m.body||'POLL')}</h4>${options.map(o=>{const voted=m.myVote&&String(m.myVote.option_id)===String(o.id);const pct=total?Math.round((Number(o.votes)||0)*100/total):0;return`<button class="poll-option ${voted?'voted':''}" data-vote="${m.id}" data-option="${o.id}" ${m.myVote?'disabled':''}><span>${esc(o.option_text)}</span><b>${Number(o.votes)||0} · ${pct}%</b></button>`}).join('')}<div class="meta" style="margin-top:6px">${total} TOTAL VOTES</div></div>`}
-function renderFeed(){renderTrending();renderMiniProfile();const q=state.feedSearch.toLowerCase().trim();let posts=[...data.posts].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));if(q)posts=posts.filter(p=>{const a=profileById(p.user_id);return String(p.body||'').toLowerCase().includes(q)||String(a?.username||'').toLowerCase().includes(q)});$('#feed').innerHTML=posts.length?posts.map(p=>{const m=postModel(p);return`<article class="panel post" id="post-${m.id}"><div class="post-head"><div class="userline"><div class="avatar">${m.author.avatar_url&&/^https?:/.test(m.author.avatar_url)?`<img src="${esc(m.author.avatar_url)}">`:esc((m.author.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(m.author.username)}</b><div class="meta">${esc(fmtAgo(m.created_at))}</div></div></div>${m.user_id===user.id?`<button class="btn danger" data-delete-post="${m.id}">DELETE</button>`:''}</div><div class="post-body">${m.post_type!=='poll'&&m.body?`<div class="post-text">${linkifyText(m.body)}</div>`:''}${renderPoll(m)}${m.images.length?`<div class="post-media"><div class="media-track">${m.images.map((src,i)=>`<div class="media-slide"><img src="${esc(src)}" alt="Post media"><span class="media-count">${i+1}/${m.images.length}</span></div>`).join('')}</div>${m.images.length>1?`<div class="media-hint">↔ SWIPE / SCROLL · ${m.images.length} PHOTOS</div>`:''}</div>`:''}</div><div class="post-actions"><button class="btn ${m.liked?'active':''}" data-like="${m.id}">${m.liked?'♥':'♡'} ${m.likeCount}</button><button class="btn" data-focus-comment="${m.id}">COMMENT ${m.comments.length}</button><button class="btn ${m.saved?'active':''}" data-save="${m.id}">${m.saved?'◆ SAVED':'◇ SAVE'}</button><button class="btn" data-share="${m.id}">SHARE</button></div><div class="reaction-row">${[['smile','☺'],['lol','LOL'],['wow','WOW'],['star','★']].map(([k,l])=>`<button class="${m.myReaction===k?'active':''}" data-react="${m.id}" data-reaction="${k}">${l} <b>${m.reactionCounts[k]||0}</b></button>`).join('')}</div><div class="comments">${m.comments.map(c=>{const cp=profileById(c.user_id);return`<div class="comment"><b>@${esc(cp?.username||'user')}:</b> ${esc(c.body)}</div>`}).join('')}<div class="comment-form"><input class="input" id="comment-${m.id}" placeholder="WRITE COMMENT..."><button class="btn" data-comment="${m.id}">ADD</button></div></div></article>`}).join(''):'<div class="panel empty"><div><b>NO POSTS FOUND</b><span>Try another search or create a post.</span></div></div>'}
+function renderFeed(){renderTrending();renderMiniProfile();const q=state.feedSearch.toLowerCase().trim();let posts=[...data.posts].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));if(q)posts=posts.filter(p=>{const a=profileById(p.user_id);return String(p.body||'').toLowerCase().includes(q)||String(a?.username||'').toLowerCase().includes(q)});$('#feed').innerHTML=posts.length?posts.map(p=>{const m=postModel(p);return`<article class="panel post" id="post-${m.id}"><div class="post-head"><div class="userline"><div class="avatar">${m.author.avatar_url&&/^https?:/.test(m.author.avatar_url)?`<img src="${esc(m.author.avatar_url)}">`:esc((m.author.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(m.author.username)}</b><div class="meta">${esc(fmtAgo(m.created_at))}</div></div></div>${m.user_id===user.id?`<button class="btn danger" type="button" data-delete-post="${m.id}">DELETE</button>`:''}</div><div class="post-body">${m.post_type!=='poll'&&m.body?`<div class="post-text">${linkifyText(m.body)}</div>`:''}${renderPoll(m)}${m.images.length?`<div class="post-media"><div class="media-track">${m.images.map((src,i)=>`<div class="media-slide"><img src="${esc(src)}" alt="Post media"><span class="media-count">${i+1}/${m.images.length}</span></div>`).join('')}</div>${m.images.length>1?`<div class="media-hint">↔ SWIPE / SCROLL · ${m.images.length} PHOTOS</div>`:''}</div>`:''}</div><div class="post-actions"><button class="btn ${m.liked?'active':''}" data-like="${m.id}">${m.liked?'♥':'♡'} ${m.likeCount}</button><button class="btn" data-focus-comment="${m.id}">COMMENT ${m.comments.length}</button><button class="btn ${m.saved?'active':''}" data-save="${m.id}">${m.saved?'◆ SAVED':'◇ SAVE'}</button><button class="btn" data-share="${m.id}">SHARE</button></div><div class="reaction-row">${[['smile','☺'],['lol','LOL'],['wow','WOW'],['star','★']].map(([k,l])=>`<button class="${m.myReaction===k?'active':''}" data-react="${m.id}" data-reaction="${k}">${l} <b>${m.reactionCounts[k]||0}</b></button>`).join('')}</div><div class="comments">${m.comments.map(c=>{const cp=profileById(c.user_id);return`<div class="comment"><b>@${esc(cp?.username||'user')}:</b> ${esc(c.body)}</div>`}).join('')}<div class="comment-form"><input class="input" id="comment-${m.id}" placeholder="WRITE COMMENT..."><button class="btn" data-comment="${m.id}">ADD</button></div></div></article>`}).join(''):'<div class="panel empty"><div><b>NO POSTS FOUND</b><span>Try another search or create a post.</span></div></div>'}
 function setComposerStatus(msg='',kind=''){
   const el=$('#composerStatus');
   if(!el)return;
@@ -587,6 +587,75 @@ async function publishPost(){
     btn.textContent=old;
   }
 }
+
+async function deleteOwnPost(postId){
+  const id=String(postId||'').trim();
+  if(!id)return;
+
+  const post=data.posts.find(p=>String(p.id)===id);
+  if(!post||String(post.user_id)!==String(user.id)){
+    return toast('YOU CAN ONLY DELETE YOUR POST');
+  }
+
+  try{
+    let deleted=false;
+
+    try{
+      const rpc=await db.rpc('boom_delete_own_post',{p_post_id:id});
+
+      if(!rpc.error){
+        deleted=rpc.data===true || rpc.data===null;
+      }else if(!/does not exist|could not find the function|schema cache/i.test(String(rpc.error.message||''))){
+        throw rpc.error;
+      }
+    }catch(e){
+      if(!/does not exist|could not find the function|schema cache/i.test(String(e?.message||''))){
+        throw e;
+      }
+    }
+
+    if(!deleted){
+      await db.from('poll_votes').delete().eq('post_id',id);
+      await db.from('poll_options').delete().eq('post_id',id);
+      await db.from('post_reactions').delete().eq('post_id',id);
+      await db.from('saved_posts').delete().eq('post_id',id);
+      await db.from('likes').delete().eq('post_id',id);
+      await db.from('comments').delete().eq('post_id',id);
+
+      const r=await db.from('posts')
+        .delete()
+        .eq('id',id)
+        .eq('user_id',user.id)
+        .select('id');
+
+      if(r.error)throw r.error;
+      if(!r.data?.length)throw new Error('POST DELETE BLOCKED — RUN V29 SQL');
+      deleted=true;
+    }
+
+    data.posts=data.posts.filter(x=>String(x.id)!==id);
+    data.comments=data.comments.filter(x=>String(x.post_id)!==id);
+    data.likes=data.likes.filter(x=>String(x.post_id)!==id);
+    data.saved=data.saved.filter(x=>String(x.post_id)!==id);
+    data.reactions=data.reactions.filter(x=>String(x.post_id)!==id);
+
+    const optionIds=new Set(
+      data.pollOptions.filter(x=>String(x.post_id)===id).map(x=>String(x.id))
+    );
+    data.pollOptions=data.pollOptions.filter(x=>String(x.post_id)!==id);
+    data.pollVotes=data.pollVotes.filter(x=>
+      String(x.post_id)!==id && !optionIds.has(String(x.option_id))
+    );
+
+    renderCurrent();
+    toast('POST DELETED');
+    loadAll({silent:true}).catch(e=>console.warn('Post delete refresh delayed',e));
+  }catch(e){
+    console.error('Delete post failed:',e);
+    toast(e?.message||'POST DELETE FAILED');
+  }
+}
+
 async function toggleLike(id){const mine=data.likes.find(l=>String(l.post_id)===String(id)&&l.user_id===user.id);const r=mine?await db.from('likes').delete().eq('post_id',id).eq('user_id',user.id):await db.from('likes').insert({post_id:id,user_id:user.id});if(r.error)return toast(r.error.message);await loadAll({silent:true})}
 async function addComment(id){const inp=$('#comment-'+CSS.escape(String(id))),body=inp?.value.trim();if(!body)return;const r=await db.from('comments').insert({post_id:id,user_id:user.id,body});if(r.error)return toast(r.error.message);inp.value='';await loadAll({silent:true})}
 async function toggleSave(id){const mine=data.saved.find(s=>String(s.post_id)===String(id));const r=mine?await db.from('saved_posts').delete().eq('post_id',id).eq('user_id',user.id):await db.from('saved_posts').insert({post_id:id,user_id:user.id});if(r.error)return toast(r.error.message);await loadAll({silent:true})}
@@ -615,7 +684,7 @@ function renderMessages(){
   $('#transmitter').classList.toggle('disabled',!selected);
   $('#chatInput').disabled=!selected;
   $('#sendChat').disabled=!selected;
-if(!selected){log.innerHTML='<div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div>';return}const rows=currentMessageModels(),byId=Object.fromEntries(rows.map(m=>[String(m.id),m])),lastOwn=[...rows].reverse().find(m=>m.ownerId===user.id);if(!rows.length){log.innerHTML='<div class="empty"><div><b>NO TRANSMISSIONS YET</b><span>Send the first message.</span></div></div>';return}log.innerHTML=rows.map(m=>{const mine=m.ownerId===user.id,reply=m.reply_to?byId[String(m.reply_to)]:null,react=reactionSummary(m.reactions);return`<article class="msg ${mine?'mine':''}"><div class="msg-line"><div class="bubble">${state.chatMode==='room'&&!mine?`<div class="sender">@${esc(m.sender.username)}</div>`:''}${reply?`<div class="quote"><b>@${esc(reply.sender.username)}</b><br>${esc(shorten(reply.body||((reply.image_url||reply.drawing_url)?'MEDIA':'MESSAGE'),72))}</div>`:''}${m.body?`<div class="msg-text">${esc(m.body)}</div>`:''}${m.image_url||m.drawing_url?`<img class="msg-img" src="${esc(m.image_url||m.drawing_url)}">`:''}<div class="msg-time">${esc(fmtClock(m.created_at))}</div></div><button class="msg-more" data-msg-more="${m.id}">⋮</button></div>${react?`<div class="reaction-pill">${esc(react)}</div>`:''}${state.chatMode==='dm'&&mine&&lastOwn?.id===m.id&&m.read_at?'<div class="seen">SEEN</div>':''}</article>`}).join('');requestAnimationFrame(()=>log.scrollTop=log.scrollHeight)}
+if(!selected){log.innerHTML='<div class="empty"><div><b>COMMUNICATION LINK STANDBY</b><span>Select a direct link or channel.</span></div></div>';return}const rows=currentMessageModels(),byId=Object.fromEntries(rows.map(m=>[String(m.id),m])),lastOwn=[...rows].reverse().find(m=>m.ownerId===user.id);if(!rows.length){log.innerHTML='<div class="empty"><div><b>NO TRANSMISSIONS YET</b><span>Send the first message.</span></div></div>';return}log.innerHTML=rows.map(m=>{const mine=m.ownerId===user.id,reply=m.reply_to?byId[String(m.reply_to)]:null,react=reactionSummary(m.reactions);return`<article class="msg ${mine?'mine':''}"><div class="msg-line"><div class="bubble">${state.chatMode==='room'&&!mine?`<div class="sender">@${esc(m.sender.username)}</div>`:''}${reply?`<div class="quote"><b>@${esc(reply.sender.username)}</b><br>${esc(shorten(reply.body||((reply.image_url||reply.drawing_url)?'MEDIA':'MESSAGE'),72))}</div>`:''}${m.body?`<div class="msg-text">${esc(m.body)}</div>`:''}${m.image_url||m.drawing_url?`<img class="msg-img" src="${esc(m.image_url||m.drawing_url)}">`:''}<div class="msg-time">${esc(fmtClock(m.created_at))}</div></div><button class="msg-more" type="button" data-msg-more="${m.id}">⋮</button></div>${react?`<div class="reaction-pill">${esc(react)}</div>`:''}${state.chatMode==='dm'&&mine&&lastOwn?.id===m.id&&m.read_at?'<div class="seen">SEEN</div>':''}</article>`}).join('');requestAnimationFrame(()=>log.scrollTop=log.scrollHeight)}
 function renderChat(){
   if(!user)return;
   $('#chatMe').textContent='@'+(profile?.username||'user');
@@ -710,7 +779,75 @@ async function chatFile(file){if(!file)return;if(!file.type.startsWith('image/')
 async function sendChat(){const selected=state.chatMode==='dm'?activeDm():activeRoom(),text=$('#chatInput').value.trim();if(!selected)return toast('SELECT A LINK FIRST');if(!text&&!state.chatMedia)return;const btn=$('#sendChat'),old=btn.textContent;btn.disabled=true;try{let url=null;if(state.chatMedia){btn.textContent='UPLOADING';url=await uploadMedia(state.chatMedia.file||state.chatMedia.data||state.chatMedia.url,'chat')}btn.textContent='SENDING';let payload,result;if(state.chatMode==='dm'){payload={sender_id:user.id,receiver_id:activeDm().id,body:text,image_url:url,reply_to:state.replyTo?.id||null};result=await db.from('direct_messages').insert(payload).select().single();if(result.error&&String(result.error.message).toLowerCase().includes('reply_to')){delete payload.reply_to;result=await db.from('direct_messages').insert(payload).select().single()}}else{payload={room_id:activeRoom().id,user_id:user.id,body:text,image_url:url,reply_to:state.replyTo?.id||null};result=await db.from('room_messages').insert(payload).select().single();if(result.error&&String(result.error.message).toLowerCase().includes('reply_to')){delete payload.reply_to;result=await db.from('room_messages').insert(payload).select().single()}}if(result.error)throw result.error;$('#chatInput').value='';if(state.chatMedia?.preview?.startsWith('blob:'))URL.revokeObjectURL(state.chatMedia.preview);state.chatMedia=null;state.replyTo=null;await loadAll({silent:true});renderChat()}catch(e){toast(e.message||'MESSAGE FAILED')}finally{btn.disabled=false;btn.textContent=old}}
 function openMsgMenu(id,btn){const m=currentMessageModels().find(x=>String(x.id)===String(id));if(!m)return;state.menuMessage=m;$('#msgDelete').classList.toggle('hidden',m.ownerId!==user.id);const menu=$('#msgMenu'),r=btn.getBoundingClientRect();menu.classList.remove('hidden');let left=Math.min(window.innerWidth-183,Math.max(8,r.right-175)),top=r.bottom+5;if(top+125>window.innerHeight)top=Math.max(8,r.top-125);menu.style.left=left+'px';menu.style.top=top+'px'}function closeMsgMenu(){$('#msgMenu').classList.add('hidden');state.menuMessage=null}
 async function reactMessage(m){if(!m)return;const table=state.chatMode==='dm'?'direct_message_reactions':'room_message_reactions',rows=state.chatMode==='dm'?data.dmMsgReactions:data.roomMsgReactions,old=rows.find(r=>String(r.message_id)===String(m.id)&&r.user_id===user.id);let r;if(old)r=await db.from(table).delete().eq('message_id',m.id).eq('user_id',user.id);else r=await db.from(table).upsert({message_id:m.id,user_id:user.id,reaction:'❤️'},{onConflict:'message_id,user_id'});if(r.error)return toast('REACTIONS NEED MESSAGING V2 SQL');await loadAll({silent:true});renderChat()}
-async function deleteMessage(m){if(!m||m.ownerId!==user.id)return;const table=state.chatMode==='dm'?'direct_messages':'room_messages';let q=db.from(table).delete().eq('id',m.id);q=state.chatMode==='dm'?q.eq('sender_id',user.id):q.eq('user_id',user.id);const r=await q;if(r.error)return toast(r.error.message);closeMsgMenu();await loadAll({silent:true});renderChat()}
+async function deleteMessage(m){
+  if(!m||String(m.ownerId)!==String(user.id))return toast('YOU CAN ONLY DELETE YOUR MESSAGE');
+
+  const mode=state.chatMode==='dm'?'dm':'room';
+  const id=String(m.id);
+  const btn=$('#msgDelete');
+  if(btn)btn.disabled=true;
+
+  try{
+    let deleted=false;
+
+    try{
+      const rpc=await db.rpc('boom_delete_own_message',{
+        p_kind:mode,
+        p_message_id:id
+      });
+
+      if(!rpc.error){
+        deleted=rpc.data===true || rpc.data===null;
+      }else if(!/does not exist|could not find the function|schema cache/i.test(String(rpc.error.message||''))){
+        throw rpc.error;
+      }
+    }catch(e){
+      if(!/does not exist|could not find the function|schema cache/i.test(String(e?.message||''))){
+        throw e;
+      }
+    }
+
+    if(!deleted){
+      const table=mode==='dm'?'direct_messages':'room_messages';
+      const reactionTable=mode==='dm'?'direct_message_reactions':'room_message_reactions';
+      const ownerCol=mode==='dm'?'sender_id':'user_id';
+
+      await db.from(reactionTable).delete().eq('message_id',id);
+      await db.from(table).update({reply_to:null}).eq('reply_to',id);
+
+      const r=await db.from(table)
+        .delete()
+        .eq('id',id)
+        .eq(ownerCol,user.id)
+        .select('id');
+
+      if(r.error)throw r.error;
+      if(!r.data?.length)throw new Error('MESSAGE DELETE BLOCKED — RUN V29 SQL');
+      deleted=true;
+    }
+
+    if(mode==='dm'){
+      data.directMessages=data.directMessages.filter(x=>String(x.id)!==id);
+      data.dmMsgReactions=data.dmMsgReactions.filter(x=>String(x.message_id)!==id);
+      data.directMessages.forEach(x=>{if(String(x.reply_to)===id)x.reply_to=null});
+    }else{
+      data.roomMessages=data.roomMessages.filter(x=>String(x.id)!==id);
+      data.roomMsgReactions=data.roomMsgReactions.filter(x=>String(x.message_id)!==id);
+      data.roomMessages.forEach(x=>{if(String(x.reply_to)===id)x.reply_to=null});
+    }
+
+    if(state.replyTo&&String(state.replyTo.id)===id)state.replyTo=null;
+    closeMsgMenu();
+    renderChat();
+    toast('MESSAGE DELETED');
+    loadAll({silent:true}).catch(e=>console.warn('Delete refresh delayed',e));
+  }catch(e){
+    console.error('Delete message failed:',e);
+    toast(e?.message||'MESSAGE DELETE FAILED');
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
 function renderUserPicker(){const q=$('#userModalSearch').value.trim().toLowerCase(),users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#userPicker').innerHTML=users.map(p=>`<button class="picker-row" type="button" data-picker-dm="${p.id}"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(p.username)}</b><span>${esc(p.bio||p.mood||'Boom Chat user')}</span></div><b>OPEN</b></button>`).join('')}
 function roomSelected(){return new Set(state.roomSelectedIds)}function renderRoomMembers(){const q=$('#roomMemberSearch').value.trim().toLowerCase();const users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#roomMemberPicker').innerHTML=users.map(p=>`<label class="picker-row"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><b>@${esc(p.username)}</b><span>${esc(p.bio||p.mood||'Boom Chat user')}</span></div><input type="checkbox" data-room-member value="${p.id}" ${state.roomSelectedIds.has(p.id)?'checked':''}></label>`).join('');$('#roomMemberCount').textContent=state.roomSelectedIds.size+' selected'}
 function openRoomModal(mode='create'){state.roomMode=mode;const room=activeRoom();state.roomEditId=mode==='manage'?room?.id:null;if(mode==='manage'&&!canManageRoom(room))return toast('ONLY CHANNEL CREATOR CAN MANAGE CREW');state.roomSelectedIds=new Set(mode==='manage'&&room?roomMemberIds(room).filter(id=>id!==user.id):[]);$('#roomModalTitle').textContent=mode==='manage'?'MANAGE CHANNEL':'CREATE CHANNEL';$('#roomName').disabled=mode==='manage';$('#roomName').value=mode==='manage'?(room?.name||''):'';$('#saveRoom').textContent=mode==='manage'?'SAVE CREW':'CREATE CHANNEL';$('#roomMemberSearch').value='';$('#roomMemberPicker').innerHTML='';$('#roomModal').classList.remove('hidden');renderRoomMembers()}
@@ -731,7 +868,7 @@ window.addEventListener('resize',()=>requestAnimationFrame(fitSketchViewport));
 /* discover/profile/saved/desk */
 function renderDiscover(){const q=$('#discoverSearch').value.trim().toLowerCase(),friends=new Set(friendIds()),users=data.profiles.filter(p=>p.id!==user.id&&(!q||String(p.username).toLowerCase().includes(q)||String(p.bio||'').toLowerCase().includes(q)));$('#peopleGrid').innerHTML=users.length?users.map(p=>`<div class="panel person-card"><div class="avatar">${p.avatar_url&&/^https?:/.test(p.avatar_url)?`<img src="${esc(p.avatar_url)}">`:esc((p.username?.[0]||'B').toUpperCase())}</div><div><h3>@${esc(p.username)}</h3><p>${esc(p.bio||'Boom Chat user')}</p><span class="meta">● ${esc(p.mood||'ONLINE')}</span></div><div class="person-actions"><button class="btn ${friends.has(p.id)?'primary':''}" data-friend="${p.id}">${friends.has(p.id)?'FRIEND ✓':'ADD FRIEND'}</button><button class="btn primary" data-discover-dm="${p.id}">MESSAGE</button><button class="btn" data-poke="${p.id}">POKE</button></div></div>`).join(''):'<div class="panel empty"><div><b>NO USERS FOUND</b></div></div>';$('#guestList').innerHTML=data.guestbook.map(g=>{const p=profileById(g.user_id);return`<div class="guest-row"><b>@${esc(p?.username||'user')}:</b> ${esc(g.message)} <span class="meta">${fmtAgo(g.created_at)}</span></div>`}).join('')||'<div class="meta">NO GUESTBOOK ENTRIES</div>'}
 async function toggleFriend(id){const rel=data.friendships.find(f=>(f.user_id===user.id&&f.friend_id===id)||(f.friend_id===user.id&&f.user_id===id));const r=rel?await db.from('friendships').delete().eq('id',rel.id):await db.from('friendships').insert({user_id:user.id,friend_id:id,status:'accepted'});if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDiscover()}
-function renderProfile(){if(!profile)return;setAvatar($('#profilePhoto'),profile);$('#profileUsername').value=profile.username||'';$('#profileBio').value=profile.bio||'';$('#profileMood').value=profile.mood||'ONLINE';const mine=data.posts.filter(p=>p.user_id===user.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));$('#profilePosts').textContent=mine.length;$('#profileFriends').textContent=friendIds().length;$('#profileSaved').textContent=data.saved.length;$('#profilePostGrid').innerHTML=mine.length?mine.map(p=>{const m=postModel(p),src=m.images[0];return`<article class="post-tile"><div class="post-tile-media">${src?`<img src="${esc(src)}">`:`<span>${esc(shorten(p.body||'TEXT POST',80))}</span>`}</div><div class="post-tile-body"><p>${esc(shorten(p.body||'',100))}</p><div class="post-tile-actions"><button class="btn" data-open-post="${p.id}">OPEN</button><button class="btn danger" data-delete-post="${p.id}">DELETE</button></div></div></article>`}).join(''):'<div class="panel empty" style="grid-column:1/-1"><div><b>NO POSTS YET</b></div></div>'}
+function renderProfile(){if(!profile)return;setAvatar($('#profilePhoto'),profile);$('#profileUsername').value=profile.username||'';$('#profileBio').value=profile.bio||'';$('#profileMood').value=profile.mood||'ONLINE';const mine=data.posts.filter(p=>p.user_id===user.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));$('#profilePosts').textContent=mine.length;$('#profileFriends').textContent=friendIds().length;$('#profileSaved').textContent=data.saved.length;$('#profilePostGrid').innerHTML=mine.length?mine.map(p=>{const m=postModel(p),src=m.images[0];return`<article class="post-tile"><div class="post-tile-media">${src?`<img src="${esc(src)}">`:`<span>${esc(shorten(p.body||'TEXT POST',80))}</span>`}</div><div class="post-tile-body"><p>${esc(shorten(p.body||'',100))}</p><div class="post-tile-actions"><button class="btn" data-open-post="${p.id}">OPEN</button><button class="btn danger" type="button" data-delete-post="${p.id}">DELETE</button></div></div></article>`}).join(''):'<div class="panel empty" style="grid-column:1/-1"><div><b>NO POSTS YET</b></div></div>'}
 async function saveProfile(){const username=$('#profileUsername').value.trim(),bio=$('#profileBio').value.trim(),mood=$('#profileMood').value;if(!/^[A-Za-z0-9_.-]{3,24}$/.test(username))return toast('USERNAME MUST BE 3–24 VALID CHARACTERS');const btn=$('#profileForm button[type=submit]');btn.disabled=true;try{let avatar=profile.avatar_url;if(state.profileDp){const f=state.profileDp,ext=extFor(f.type),path=`${user.id}/avatar-${Date.now()}.${ext}`;const up=await db.storage.from('avatars').upload(path,f,{contentType:f.type,cacheControl:'31536000'});if(up.error)throw up.error;avatar=db.storage.from('avatars').getPublicUrl(path).data.publicUrl}const r=await db.from('profiles').update({username,display_name:username,bio,mood,avatar_url:avatar}).eq('id',user.id).select().single();if(r.error)throw r.error;profile=r.data;state.profileDp=null;await loadAll({silent:true});toast('PROFILE UPDATED')}catch(e){toast(e.message||'PROFILE SAVE FAILED')}finally{btn.disabled=false}}
 function renderSaved(){const set=savedIds(),posts=data.posts.filter(p=>set.has(String(p.id))).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));$('#savedGrid').innerHTML=posts.length?posts.map(p=>{const m=postModel(p);return`<article class="panel saved-card"><h3>@${esc(m.author.username)} · ${esc(fmtAgo(p.created_at))}</h3><p>${esc(p.body||'')}</p>${m.images[0]?`<img src="${esc(m.images[0])}">`:''}<button class="btn" data-unsave="${p.id}" style="margin-top:8px">REMOVE</button></article>`}).join(''):'<div class="panel empty" style="grid-column:1/-1"><div><b>NOTHING SAVED</b></div></div>'}
 function renderDesk(){$('#notesText').value=data.notes?.content||'';$('#notesStatus').textContent=data.notes?.updated_at?'SAVED '+fmtAgo(data.notes.updated_at):'';$('#draftList').innerHTML=data.drafts.length?data.drafts.map(d=>{const x=parseDraft(d);return`<div class="draft-row"><b>${esc(shorten(x.text||x.poll?.question||'DRAFT',70))}</b><span>${esc(fmtAgo(d.updated_at))}</span><div class="draft-actions"><button class="btn" data-load-draft="${d.id}">LOAD</button><button class="btn danger" data-delete-draft="${d.id}">DELETE</button></div></div>`}).join(''):'<div class="meta">NO DRAFTS</div>'}
@@ -739,7 +876,7 @@ function renderDesk(){$('#notesText').value=data.notes?.content||'';$('#notesSta
 async function startSession(u){user=u;$('#authScreen').classList.add('hidden');$('#app').classList.add('ready');try{await ensureProfile();await loadAll();startRealtime();go(state.page)}catch(e){console.error(e);toast('CLOUD LOAD ERROR: '+(e.message||e));$('#networkStatus').textContent='CLOUD: DEGRADED'}}
 async function init(){try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs)await r.unregister()}}catch{}applyTheme(state.theme);renderThemeGrid();EMOJIS.forEach(e=>$('#emojiPanel').insertAdjacentHTML('beforeend',`<button data-emoji="${e}">${e}</button>`));initSketch();try{await loadSupabase();db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'boom-chat-auth-v3'}});const {data:{session}}=await db.auth.getSession();if(session?.user)await startSession(session.user);else $('#authScreen').classList.remove('hidden');db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){user=null;profile=null;if(realtime)db.removeChannel(realtime);$('#app').classList.remove('ready');$('#authScreen').classList.remove('hidden')}else if(session?.user&&session.user.id!==user?.id){setTimeout(()=>startSession(session.user),0)}})}catch(e){status($('#loginStatus'),'SUPABASE COULD NOT LOAD: '+e.message,'error')}}
 /* events */
-document.addEventListener('click',async e=>{const goBtn=e.target.closest('[data-go]');if(goBtn){e.preventDefault();go(goBtn.dataset.go);return}const th=e.target.closest('[data-theme]');if(th){applyTheme(th.dataset.theme);return}if(!e.target.closest('#settingsMenu')&&!e.target.closest('#settingsBtn'))$('#settingsMenu').classList.add('hidden');const tag=e.target.closest('[data-tag]');if(tag){state.feedSearch=tag.dataset.tag.toLowerCase();$('#feedSearch').value=tag.dataset.tag;go('feed');renderFeed();return}const rm=e.target.closest('[data-remove-media]');if(rm){const i=+rm.dataset.removeMedia,re=state.postMedia.splice(i,1)[0];revokeMediaItem(re);renderPostPreviews();return}const like=e.target.closest('[data-like]');if(like)return toggleLike(like.dataset.like);const c=e.target.closest('[data-comment]');if(c)return addComment(c.dataset.comment);const fc=e.target.closest('[data-focus-comment]');if(fc)return $('#comment-'+CSS.escape(fc.dataset.focusComment))?.focus();const sv=e.target.closest('[data-save]');if(sv)return toggleSave(sv.dataset.save);const re=e.target.closest('[data-react]');if(re)return reactPost(re.dataset.react,re.dataset.reaction);const vo=e.target.closest('[data-vote]');if(vo)return vote(vo.dataset.vote,vo.dataset.option);const del=e.target.closest('[data-delete-post]');if(del){if(!confirm('Delete this post?'))return;const r=await db.from('posts').delete().eq('id',del.dataset.deletePost).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderCurrent();return}const share=e.target.closest('[data-share]');if(share){const url=location.href.split('#')[0]+'#post-'+share.dataset.share;navigator.clipboard?.writeText(url);toast('POST LINK COPIED');return}const more=e.target.closest('[data-msg-more]');if(more)return openMsgMenu(more.dataset.msgMore,more);const pdm=e.target.closest('[data-picker-dm]');if(pdm){$('#userModal').classList.add('hidden');return openDmById(pdm.dataset.pickerDm)}const ddm=e.target.closest('[data-discover-dm]');if(ddm){go('chat');return openDmById(ddm.dataset.discoverDm)}const fr=e.target.closest('[data-friend]');if(fr)return toggleFriend(fr.dataset.friend);const pk=e.target.closest('[data-poke]');if(pk){const r=await db.from('pokes').insert({sender_id:user.id,receiver_id:pk.dataset.poke});return toast(r.error?r.error.message:'POKE SENT')}const op=e.target.closest('[data-open-post]');if(op){go('feed');setTimeout(()=>$('#post-'+CSS.escape(op.dataset.openPost))?.scrollIntoView({behavior:'smooth',block:'center'}),50);return}const un=e.target.closest('[data-unsave]');if(un)return toggleSave(un.dataset.unsave);const ld=e.target.closest('[data-load-draft]');if(ld)return loadDraft(ld.dataset.loadDraft);const dd=e.target.closest('[data-delete-draft]');if(dd){const r=await db.from('drafts').delete().eq('id',dd.dataset.deleteDraft).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDesk();return}if(!e.target.closest('#msgMenu')&&!more)closeMsgMenu()});
+document.addEventListener('click',async e=>{const goBtn=e.target.closest('[data-go]');if(goBtn){e.preventDefault();go(goBtn.dataset.go);return}const th=e.target.closest('[data-theme]');if(th){applyTheme(th.dataset.theme);return}if(!e.target.closest('#settingsMenu')&&!e.target.closest('#settingsBtn'))$('#settingsMenu').classList.add('hidden');const tag=e.target.closest('[data-tag]');if(tag){state.feedSearch=tag.dataset.tag.toLowerCase();$('#feedSearch').value=tag.dataset.tag;go('feed');renderFeed();return}const rm=e.target.closest('[data-remove-media]');if(rm){const i=+rm.dataset.removeMedia,re=state.postMedia.splice(i,1)[0];revokeMediaItem(re);renderPostPreviews();return}const like=e.target.closest('[data-like]');if(like)return toggleLike(like.dataset.like);const c=e.target.closest('[data-comment]');if(c)return addComment(c.dataset.comment);const fc=e.target.closest('[data-focus-comment]');if(fc)return $('#comment-'+CSS.escape(fc.dataset.focusComment))?.focus();const sv=e.target.closest('[data-save]');if(sv)return toggleSave(sv.dataset.save);const re=e.target.closest('[data-react]');if(re)return reactPost(re.dataset.react,re.dataset.reaction);const vo=e.target.closest('[data-vote]');if(vo)return vote(vo.dataset.vote,vo.dataset.option);const del=e.target.closest('[data-delete-post]');if(del){if(!confirm('Delete this post?'))return;return deleteOwnPost(del.dataset.deletePost)}const share=e.target.closest('[data-share]');if(share){const url=location.href.split('#')[0]+'#post-'+share.dataset.share;navigator.clipboard?.writeText(url);toast('POST LINK COPIED');return}const more=e.target.closest('[data-msg-more]');if(more)return openMsgMenu(more.dataset.msgMore,more);const pdm=e.target.closest('[data-picker-dm]');if(pdm){$('#userModal').classList.add('hidden');return openDmById(pdm.dataset.pickerDm)}const ddm=e.target.closest('[data-discover-dm]');if(ddm){go('chat');return openDmById(ddm.dataset.discoverDm)}const fr=e.target.closest('[data-friend]');if(fr)return toggleFriend(fr.dataset.friend);const pk=e.target.closest('[data-poke]');if(pk){const r=await db.from('pokes').insert({sender_id:user.id,receiver_id:pk.dataset.poke});return toast(r.error?r.error.message:'POKE SENT')}const op=e.target.closest('[data-open-post]');if(op){go('feed');setTimeout(()=>$('#post-'+CSS.escape(op.dataset.openPost))?.scrollIntoView({behavior:'smooth',block:'center'}),50);return}const un=e.target.closest('[data-unsave]');if(un)return toggleSave(un.dataset.unsave);const ld=e.target.closest('[data-load-draft]');if(ld)return loadDraft(ld.dataset.loadDraft);const dd=e.target.closest('[data-delete-draft]');if(dd){const r=await db.from('drafts').delete().eq('id',dd.dataset.deleteDraft).eq('user_id',user.id);if(r.error)return toast(r.error.message);await loadAll({silent:true});renderDesk();return}if(!e.target.closest('#msgMenu')&&!more)closeMsgMenu()});
 $('#settingsBtn').onclick=()=>$('#settingsMenu').classList.toggle('hidden');$('#newPostBtn').onclick=()=>openComposer(true);$('#profileNewPost').onclick=()=>{go('feed');openComposer(true)};$('#closeComposer').onclick=()=>openComposer(false);$('#publishPost').onclick=()=>{
   publishPost().catch(e=>{
     console.error('Unhandled post error',e);
