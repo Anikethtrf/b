@@ -11,7 +11,7 @@
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
     <meta name="color-scheme" content="light dark" />
-    <title>BOOM CHAT · V30</title>
+    <title>BOOM CHAT · V30.1</title>
     <style>
 * {
   box-sizing: border-box;
@@ -2424,7 +2424,7 @@ label.icon-btn:focus-within {
       <div class="auth-card">
         <div class="auth-head">
           <h1>BOOM CHAT</h1>
-          <p>SECURE SOCIAL NETWORK // V30</p>
+          <p>SECURE SOCIAL NETWORK // V30.1</p>
         </div>
         <div class="auth-tabs">
           <button id="loginTab" class="active" type="button">LOGIN</button
@@ -2492,7 +2492,7 @@ label.icon-btn:focus-within {
         >
           <div class="brand-mark">B!</div>
           <div class="brand-copy"><b>BOOM</b><small>CHAT NETWORK</small></div>
-          <span class="build">V30</span>
+          <span class="build">V30.1</span>
         </div>
         <nav class="nav">
           <button class="nav-btn active" data-go="feed">
@@ -2705,7 +2705,7 @@ label.icon-btn:focus-within {
                   >
                 </div>
                 <div class="chat-status">
-                  <span class="chat-build">V30</span
+                  <span class="chat-build">V30.1</span
                   ><span class="room-status" id="chatStatus">STANDBY</span
                   ><button class="icon-btn" id="chatInfoBtn" type="button">
                     ⓘ</button
@@ -5134,7 +5134,7 @@ window.BOOM_CONFIG = { url: "https://yruebqnaavkgnjyvnrec.supabase.co", publisha
         go(goBtn.dataset.go);
         return;
       }
-      const th = e.target.closest("[data-theme]");
+      const th = e.target.closest("button.theme-btn[data-theme]");
       if (th) {
         applyTheme(th.dataset.theme);
         return;
